@@ -1,5 +1,8 @@
 import 'dart:io';
 import 'package:brims/database/tables/household/household_table.dart';
+import 'package:brims/database/tables/household/household_type_table.dart';
+import 'package:brims/database/tables/household/building_type_table.dart';
+import 'package:brims/database/tables/household/ownership_type_table.dart';
 import 'package:brims/database/tables/profiling/address_table.dart';
 import 'package:brims/database/tables/profiling/blood_type_table.dart';
 import 'package:brims/database/tables/profiling/daily_income_table.dart';
@@ -11,6 +14,7 @@ import 'package:brims/database/tables/profiling/person_table.dart';
 import 'package:brims/database/tables/profiling/religion_table.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:brims/database/tables/enums.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 
@@ -28,6 +32,10 @@ part 'app_db.g.dart';
     Education,
     MonthlyIncomes,
     DailyIncomes,
+    Households,
+    HouseholdTypes,
+    BuildingTypes,
+    OwnershipTypes,
   ],
 )
 class AppDatabase extends _$AppDatabase {

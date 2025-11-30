@@ -5,6 +5,7 @@ import 'package:brims/database/tables/household/ownership_type_table.dart';
 import 'package:brims/database/tables/profiling/address_table.dart';
 import 'package:drift/drift.dart';
 
+@DataClassName('HouseholdData')
 class Households extends Table {
   IntColumn get household_id => integer().autoIncrement()();
   TextColumn get head => text().nullable()();

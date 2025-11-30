@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 
+@DataClassName('AddressData')
 class Addresses extends Table {
   IntColumn get address_id => integer().autoIncrement()();
   TextColumn get brgy => text()();

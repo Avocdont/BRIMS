@@ -13,7 +13,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return scn.ShadcnApp(
       theme: scn.ThemeData(
-        //colorScheme: scn.ColorSchemes.darkBlue(),
+        colorScheme: scn.ColorSchemes.darkBlue(),
         radius: 0.5,
       ),
       home: Profile(),

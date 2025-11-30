@@ -4,7 +4,7 @@ part of 'app_db.dart';
 
 // ignore_for_file: type=lint
 class $ReligionsTable extends Religions
-    with TableInfo<$ReligionsTable, Religion> {
+    with TableInfo<$ReligionsTable, ReligionData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -42,7 +42,7 @@ class $ReligionsTable extends Religions
   static const String $name = 'religions';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Religion> instance, {
+    Insertable<ReligionData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -70,9 +70,9 @@ class $ReligionsTable extends Religions
   @override
   Set<GeneratedColumn> get $primaryKey => {religion_id};
   @override
-  Religion map(Map<String, dynamic> data, {String? tablePrefix}) {
+  ReligionData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Religion(
+    return ReligionData(
       religion_id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -92,10 +92,10 @@ class $ReligionsTable extends Religions
   }
 }
 
-class Religion extends DataClass implements Insertable<Religion> {
+class ReligionData extends DataClass implements Insertable<ReligionData> {
   final int religion_id;
   final String name;
-  const Religion({required this.religion_id, required this.name});
+  const ReligionData({required this.religion_id, required this.name});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -111,12 +111,12 @@ class Religion extends DataClass implements Insertable<Religion> {
     );
   }
 
-  factory Religion.fromJson(
+  factory ReligionData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Religion(
+    return ReligionData(
       religion_id: serializer.fromJson<int>(json['religion_id']),
       name: serializer.fromJson<String>(json['name']),
     );
@@ -130,12 +130,12 @@ class Religion extends DataClass implements Insertable<Religion> {
     };
   }
 
-  Religion copyWith({int? religion_id, String? name}) => Religion(
+  ReligionData copyWith({int? religion_id, String? name}) => ReligionData(
     religion_id: religion_id ?? this.religion_id,
     name: name ?? this.name,
   );
-  Religion copyWithCompanion(ReligionsCompanion data) {
-    return Religion(
+  ReligionData copyWithCompanion(ReligionsCompanion data) {
+    return ReligionData(
       religion_id:
           data.religion_id.present ? data.religion_id.value : this.religion_id,
       name: data.name.present ? data.name.value : this.name,
@@ -144,7 +144,7 @@ class Religion extends DataClass implements Insertable<Religion> {
 
   @override
   String toString() {
-    return (StringBuffer('Religion(')
+    return (StringBuffer('ReligionData(')
           ..write('religion_id: $religion_id, ')
           ..write('name: $name')
           ..write(')'))
@@ -156,12 +156,12 @@ class Religion extends DataClass implements Insertable<Religion> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Religion &&
+      (other is ReligionData &&
           other.religion_id == this.religion_id &&
           other.name == this.name);
 }
 
-class ReligionsCompanion extends UpdateCompanion<Religion> {
+class ReligionsCompanion extends UpdateCompanion<ReligionData> {
   final Value<int> religion_id;
   final Value<String> name;
   const ReligionsCompanion({
@@ -172,7 +172,7 @@ class ReligionsCompanion extends UpdateCompanion<Religion> {
     this.religion_id = const Value.absent(),
     required String name,
   }) : name = Value(name);
-  static Insertable<Religion> custom({
+  static Insertable<ReligionData> custom({
     Expression<int>? religion_id,
     Expression<String>? name,
   }) {
@@ -212,7 +212,7 @@ class ReligionsCompanion extends UpdateCompanion<Religion> {
 }
 
 class $NationalitiesTable extends Nationalities
-    with TableInfo<$NationalitiesTable, Nationality> {
+    with TableInfo<$NationalitiesTable, NationalityData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -250,7 +250,7 @@ class $NationalitiesTable extends Nationalities
   static const String $name = 'nationalities';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Nationality> instance, {
+    Insertable<NationalityData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -278,9 +278,9 @@ class $NationalitiesTable extends Nationalities
   @override
   Set<GeneratedColumn> get $primaryKey => {nationality_id};
   @override
-  Nationality map(Map<String, dynamic> data, {String? tablePrefix}) {
+  NationalityData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Nationality(
+    return NationalityData(
       nationality_id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -300,10 +300,10 @@ class $NationalitiesTable extends Nationalities
   }
 }
 
-class Nationality extends DataClass implements Insertable<Nationality> {
+class NationalityData extends DataClass implements Insertable<NationalityData> {
   final int nationality_id;
   final String name;
-  const Nationality({required this.nationality_id, required this.name});
+  const NationalityData({required this.nationality_id, required this.name});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -319,12 +319,12 @@ class Nationality extends DataClass implements Insertable<Nationality> {
     );
   }
 
-  factory Nationality.fromJson(
+  factory NationalityData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Nationality(
+    return NationalityData(
       nationality_id: serializer.fromJson<int>(json['nationality_id']),
       name: serializer.fromJson<String>(json['name']),
     );
@@ -338,12 +338,13 @@ class Nationality extends DataClass implements Insertable<Nationality> {
     };
   }
 
-  Nationality copyWith({int? nationality_id, String? name}) => Nationality(
-    nationality_id: nationality_id ?? this.nationality_id,
-    name: name ?? this.name,
-  );
-  Nationality copyWithCompanion(NationalitiesCompanion data) {
-    return Nationality(
+  NationalityData copyWith({int? nationality_id, String? name}) =>
+      NationalityData(
+        nationality_id: nationality_id ?? this.nationality_id,
+        name: name ?? this.name,
+      );
+  NationalityData copyWithCompanion(NationalitiesCompanion data) {
+    return NationalityData(
       nationality_id:
           data.nationality_id.present
               ? data.nationality_id.value
@@ -354,7 +355,7 @@ class Nationality extends DataClass implements Insertable<Nationality> {
 
   @override
   String toString() {
-    return (StringBuffer('Nationality(')
+    return (StringBuffer('NationalityData(')
           ..write('nationality_id: $nationality_id, ')
           ..write('name: $name')
           ..write(')'))
@@ -366,12 +367,12 @@ class Nationality extends DataClass implements Insertable<Nationality> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Nationality &&
+      (other is NationalityData &&
           other.nationality_id == this.nationality_id &&
           other.name == this.name);
 }
 
-class NationalitiesCompanion extends UpdateCompanion<Nationality> {
+class NationalitiesCompanion extends UpdateCompanion<NationalityData> {
   final Value<int> nationality_id;
   final Value<String> name;
   const NationalitiesCompanion({
@@ -382,7 +383,7 @@ class NationalitiesCompanion extends UpdateCompanion<Nationality> {
     this.nationality_id = const Value.absent(),
     required String name,
   }) : name = Value(name);
-  static Insertable<Nationality> custom({
+  static Insertable<NationalityData> custom({
     Expression<int>? nationality_id,
     Expression<String>? name,
   }) {
@@ -425,7 +426,7 @@ class NationalitiesCompanion extends UpdateCompanion<Nationality> {
 }
 
 class $EthnicitiesTable extends Ethnicities
-    with TableInfo<$EthnicitiesTable, Ethnicity> {
+    with TableInfo<$EthnicitiesTable, EthnicityData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -463,7 +464,7 @@ class $EthnicitiesTable extends Ethnicities
   static const String $name = 'ethnicities';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Ethnicity> instance, {
+    Insertable<EthnicityData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -491,9 +492,9 @@ class $EthnicitiesTable extends Ethnicities
   @override
   Set<GeneratedColumn> get $primaryKey => {ethnicity_id};
   @override
-  Ethnicity map(Map<String, dynamic> data, {String? tablePrefix}) {
+  EthnicityData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Ethnicity(
+    return EthnicityData(
       ethnicity_id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -513,10 +514,10 @@ class $EthnicitiesTable extends Ethnicities
   }
 }
 
-class Ethnicity extends DataClass implements Insertable<Ethnicity> {
+class EthnicityData extends DataClass implements Insertable<EthnicityData> {
   final int ethnicity_id;
   final String name;
-  const Ethnicity({required this.ethnicity_id, required this.name});
+  const EthnicityData({required this.ethnicity_id, required this.name});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -532,12 +533,12 @@ class Ethnicity extends DataClass implements Insertable<Ethnicity> {
     );
   }
 
-  factory Ethnicity.fromJson(
+  factory EthnicityData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Ethnicity(
+    return EthnicityData(
       ethnicity_id: serializer.fromJson<int>(json['ethnicity_id']),
       name: serializer.fromJson<String>(json['name']),
     );
@@ -551,12 +552,12 @@ class Ethnicity extends DataClass implements Insertable<Ethnicity> {
     };
   }
 
-  Ethnicity copyWith({int? ethnicity_id, String? name}) => Ethnicity(
+  EthnicityData copyWith({int? ethnicity_id, String? name}) => EthnicityData(
     ethnicity_id: ethnicity_id ?? this.ethnicity_id,
     name: name ?? this.name,
   );
-  Ethnicity copyWithCompanion(EthnicitiesCompanion data) {
-    return Ethnicity(
+  EthnicityData copyWithCompanion(EthnicitiesCompanion data) {
+    return EthnicityData(
       ethnicity_id:
           data.ethnicity_id.present
               ? data.ethnicity_id.value
@@ -567,7 +568,7 @@ class Ethnicity extends DataClass implements Insertable<Ethnicity> {
 
   @override
   String toString() {
-    return (StringBuffer('Ethnicity(')
+    return (StringBuffer('EthnicityData(')
           ..write('ethnicity_id: $ethnicity_id, ')
           ..write('name: $name')
           ..write(')'))
@@ -579,12 +580,12 @@ class Ethnicity extends DataClass implements Insertable<Ethnicity> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Ethnicity &&
+      (other is EthnicityData &&
           other.ethnicity_id == this.ethnicity_id &&
           other.name == this.name);
 }
 
-class EthnicitiesCompanion extends UpdateCompanion<Ethnicity> {
+class EthnicitiesCompanion extends UpdateCompanion<EthnicityData> {
   final Value<int> ethnicity_id;
   final Value<String> name;
   const EthnicitiesCompanion({
@@ -595,7 +596,7 @@ class EthnicitiesCompanion extends UpdateCompanion<Ethnicity> {
     this.ethnicity_id = const Value.absent(),
     required String name,
   }) : name = Value(name);
-  static Insertable<Ethnicity> custom({
+  static Insertable<EthnicityData> custom({
     Expression<int>? ethnicity_id,
     Expression<String>? name,
   }) {
@@ -638,7 +639,7 @@ class EthnicitiesCompanion extends UpdateCompanion<Ethnicity> {
 }
 
 class $BloodTypesTable extends BloodTypes
-    with TableInfo<$BloodTypesTable, BloodType> {
+    with TableInfo<$BloodTypesTable, BloodTypeData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -676,7 +677,7 @@ class $BloodTypesTable extends BloodTypes
   static const String $name = 'blood_types';
   @override
   VerificationContext validateIntegrity(
-    Insertable<BloodType> instance, {
+    Insertable<BloodTypeData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -704,9 +705,9 @@ class $BloodTypesTable extends BloodTypes
   @override
   Set<GeneratedColumn> get $primaryKey => {blood_type_id};
   @override
-  BloodType map(Map<String, dynamic> data, {String? tablePrefix}) {
+  BloodTypeData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return BloodType(
+    return BloodTypeData(
       blood_type_id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -726,10 +727,10 @@ class $BloodTypesTable extends BloodTypes
   }
 }
 
-class BloodType extends DataClass implements Insertable<BloodType> {
+class BloodTypeData extends DataClass implements Insertable<BloodTypeData> {
   final int blood_type_id;
   final String name;
-  const BloodType({required this.blood_type_id, required this.name});
+  const BloodTypeData({required this.blood_type_id, required this.name});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -745,12 +746,12 @@ class BloodType extends DataClass implements Insertable<BloodType> {
     );
   }
 
-  factory BloodType.fromJson(
+  factory BloodTypeData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return BloodType(
+    return BloodTypeData(
       blood_type_id: serializer.fromJson<int>(json['blood_type_id']),
       name: serializer.fromJson<String>(json['name']),
     );
@@ -764,12 +765,12 @@ class BloodType extends DataClass implements Insertable<BloodType> {
     };
   }
 
-  BloodType copyWith({int? blood_type_id, String? name}) => BloodType(
+  BloodTypeData copyWith({int? blood_type_id, String? name}) => BloodTypeData(
     blood_type_id: blood_type_id ?? this.blood_type_id,
     name: name ?? this.name,
   );
-  BloodType copyWithCompanion(BloodTypesCompanion data) {
-    return BloodType(
+  BloodTypeData copyWithCompanion(BloodTypesCompanion data) {
+    return BloodTypeData(
       blood_type_id:
           data.blood_type_id.present
               ? data.blood_type_id.value
@@ -780,7 +781,7 @@ class BloodType extends DataClass implements Insertable<BloodType> {
 
   @override
   String toString() {
-    return (StringBuffer('BloodType(')
+    return (StringBuffer('BloodTypeData(')
           ..write('blood_type_id: $blood_type_id, ')
           ..write('name: $name')
           ..write(')'))
@@ -792,12 +793,12 @@ class BloodType extends DataClass implements Insertable<BloodType> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is BloodType &&
+      (other is BloodTypeData &&
           other.blood_type_id == this.blood_type_id &&
           other.name == this.name);
 }
 
-class BloodTypesCompanion extends UpdateCompanion<BloodType> {
+class BloodTypesCompanion extends UpdateCompanion<BloodTypeData> {
   final Value<int> blood_type_id;
   final Value<String> name;
   const BloodTypesCompanion({
@@ -808,7 +809,7 @@ class BloodTypesCompanion extends UpdateCompanion<BloodType> {
     this.blood_type_id = const Value.absent(),
     required String name,
   }) : name = Value(name);
-  static Insertable<BloodType> custom({
+  static Insertable<BloodTypeData> custom({
     Expression<int>? blood_type_id,
     Expression<String>? name,
   }) {
@@ -851,7 +852,7 @@ class BloodTypesCompanion extends UpdateCompanion<BloodType> {
 }
 
 class $AddressesTable extends Addresses
-    with TableInfo<$AddressesTable, AddressesData> {
+    with TableInfo<$AddressesTable, AddressData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -932,7 +933,7 @@ class $AddressesTable extends Addresses
   static const String $name = 'addresses';
   @override
   VerificationContext validateIntegrity(
-    Insertable<AddressesData> instance, {
+    Insertable<AddressData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -989,9 +990,9 @@ class $AddressesTable extends Addresses
   @override
   Set<GeneratedColumn> get $primaryKey => {address_id};
   @override
-  AddressesData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  AddressData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return AddressesData(
+    return AddressData(
       address_id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -1031,14 +1032,14 @@ class $AddressesTable extends Addresses
   }
 }
 
-class AddressesData extends DataClass implements Insertable<AddressesData> {
+class AddressData extends DataClass implements Insertable<AddressData> {
   final int address_id;
   final String brgy;
   final String zone;
   final String street;
   final int block;
   final int lot;
-  const AddressesData({
+  const AddressData({
     required this.address_id,
     required this.brgy,
     required this.zone,
@@ -1069,12 +1070,12 @@ class AddressesData extends DataClass implements Insertable<AddressesData> {
     );
   }
 
-  factory AddressesData.fromJson(
+  factory AddressData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return AddressesData(
+    return AddressData(
       address_id: serializer.fromJson<int>(json['address_id']),
       brgy: serializer.fromJson<String>(json['brgy']),
       zone: serializer.fromJson<String>(json['zone']),
@@ -1096,14 +1097,14 @@ class AddressesData extends DataClass implements Insertable<AddressesData> {
     };
   }
 
-  AddressesData copyWith({
+  AddressData copyWith({
     int? address_id,
     String? brgy,
     String? zone,
     String? street,
     int? block,
     int? lot,
-  }) => AddressesData(
+  }) => AddressData(
     address_id: address_id ?? this.address_id,
     brgy: brgy ?? this.brgy,
     zone: zone ?? this.zone,
@@ -1111,8 +1112,8 @@ class AddressesData extends DataClass implements Insertable<AddressesData> {
     block: block ?? this.block,
     lot: lot ?? this.lot,
   );
-  AddressesData copyWithCompanion(AddressesCompanion data) {
-    return AddressesData(
+  AddressData copyWithCompanion(AddressesCompanion data) {
+    return AddressData(
       address_id:
           data.address_id.present ? data.address_id.value : this.address_id,
       brgy: data.brgy.present ? data.brgy.value : this.brgy,
@@ -1125,7 +1126,7 @@ class AddressesData extends DataClass implements Insertable<AddressesData> {
 
   @override
   String toString() {
-    return (StringBuffer('AddressesData(')
+    return (StringBuffer('AddressData(')
           ..write('address_id: $address_id, ')
           ..write('brgy: $brgy, ')
           ..write('zone: $zone, ')
@@ -1141,7 +1142,7 @@ class AddressesData extends DataClass implements Insertable<AddressesData> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is AddressesData &&
+      (other is AddressData &&
           other.address_id == this.address_id &&
           other.brgy == this.brgy &&
           other.zone == this.zone &&
@@ -1150,7 +1151,7 @@ class AddressesData extends DataClass implements Insertable<AddressesData> {
           other.lot == this.lot);
 }
 
-class AddressesCompanion extends UpdateCompanion<AddressesData> {
+class AddressesCompanion extends UpdateCompanion<AddressData> {
   final Value<int> address_id;
   final Value<String> brgy;
   final Value<String> zone;
@@ -1177,7 +1178,7 @@ class AddressesCompanion extends UpdateCompanion<AddressesData> {
        street = Value(street),
        block = Value(block),
        lot = Value(lot);
-  static Insertable<AddressesData> custom({
+  static Insertable<AddressData> custom({
     Expression<int>? address_id,
     Expression<String>? brgy,
     Expression<String>? zone,
@@ -1252,7 +1253,7 @@ class AddressesCompanion extends UpdateCompanion<AddressesData> {
 }
 
 class $HouseholdTypesTable extends HouseholdTypes
-    with TableInfo<$HouseholdTypesTable, HouseholdType> {
+    with TableInfo<$HouseholdTypesTable, HouseholdTypeData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1290,7 +1291,7 @@ class $HouseholdTypesTable extends HouseholdTypes
   static const String $name = 'household_types';
   @override
   VerificationContext validateIntegrity(
-    Insertable<HouseholdType> instance, {
+    Insertable<HouseholdTypeData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1318,9 +1319,9 @@ class $HouseholdTypesTable extends HouseholdTypes
   @override
   Set<GeneratedColumn> get $primaryKey => {household_type_id};
   @override
-  HouseholdType map(Map<String, dynamic> data, {String? tablePrefix}) {
+  HouseholdTypeData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return HouseholdType(
+    return HouseholdTypeData(
       household_type_id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -1340,10 +1341,14 @@ class $HouseholdTypesTable extends HouseholdTypes
   }
 }
 
-class HouseholdType extends DataClass implements Insertable<HouseholdType> {
+class HouseholdTypeData extends DataClass
+    implements Insertable<HouseholdTypeData> {
   final int household_type_id;
   final String name;
-  const HouseholdType({required this.household_type_id, required this.name});
+  const HouseholdTypeData({
+    required this.household_type_id,
+    required this.name,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1359,12 +1364,12 @@ class HouseholdType extends DataClass implements Insertable<HouseholdType> {
     );
   }
 
-  factory HouseholdType.fromJson(
+  factory HouseholdTypeData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return HouseholdType(
+    return HouseholdTypeData(
       household_type_id: serializer.fromJson<int>(json['household_type_id']),
       name: serializer.fromJson<String>(json['name']),
     );
@@ -1378,13 +1383,13 @@ class HouseholdType extends DataClass implements Insertable<HouseholdType> {
     };
   }
 
-  HouseholdType copyWith({int? household_type_id, String? name}) =>
-      HouseholdType(
+  HouseholdTypeData copyWith({int? household_type_id, String? name}) =>
+      HouseholdTypeData(
         household_type_id: household_type_id ?? this.household_type_id,
         name: name ?? this.name,
       );
-  HouseholdType copyWithCompanion(HouseholdTypesCompanion data) {
-    return HouseholdType(
+  HouseholdTypeData copyWithCompanion(HouseholdTypesCompanion data) {
+    return HouseholdTypeData(
       household_type_id:
           data.household_type_id.present
               ? data.household_type_id.value
@@ -1395,7 +1400,7 @@ class HouseholdType extends DataClass implements Insertable<HouseholdType> {
 
   @override
   String toString() {
-    return (StringBuffer('HouseholdType(')
+    return (StringBuffer('HouseholdTypeData(')
           ..write('household_type_id: $household_type_id, ')
           ..write('name: $name')
           ..write(')'))
@@ -1407,12 +1412,12 @@ class HouseholdType extends DataClass implements Insertable<HouseholdType> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is HouseholdType &&
+      (other is HouseholdTypeData &&
           other.household_type_id == this.household_type_id &&
           other.name == this.name);
 }
 
-class HouseholdTypesCompanion extends UpdateCompanion<HouseholdType> {
+class HouseholdTypesCompanion extends UpdateCompanion<HouseholdTypeData> {
   final Value<int> household_type_id;
   final Value<String> name;
   const HouseholdTypesCompanion({
@@ -1423,7 +1428,7 @@ class HouseholdTypesCompanion extends UpdateCompanion<HouseholdType> {
     this.household_type_id = const Value.absent(),
     required String name,
   }) : name = Value(name);
-  static Insertable<HouseholdType> custom({
+  static Insertable<HouseholdTypeData> custom({
     Expression<int>? household_type_id,
     Expression<String>? name,
   }) {
@@ -1466,7 +1471,7 @@ class HouseholdTypesCompanion extends UpdateCompanion<HouseholdType> {
 }
 
 class $BuildingTypesTable extends BuildingTypes
-    with TableInfo<$BuildingTypesTable, BuildingType> {
+    with TableInfo<$BuildingTypesTable, BuildingTypeData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1504,7 +1509,7 @@ class $BuildingTypesTable extends BuildingTypes
   static const String $name = 'building_types';
   @override
   VerificationContext validateIntegrity(
-    Insertable<BuildingType> instance, {
+    Insertable<BuildingTypeData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1532,9 +1537,9 @@ class $BuildingTypesTable extends BuildingTypes
   @override
   Set<GeneratedColumn> get $primaryKey => {building_type_id};
   @override
-  BuildingType map(Map<String, dynamic> data, {String? tablePrefix}) {
+  BuildingTypeData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return BuildingType(
+    return BuildingTypeData(
       building_type_id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -1554,10 +1559,11 @@ class $BuildingTypesTable extends BuildingTypes
   }
 }
 
-class BuildingType extends DataClass implements Insertable<BuildingType> {
+class BuildingTypeData extends DataClass
+    implements Insertable<BuildingTypeData> {
   final int building_type_id;
   final String name;
-  const BuildingType({required this.building_type_id, required this.name});
+  const BuildingTypeData({required this.building_type_id, required this.name});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1573,12 +1579,12 @@ class BuildingType extends DataClass implements Insertable<BuildingType> {
     );
   }
 
-  factory BuildingType.fromJson(
+  factory BuildingTypeData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return BuildingType(
+    return BuildingTypeData(
       building_type_id: serializer.fromJson<int>(json['building_type_id']),
       name: serializer.fromJson<String>(json['name']),
     );
@@ -1592,12 +1598,13 @@ class BuildingType extends DataClass implements Insertable<BuildingType> {
     };
   }
 
-  BuildingType copyWith({int? building_type_id, String? name}) => BuildingType(
-    building_type_id: building_type_id ?? this.building_type_id,
-    name: name ?? this.name,
-  );
-  BuildingType copyWithCompanion(BuildingTypesCompanion data) {
-    return BuildingType(
+  BuildingTypeData copyWith({int? building_type_id, String? name}) =>
+      BuildingTypeData(
+        building_type_id: building_type_id ?? this.building_type_id,
+        name: name ?? this.name,
+      );
+  BuildingTypeData copyWithCompanion(BuildingTypesCompanion data) {
+    return BuildingTypeData(
       building_type_id:
           data.building_type_id.present
               ? data.building_type_id.value
@@ -1608,7 +1615,7 @@ class BuildingType extends DataClass implements Insertable<BuildingType> {
 
   @override
   String toString() {
-    return (StringBuffer('BuildingType(')
+    return (StringBuffer('BuildingTypeData(')
           ..write('building_type_id: $building_type_id, ')
           ..write('name: $name')
           ..write(')'))
@@ -1620,12 +1627,12 @@ class BuildingType extends DataClass implements Insertable<BuildingType> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is BuildingType &&
+      (other is BuildingTypeData &&
           other.building_type_id == this.building_type_id &&
           other.name == this.name);
 }
 
-class BuildingTypesCompanion extends UpdateCompanion<BuildingType> {
+class BuildingTypesCompanion extends UpdateCompanion<BuildingTypeData> {
   final Value<int> building_type_id;
   final Value<String> name;
   const BuildingTypesCompanion({
@@ -1636,7 +1643,7 @@ class BuildingTypesCompanion extends UpdateCompanion<BuildingType> {
     this.building_type_id = const Value.absent(),
     required String name,
   }) : name = Value(name);
-  static Insertable<BuildingType> custom({
+  static Insertable<BuildingTypeData> custom({
     Expression<int>? building_type_id,
     Expression<String>? name,
   }) {
@@ -1679,7 +1686,7 @@ class BuildingTypesCompanion extends UpdateCompanion<BuildingType> {
 }
 
 class $OwnershipTypesTable extends OwnershipTypes
-    with TableInfo<$OwnershipTypesTable, OwnershipType> {
+    with TableInfo<$OwnershipTypesTable, OwnershipTypeData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1717,7 +1724,7 @@ class $OwnershipTypesTable extends OwnershipTypes
   static const String $name = 'ownership_types';
   @override
   VerificationContext validateIntegrity(
-    Insertable<OwnershipType> instance, {
+    Insertable<OwnershipTypeData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1745,9 +1752,9 @@ class $OwnershipTypesTable extends OwnershipTypes
   @override
   Set<GeneratedColumn> get $primaryKey => {ownership_type_id};
   @override
-  OwnershipType map(Map<String, dynamic> data, {String? tablePrefix}) {
+  OwnershipTypeData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return OwnershipType(
+    return OwnershipTypeData(
       ownership_type_id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -1767,10 +1774,14 @@ class $OwnershipTypesTable extends OwnershipTypes
   }
 }
 
-class OwnershipType extends DataClass implements Insertable<OwnershipType> {
+class OwnershipTypeData extends DataClass
+    implements Insertable<OwnershipTypeData> {
   final int ownership_type_id;
   final String name;
-  const OwnershipType({required this.ownership_type_id, required this.name});
+  const OwnershipTypeData({
+    required this.ownership_type_id,
+    required this.name,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1786,12 +1797,12 @@ class OwnershipType extends DataClass implements Insertable<OwnershipType> {
     );
   }
 
-  factory OwnershipType.fromJson(
+  factory OwnershipTypeData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return OwnershipType(
+    return OwnershipTypeData(
       ownership_type_id: serializer.fromJson<int>(json['ownership_type_id']),
       name: serializer.fromJson<String>(json['name']),
     );
@@ -1805,13 +1816,13 @@ class OwnershipType extends DataClass implements Insertable<OwnershipType> {
     };
   }
 
-  OwnershipType copyWith({int? ownership_type_id, String? name}) =>
-      OwnershipType(
+  OwnershipTypeData copyWith({int? ownership_type_id, String? name}) =>
+      OwnershipTypeData(
         ownership_type_id: ownership_type_id ?? this.ownership_type_id,
         name: name ?? this.name,
       );
-  OwnershipType copyWithCompanion(OwnershipTypesCompanion data) {
-    return OwnershipType(
+  OwnershipTypeData copyWithCompanion(OwnershipTypesCompanion data) {
+    return OwnershipTypeData(
       ownership_type_id:
           data.ownership_type_id.present
               ? data.ownership_type_id.value
@@ -1822,7 +1833,7 @@ class OwnershipType extends DataClass implements Insertable<OwnershipType> {
 
   @override
   String toString() {
-    return (StringBuffer('OwnershipType(')
+    return (StringBuffer('OwnershipTypeData(')
           ..write('ownership_type_id: $ownership_type_id, ')
           ..write('name: $name')
           ..write(')'))
@@ -1834,12 +1845,12 @@ class OwnershipType extends DataClass implements Insertable<OwnershipType> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is OwnershipType &&
+      (other is OwnershipTypeData &&
           other.ownership_type_id == this.ownership_type_id &&
           other.name == this.name);
 }
 
-class OwnershipTypesCompanion extends UpdateCompanion<OwnershipType> {
+class OwnershipTypesCompanion extends UpdateCompanion<OwnershipTypeData> {
   final Value<int> ownership_type_id;
   final Value<String> name;
   const OwnershipTypesCompanion({
@@ -1850,7 +1861,7 @@ class OwnershipTypesCompanion extends UpdateCompanion<OwnershipType> {
     this.ownership_type_id = const Value.absent(),
     required String name,
   }) : name = Value(name);
-  static Insertable<OwnershipType> custom({
+  static Insertable<OwnershipTypeData> custom({
     Expression<int>? ownership_type_id,
     Expression<String>? name,
   }) {
@@ -1893,7 +1904,7 @@ class OwnershipTypesCompanion extends UpdateCompanion<OwnershipType> {
 }
 
 class $HouseholdsTable extends Households
-    with TableInfo<$HouseholdsTable, Household> {
+    with TableInfo<$HouseholdsTable, HouseholdData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -2060,7 +2071,7 @@ class $HouseholdsTable extends Households
   static const String $name = 'households';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Household> instance, {
+    Insertable<HouseholdData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -2155,9 +2166,9 @@ class $HouseholdsTable extends Households
   @override
   Set<GeneratedColumn> get $primaryKey => {household_id};
   @override
-  Household map(Map<String, dynamic> data, {String? tablePrefix}) {
+  HouseholdData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Household(
+    return HouseholdData(
       household_id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -2220,7 +2231,7 @@ class $HouseholdsTable extends Households
   );
 }
 
-class Household extends DataClass implements Insertable<Household> {
+class HouseholdData extends DataClass implements Insertable<HouseholdData> {
   final int household_id;
   final String? head;
   final int? address_id;
@@ -2232,7 +2243,7 @@ class Household extends DataClass implements Insertable<Household> {
   final bool? child_mortality;
   final DateTime? registration_date;
   final RegistrationStatus registration_status;
-  const Household({
+  const HouseholdData({
     required this.household_id,
     this.head,
     this.address_id,
@@ -2326,12 +2337,12 @@ class Household extends DataClass implements Insertable<Household> {
     );
   }
 
-  factory Household.fromJson(
+  factory HouseholdData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Household(
+    return HouseholdData(
       household_id: serializer.fromJson<int>(json['household_id']),
       head: serializer.fromJson<String?>(json['head']),
       address_id: serializer.fromJson<int?>(json['address_id']),
@@ -2372,7 +2383,7 @@ class Household extends DataClass implements Insertable<Household> {
     };
   }
 
-  Household copyWith({
+  HouseholdData copyWith({
     int? household_id,
     Value<String?> head = const Value.absent(),
     Value<int?> address_id = const Value.absent(),
@@ -2384,7 +2395,7 @@ class Household extends DataClass implements Insertable<Household> {
     Value<bool?> child_mortality = const Value.absent(),
     Value<DateTime?> registration_date = const Value.absent(),
     RegistrationStatus? registration_status,
-  }) => Household(
+  }) => HouseholdData(
     household_id: household_id ?? this.household_id,
     head: head.present ? head.value : this.head,
     address_id: address_id.present ? address_id.value : this.address_id,
@@ -2416,8 +2427,8 @@ class Household extends DataClass implements Insertable<Household> {
             : this.registration_date,
     registration_status: registration_status ?? this.registration_status,
   );
-  Household copyWithCompanion(HouseholdsCompanion data) {
-    return Household(
+  HouseholdData copyWithCompanion(HouseholdsCompanion data) {
+    return HouseholdData(
       household_id:
           data.household_id.present
               ? data.household_id.value
@@ -2462,7 +2473,7 @@ class Household extends DataClass implements Insertable<Household> {
 
   @override
   String toString() {
-    return (StringBuffer('Household(')
+    return (StringBuffer('HouseholdData(')
           ..write('household_id: $household_id, ')
           ..write('head: $head, ')
           ..write('address_id: $address_id, ')
@@ -2495,7 +2506,7 @@ class Household extends DataClass implements Insertable<Household> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Household &&
+      (other is HouseholdData &&
           other.household_id == this.household_id &&
           other.head == this.head &&
           other.address_id == this.address_id &&
@@ -2509,7 +2520,7 @@ class Household extends DataClass implements Insertable<Household> {
           other.registration_status == this.registration_status);
 }
 
-class HouseholdsCompanion extends UpdateCompanion<Household> {
+class HouseholdsCompanion extends UpdateCompanion<HouseholdData> {
   final Value<int> household_id;
   final Value<String?> head;
   final Value<int?> address_id;
@@ -2547,7 +2558,7 @@ class HouseholdsCompanion extends UpdateCompanion<Household> {
     this.registration_date = const Value.absent(),
     required RegistrationStatus registration_status,
   }) : registration_status = Value(registration_status);
-  static Insertable<Household> custom({
+  static Insertable<HouseholdData> custom({
     Expression<int>? household_id,
     Expression<String>? head,
     Expression<int>? address_id,
@@ -2669,7 +2680,7 @@ class HouseholdsCompanion extends UpdateCompanion<Household> {
 }
 
 class $MonthlyIncomesTable extends MonthlyIncomes
-    with TableInfo<$MonthlyIncomesTable, MonthlyIncome> {
+    with TableInfo<$MonthlyIncomesTable, MonthlyIncomeData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -2707,7 +2718,7 @@ class $MonthlyIncomesTable extends MonthlyIncomes
   static const String $name = 'monthly_incomes';
   @override
   VerificationContext validateIntegrity(
-    Insertable<MonthlyIncome> instance, {
+    Insertable<MonthlyIncomeData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -2735,9 +2746,9 @@ class $MonthlyIncomesTable extends MonthlyIncomes
   @override
   Set<GeneratedColumn> get $primaryKey => {monthly_income_id};
   @override
-  MonthlyIncome map(Map<String, dynamic> data, {String? tablePrefix}) {
+  MonthlyIncomeData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return MonthlyIncome(
+    return MonthlyIncomeData(
       monthly_income_id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -2757,10 +2768,14 @@ class $MonthlyIncomesTable extends MonthlyIncomes
   }
 }
 
-class MonthlyIncome extends DataClass implements Insertable<MonthlyIncome> {
+class MonthlyIncomeData extends DataClass
+    implements Insertable<MonthlyIncomeData> {
   final int monthly_income_id;
   final String range;
-  const MonthlyIncome({required this.monthly_income_id, required this.range});
+  const MonthlyIncomeData({
+    required this.monthly_income_id,
+    required this.range,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2776,12 +2791,12 @@ class MonthlyIncome extends DataClass implements Insertable<MonthlyIncome> {
     );
   }
 
-  factory MonthlyIncome.fromJson(
+  factory MonthlyIncomeData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return MonthlyIncome(
+    return MonthlyIncomeData(
       monthly_income_id: serializer.fromJson<int>(json['monthly_income_id']),
       range: serializer.fromJson<String>(json['range']),
     );
@@ -2795,13 +2810,13 @@ class MonthlyIncome extends DataClass implements Insertable<MonthlyIncome> {
     };
   }
 
-  MonthlyIncome copyWith({int? monthly_income_id, String? range}) =>
-      MonthlyIncome(
+  MonthlyIncomeData copyWith({int? monthly_income_id, String? range}) =>
+      MonthlyIncomeData(
         monthly_income_id: monthly_income_id ?? this.monthly_income_id,
         range: range ?? this.range,
       );
-  MonthlyIncome copyWithCompanion(MonthlyIncomesCompanion data) {
-    return MonthlyIncome(
+  MonthlyIncomeData copyWithCompanion(MonthlyIncomesCompanion data) {
+    return MonthlyIncomeData(
       monthly_income_id:
           data.monthly_income_id.present
               ? data.monthly_income_id.value
@@ -2812,7 +2827,7 @@ class MonthlyIncome extends DataClass implements Insertable<MonthlyIncome> {
 
   @override
   String toString() {
-    return (StringBuffer('MonthlyIncome(')
+    return (StringBuffer('MonthlyIncomeData(')
           ..write('monthly_income_id: $monthly_income_id, ')
           ..write('range: $range')
           ..write(')'))
@@ -2824,12 +2839,12 @@ class MonthlyIncome extends DataClass implements Insertable<MonthlyIncome> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is MonthlyIncome &&
+      (other is MonthlyIncomeData &&
           other.monthly_income_id == this.monthly_income_id &&
           other.range == this.range);
 }
 
-class MonthlyIncomesCompanion extends UpdateCompanion<MonthlyIncome> {
+class MonthlyIncomesCompanion extends UpdateCompanion<MonthlyIncomeData> {
   final Value<int> monthly_income_id;
   final Value<String> range;
   const MonthlyIncomesCompanion({
@@ -2840,7 +2855,7 @@ class MonthlyIncomesCompanion extends UpdateCompanion<MonthlyIncome> {
     this.monthly_income_id = const Value.absent(),
     required String range,
   }) : range = Value(range);
-  static Insertable<MonthlyIncome> custom({
+  static Insertable<MonthlyIncomeData> custom({
     Expression<int>? monthly_income_id,
     Expression<String>? range,
   }) {
@@ -2883,7 +2898,7 @@ class MonthlyIncomesCompanion extends UpdateCompanion<MonthlyIncome> {
 }
 
 class $DailyIncomesTable extends DailyIncomes
-    with TableInfo<$DailyIncomesTable, DailyIncome> {
+    with TableInfo<$DailyIncomesTable, DailyIncomeData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -2921,7 +2936,7 @@ class $DailyIncomesTable extends DailyIncomes
   static const String $name = 'daily_incomes';
   @override
   VerificationContext validateIntegrity(
-    Insertable<DailyIncome> instance, {
+    Insertable<DailyIncomeData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -2949,9 +2964,9 @@ class $DailyIncomesTable extends DailyIncomes
   @override
   Set<GeneratedColumn> get $primaryKey => {daily_income_id};
   @override
-  DailyIncome map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DailyIncomeData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return DailyIncome(
+    return DailyIncomeData(
       daily_income_id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -2971,10 +2986,10 @@ class $DailyIncomesTable extends DailyIncomes
   }
 }
 
-class DailyIncome extends DataClass implements Insertable<DailyIncome> {
+class DailyIncomeData extends DataClass implements Insertable<DailyIncomeData> {
   final int daily_income_id;
   final String range;
-  const DailyIncome({required this.daily_income_id, required this.range});
+  const DailyIncomeData({required this.daily_income_id, required this.range});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2990,12 +3005,12 @@ class DailyIncome extends DataClass implements Insertable<DailyIncome> {
     );
   }
 
-  factory DailyIncome.fromJson(
+  factory DailyIncomeData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return DailyIncome(
+    return DailyIncomeData(
       daily_income_id: serializer.fromJson<int>(json['daily_income_id']),
       range: serializer.fromJson<String>(json['range']),
     );
@@ -3009,12 +3024,13 @@ class DailyIncome extends DataClass implements Insertable<DailyIncome> {
     };
   }
 
-  DailyIncome copyWith({int? daily_income_id, String? range}) => DailyIncome(
-    daily_income_id: daily_income_id ?? this.daily_income_id,
-    range: range ?? this.range,
-  );
-  DailyIncome copyWithCompanion(DailyIncomesCompanion data) {
-    return DailyIncome(
+  DailyIncomeData copyWith({int? daily_income_id, String? range}) =>
+      DailyIncomeData(
+        daily_income_id: daily_income_id ?? this.daily_income_id,
+        range: range ?? this.range,
+      );
+  DailyIncomeData copyWithCompanion(DailyIncomesCompanion data) {
+    return DailyIncomeData(
       daily_income_id:
           data.daily_income_id.present
               ? data.daily_income_id.value
@@ -3025,7 +3041,7 @@ class DailyIncome extends DataClass implements Insertable<DailyIncome> {
 
   @override
   String toString() {
-    return (StringBuffer('DailyIncome(')
+    return (StringBuffer('DailyIncomeData(')
           ..write('daily_income_id: $daily_income_id, ')
           ..write('range: $range')
           ..write(')'))
@@ -3037,12 +3053,12 @@ class DailyIncome extends DataClass implements Insertable<DailyIncome> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is DailyIncome &&
+      (other is DailyIncomeData &&
           other.daily_income_id == this.daily_income_id &&
           other.range == this.range);
 }
 
-class DailyIncomesCompanion extends UpdateCompanion<DailyIncome> {
+class DailyIncomesCompanion extends UpdateCompanion<DailyIncomeData> {
   final Value<int> daily_income_id;
   final Value<String> range;
   const DailyIncomesCompanion({
@@ -3053,7 +3069,7 @@ class DailyIncomesCompanion extends UpdateCompanion<DailyIncome> {
     this.daily_income_id = const Value.absent(),
     required String range,
   }) : range = Value(range);
-  static Insertable<DailyIncome> custom({
+  static Insertable<DailyIncomeData> custom({
     Expression<int>? daily_income_id,
     Expression<String>? range,
   }) {
@@ -5321,7 +5337,7 @@ typedef $$ReligionsTableUpdateCompanionBuilder =
     ReligionsCompanion Function({Value<int> religion_id, Value<String> name});
 
 final class $$ReligionsTableReferences
-    extends BaseReferences<_$AppDatabase, $ReligionsTable, Religion> {
+    extends BaseReferences<_$AppDatabase, $ReligionsTable, ReligionData> {
   $$ReligionsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static MultiTypedResultKey<$PersonsTable, List<PersonData>> _personsRefsTable(
@@ -5461,14 +5477,14 @@ class $$ReligionsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $ReligionsTable,
-          Religion,
+          ReligionData,
           $$ReligionsTableFilterComposer,
           $$ReligionsTableOrderingComposer,
           $$ReligionsTableAnnotationComposer,
           $$ReligionsTableCreateCompanionBuilder,
           $$ReligionsTableUpdateCompanionBuilder,
-          (Religion, $$ReligionsTableReferences),
-          Religion,
+          (ReligionData, $$ReligionsTableReferences),
+          ReligionData,
           PrefetchHooks Function({bool personsRefs})
         > {
   $$ReligionsTableTableManager(_$AppDatabase db, $ReligionsTable table)
@@ -5514,7 +5530,7 @@ class $$ReligionsTableTableManager
                 return [
                   if (personsRefs)
                     await $_getPrefetchedData<
-                      Religion,
+                      ReligionData,
                       $ReligionsTable,
                       PersonData
                     >(
@@ -5546,14 +5562,14 @@ typedef $$ReligionsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $ReligionsTable,
-      Religion,
+      ReligionData,
       $$ReligionsTableFilterComposer,
       $$ReligionsTableOrderingComposer,
       $$ReligionsTableAnnotationComposer,
       $$ReligionsTableCreateCompanionBuilder,
       $$ReligionsTableUpdateCompanionBuilder,
-      (Religion, $$ReligionsTableReferences),
-      Religion,
+      (ReligionData, $$ReligionsTableReferences),
+      ReligionData,
       PrefetchHooks Function({bool personsRefs})
     >;
 typedef $$NationalitiesTableCreateCompanionBuilder =
@@ -5568,7 +5584,8 @@ typedef $$NationalitiesTableUpdateCompanionBuilder =
     });
 
 final class $$NationalitiesTableReferences
-    extends BaseReferences<_$AppDatabase, $NationalitiesTable, Nationality> {
+    extends
+        BaseReferences<_$AppDatabase, $NationalitiesTable, NationalityData> {
   $$NationalitiesTableReferences(
     super.$_db,
     super.$_table,
@@ -5712,14 +5729,14 @@ class $$NationalitiesTableTableManager
         RootTableManager<
           _$AppDatabase,
           $NationalitiesTable,
-          Nationality,
+          NationalityData,
           $$NationalitiesTableFilterComposer,
           $$NationalitiesTableOrderingComposer,
           $$NationalitiesTableAnnotationComposer,
           $$NationalitiesTableCreateCompanionBuilder,
           $$NationalitiesTableUpdateCompanionBuilder,
-          (Nationality, $$NationalitiesTableReferences),
-          Nationality,
+          (NationalityData, $$NationalitiesTableReferences),
+          NationalityData,
           PrefetchHooks Function({bool personsRefs})
         > {
   $$NationalitiesTableTableManager(_$AppDatabase db, $NationalitiesTable table)
@@ -5772,7 +5789,7 @@ class $$NationalitiesTableTableManager
                 return [
                   if (personsRefs)
                     await $_getPrefetchedData<
-                      Nationality,
+                      NationalityData,
                       $NationalitiesTable,
                       PersonData
                     >(
@@ -5804,14 +5821,14 @@ typedef $$NationalitiesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $NationalitiesTable,
-      Nationality,
+      NationalityData,
       $$NationalitiesTableFilterComposer,
       $$NationalitiesTableOrderingComposer,
       $$NationalitiesTableAnnotationComposer,
       $$NationalitiesTableCreateCompanionBuilder,
       $$NationalitiesTableUpdateCompanionBuilder,
-      (Nationality, $$NationalitiesTableReferences),
-      Nationality,
+      (NationalityData, $$NationalitiesTableReferences),
+      NationalityData,
       PrefetchHooks Function({bool personsRefs})
     >;
 typedef $$EthnicitiesTableCreateCompanionBuilder =
@@ -5826,7 +5843,7 @@ typedef $$EthnicitiesTableUpdateCompanionBuilder =
     });
 
 final class $$EthnicitiesTableReferences
-    extends BaseReferences<_$AppDatabase, $EthnicitiesTable, Ethnicity> {
+    extends BaseReferences<_$AppDatabase, $EthnicitiesTable, EthnicityData> {
   $$EthnicitiesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static MultiTypedResultKey<$PersonsTable, List<PersonData>> _personsRefsTable(
@@ -5966,14 +5983,14 @@ class $$EthnicitiesTableTableManager
         RootTableManager<
           _$AppDatabase,
           $EthnicitiesTable,
-          Ethnicity,
+          EthnicityData,
           $$EthnicitiesTableFilterComposer,
           $$EthnicitiesTableOrderingComposer,
           $$EthnicitiesTableAnnotationComposer,
           $$EthnicitiesTableCreateCompanionBuilder,
           $$EthnicitiesTableUpdateCompanionBuilder,
-          (Ethnicity, $$EthnicitiesTableReferences),
-          Ethnicity,
+          (EthnicityData, $$EthnicitiesTableReferences),
+          EthnicityData,
           PrefetchHooks Function({bool personsRefs})
         > {
   $$EthnicitiesTableTableManager(_$AppDatabase db, $EthnicitiesTable table)
@@ -6021,7 +6038,7 @@ class $$EthnicitiesTableTableManager
                 return [
                   if (personsRefs)
                     await $_getPrefetchedData<
-                      Ethnicity,
+                      EthnicityData,
                       $EthnicitiesTable,
                       PersonData
                     >(
@@ -6053,14 +6070,14 @@ typedef $$EthnicitiesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $EthnicitiesTable,
-      Ethnicity,
+      EthnicityData,
       $$EthnicitiesTableFilterComposer,
       $$EthnicitiesTableOrderingComposer,
       $$EthnicitiesTableAnnotationComposer,
       $$EthnicitiesTableCreateCompanionBuilder,
       $$EthnicitiesTableUpdateCompanionBuilder,
-      (Ethnicity, $$EthnicitiesTableReferences),
-      Ethnicity,
+      (EthnicityData, $$EthnicitiesTableReferences),
+      EthnicityData,
       PrefetchHooks Function({bool personsRefs})
     >;
 typedef $$BloodTypesTableCreateCompanionBuilder =
@@ -6075,7 +6092,7 @@ typedef $$BloodTypesTableUpdateCompanionBuilder =
     });
 
 final class $$BloodTypesTableReferences
-    extends BaseReferences<_$AppDatabase, $BloodTypesTable, BloodType> {
+    extends BaseReferences<_$AppDatabase, $BloodTypesTable, BloodTypeData> {
   $$BloodTypesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static MultiTypedResultKey<$PersonsTable, List<PersonData>> _personsRefsTable(
@@ -6215,14 +6232,14 @@ class $$BloodTypesTableTableManager
         RootTableManager<
           _$AppDatabase,
           $BloodTypesTable,
-          BloodType,
+          BloodTypeData,
           $$BloodTypesTableFilterComposer,
           $$BloodTypesTableOrderingComposer,
           $$BloodTypesTableAnnotationComposer,
           $$BloodTypesTableCreateCompanionBuilder,
           $$BloodTypesTableUpdateCompanionBuilder,
-          (BloodType, $$BloodTypesTableReferences),
-          BloodType,
+          (BloodTypeData, $$BloodTypesTableReferences),
+          BloodTypeData,
           PrefetchHooks Function({bool personsRefs})
         > {
   $$BloodTypesTableTableManager(_$AppDatabase db, $BloodTypesTable table)
@@ -6269,7 +6286,7 @@ class $$BloodTypesTableTableManager
                 return [
                   if (personsRefs)
                     await $_getPrefetchedData<
-                      BloodType,
+                      BloodTypeData,
                       $BloodTypesTable,
                       PersonData
                     >(
@@ -6301,14 +6318,14 @@ typedef $$BloodTypesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $BloodTypesTable,
-      BloodType,
+      BloodTypeData,
       $$BloodTypesTableFilterComposer,
       $$BloodTypesTableOrderingComposer,
       $$BloodTypesTableAnnotationComposer,
       $$BloodTypesTableCreateCompanionBuilder,
       $$BloodTypesTableUpdateCompanionBuilder,
-      (BloodType, $$BloodTypesTableReferences),
-      BloodType,
+      (BloodTypeData, $$BloodTypesTableReferences),
+      BloodTypeData,
       PrefetchHooks Function({bool personsRefs})
     >;
 typedef $$AddressesTableCreateCompanionBuilder =
@@ -6331,10 +6348,10 @@ typedef $$AddressesTableUpdateCompanionBuilder =
     });
 
 final class $$AddressesTableReferences
-    extends BaseReferences<_$AppDatabase, $AddressesTable, AddressesData> {
+    extends BaseReferences<_$AppDatabase, $AddressesTable, AddressData> {
   $$AddressesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$HouseholdsTable, List<Household>>
+  static MultiTypedResultKey<$HouseholdsTable, List<HouseholdData>>
   _householdsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.households,
     aliasName: $_aliasNameGenerator(
@@ -6593,14 +6610,14 @@ class $$AddressesTableTableManager
         RootTableManager<
           _$AppDatabase,
           $AddressesTable,
-          AddressesData,
+          AddressData,
           $$AddressesTableFilterComposer,
           $$AddressesTableOrderingComposer,
           $$AddressesTableAnnotationComposer,
           $$AddressesTableCreateCompanionBuilder,
           $$AddressesTableUpdateCompanionBuilder,
-          (AddressesData, $$AddressesTableReferences),
-          AddressesData,
+          (AddressData, $$AddressesTableReferences),
+          AddressData,
           PrefetchHooks Function({bool householdsRefs, bool personsRefs})
         > {
   $$AddressesTableTableManager(_$AppDatabase db, $AddressesTable table)
@@ -6671,9 +6688,9 @@ class $$AddressesTableTableManager
                 return [
                   if (householdsRefs)
                     await $_getPrefetchedData<
-                      AddressesData,
+                      AddressData,
                       $AddressesTable,
-                      Household
+                      HouseholdData
                     >(
                       currentTable: table,
                       referencedTable: $$AddressesTableReferences
@@ -6693,7 +6710,7 @@ class $$AddressesTableTableManager
                     ),
                   if (personsRefs)
                     await $_getPrefetchedData<
-                      AddressesData,
+                      AddressData,
                       $AddressesTable,
                       PersonData
                     >(
@@ -6725,14 +6742,14 @@ typedef $$AddressesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $AddressesTable,
-      AddressesData,
+      AddressData,
       $$AddressesTableFilterComposer,
       $$AddressesTableOrderingComposer,
       $$AddressesTableAnnotationComposer,
       $$AddressesTableCreateCompanionBuilder,
       $$AddressesTableUpdateCompanionBuilder,
-      (AddressesData, $$AddressesTableReferences),
-      AddressesData,
+      (AddressData, $$AddressesTableReferences),
+      AddressData,
       PrefetchHooks Function({bool householdsRefs, bool personsRefs})
     >;
 typedef $$HouseholdTypesTableCreateCompanionBuilder =
@@ -6747,14 +6764,15 @@ typedef $$HouseholdTypesTableUpdateCompanionBuilder =
     });
 
 final class $$HouseholdTypesTableReferences
-    extends BaseReferences<_$AppDatabase, $HouseholdTypesTable, HouseholdType> {
+    extends
+        BaseReferences<_$AppDatabase, $HouseholdTypesTable, HouseholdTypeData> {
   $$HouseholdTypesTableReferences(
     super.$_db,
     super.$_table,
     super.$_typedResult,
   );
 
-  static MultiTypedResultKey<$HouseholdsTable, List<Household>>
+  static MultiTypedResultKey<$HouseholdsTable, List<HouseholdData>>
   _householdsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.households,
     aliasName: $_aliasNameGenerator(
@@ -6890,14 +6908,14 @@ class $$HouseholdTypesTableTableManager
         RootTableManager<
           _$AppDatabase,
           $HouseholdTypesTable,
-          HouseholdType,
+          HouseholdTypeData,
           $$HouseholdTypesTableFilterComposer,
           $$HouseholdTypesTableOrderingComposer,
           $$HouseholdTypesTableAnnotationComposer,
           $$HouseholdTypesTableCreateCompanionBuilder,
           $$HouseholdTypesTableUpdateCompanionBuilder,
-          (HouseholdType, $$HouseholdTypesTableReferences),
-          HouseholdType,
+          (HouseholdTypeData, $$HouseholdTypesTableReferences),
+          HouseholdTypeData,
           PrefetchHooks Function({bool householdsRefs})
         > {
   $$HouseholdTypesTableTableManager(
@@ -6952,9 +6970,9 @@ class $$HouseholdTypesTableTableManager
                 return [
                   if (householdsRefs)
                     await $_getPrefetchedData<
-                      HouseholdType,
+                      HouseholdTypeData,
                       $HouseholdTypesTable,
-                      Household
+                      HouseholdData
                     >(
                       currentTable: table,
                       referencedTable: $$HouseholdTypesTableReferences
@@ -6985,14 +7003,14 @@ typedef $$HouseholdTypesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $HouseholdTypesTable,
-      HouseholdType,
+      HouseholdTypeData,
       $$HouseholdTypesTableFilterComposer,
       $$HouseholdTypesTableOrderingComposer,
       $$HouseholdTypesTableAnnotationComposer,
       $$HouseholdTypesTableCreateCompanionBuilder,
       $$HouseholdTypesTableUpdateCompanionBuilder,
-      (HouseholdType, $$HouseholdTypesTableReferences),
-      HouseholdType,
+      (HouseholdTypeData, $$HouseholdTypesTableReferences),
+      HouseholdTypeData,
       PrefetchHooks Function({bool householdsRefs})
     >;
 typedef $$BuildingTypesTableCreateCompanionBuilder =
@@ -7007,14 +7025,15 @@ typedef $$BuildingTypesTableUpdateCompanionBuilder =
     });
 
 final class $$BuildingTypesTableReferences
-    extends BaseReferences<_$AppDatabase, $BuildingTypesTable, BuildingType> {
+    extends
+        BaseReferences<_$AppDatabase, $BuildingTypesTable, BuildingTypeData> {
   $$BuildingTypesTableReferences(
     super.$_db,
     super.$_table,
     super.$_typedResult,
   );
 
-  static MultiTypedResultKey<$HouseholdsTable, List<Household>>
+  static MultiTypedResultKey<$HouseholdsTable, List<HouseholdData>>
   _householdsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.households,
     aliasName: $_aliasNameGenerator(
@@ -7150,14 +7169,14 @@ class $$BuildingTypesTableTableManager
         RootTableManager<
           _$AppDatabase,
           $BuildingTypesTable,
-          BuildingType,
+          BuildingTypeData,
           $$BuildingTypesTableFilterComposer,
           $$BuildingTypesTableOrderingComposer,
           $$BuildingTypesTableAnnotationComposer,
           $$BuildingTypesTableCreateCompanionBuilder,
           $$BuildingTypesTableUpdateCompanionBuilder,
-          (BuildingType, $$BuildingTypesTableReferences),
-          BuildingType,
+          (BuildingTypeData, $$BuildingTypesTableReferences),
+          BuildingTypeData,
           PrefetchHooks Function({bool householdsRefs})
         > {
   $$BuildingTypesTableTableManager(_$AppDatabase db, $BuildingTypesTable table)
@@ -7210,9 +7229,9 @@ class $$BuildingTypesTableTableManager
                 return [
                   if (householdsRefs)
                     await $_getPrefetchedData<
-                      BuildingType,
+                      BuildingTypeData,
                       $BuildingTypesTable,
-                      Household
+                      HouseholdData
                     >(
                       currentTable: table,
                       referencedTable: $$BuildingTypesTableReferences
@@ -7242,14 +7261,14 @@ typedef $$BuildingTypesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $BuildingTypesTable,
-      BuildingType,
+      BuildingTypeData,
       $$BuildingTypesTableFilterComposer,
       $$BuildingTypesTableOrderingComposer,
       $$BuildingTypesTableAnnotationComposer,
       $$BuildingTypesTableCreateCompanionBuilder,
       $$BuildingTypesTableUpdateCompanionBuilder,
-      (BuildingType, $$BuildingTypesTableReferences),
-      BuildingType,
+      (BuildingTypeData, $$BuildingTypesTableReferences),
+      BuildingTypeData,
       PrefetchHooks Function({bool householdsRefs})
     >;
 typedef $$OwnershipTypesTableCreateCompanionBuilder =
@@ -7264,14 +7283,15 @@ typedef $$OwnershipTypesTableUpdateCompanionBuilder =
     });
 
 final class $$OwnershipTypesTableReferences
-    extends BaseReferences<_$AppDatabase, $OwnershipTypesTable, OwnershipType> {
+    extends
+        BaseReferences<_$AppDatabase, $OwnershipTypesTable, OwnershipTypeData> {
   $$OwnershipTypesTableReferences(
     super.$_db,
     super.$_table,
     super.$_typedResult,
   );
 
-  static MultiTypedResultKey<$HouseholdsTable, List<Household>>
+  static MultiTypedResultKey<$HouseholdsTable, List<HouseholdData>>
   _householdsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.households,
     aliasName: $_aliasNameGenerator(
@@ -7407,14 +7427,14 @@ class $$OwnershipTypesTableTableManager
         RootTableManager<
           _$AppDatabase,
           $OwnershipTypesTable,
-          OwnershipType,
+          OwnershipTypeData,
           $$OwnershipTypesTableFilterComposer,
           $$OwnershipTypesTableOrderingComposer,
           $$OwnershipTypesTableAnnotationComposer,
           $$OwnershipTypesTableCreateCompanionBuilder,
           $$OwnershipTypesTableUpdateCompanionBuilder,
-          (OwnershipType, $$OwnershipTypesTableReferences),
-          OwnershipType,
+          (OwnershipTypeData, $$OwnershipTypesTableReferences),
+          OwnershipTypeData,
           PrefetchHooks Function({bool householdsRefs})
         > {
   $$OwnershipTypesTableTableManager(
@@ -7469,9 +7489,9 @@ class $$OwnershipTypesTableTableManager
                 return [
                   if (householdsRefs)
                     await $_getPrefetchedData<
-                      OwnershipType,
+                      OwnershipTypeData,
                       $OwnershipTypesTable,
-                      Household
+                      HouseholdData
                     >(
                       currentTable: table,
                       referencedTable: $$OwnershipTypesTableReferences
@@ -7502,14 +7522,14 @@ typedef $$OwnershipTypesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $OwnershipTypesTable,
-      OwnershipType,
+      OwnershipTypeData,
       $$OwnershipTypesTableFilterComposer,
       $$OwnershipTypesTableOrderingComposer,
       $$OwnershipTypesTableAnnotationComposer,
       $$OwnershipTypesTableCreateCompanionBuilder,
       $$OwnershipTypesTableUpdateCompanionBuilder,
-      (OwnershipType, $$OwnershipTypesTableReferences),
-      OwnershipType,
+      (OwnershipTypeData, $$OwnershipTypesTableReferences),
+      OwnershipTypeData,
       PrefetchHooks Function({bool householdsRefs})
     >;
 typedef $$HouseholdsTableCreateCompanionBuilder =
@@ -7542,7 +7562,7 @@ typedef $$HouseholdsTableUpdateCompanionBuilder =
     });
 
 final class $$HouseholdsTableReferences
-    extends BaseReferences<_$AppDatabase, $HouseholdsTable, Household> {
+    extends BaseReferences<_$AppDatabase, $HouseholdsTable, HouseholdData> {
   $$HouseholdsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $AddressesTable _address_idTable(_$AppDatabase db) =>
@@ -8120,14 +8140,14 @@ class $$HouseholdsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $HouseholdsTable,
-          Household,
+          HouseholdData,
           $$HouseholdsTableFilterComposer,
           $$HouseholdsTableOrderingComposer,
           $$HouseholdsTableAnnotationComposer,
           $$HouseholdsTableCreateCompanionBuilder,
           $$HouseholdsTableUpdateCompanionBuilder,
-          (Household, $$HouseholdsTableReferences),
-          Household,
+          (HouseholdData, $$HouseholdsTableReferences),
+          HouseholdData,
           PrefetchHooks Function({
             bool address_id,
             bool household_type_id,
@@ -8298,7 +8318,7 @@ class $$HouseholdsTableTableManager
                 return [
                   if (personsRefs)
                     await $_getPrefetchedData<
-                      Household,
+                      HouseholdData,
                       $HouseholdsTable,
                       PersonData
                     >(
@@ -8330,14 +8350,14 @@ typedef $$HouseholdsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $HouseholdsTable,
-      Household,
+      HouseholdData,
       $$HouseholdsTableFilterComposer,
       $$HouseholdsTableOrderingComposer,
       $$HouseholdsTableAnnotationComposer,
       $$HouseholdsTableCreateCompanionBuilder,
       $$HouseholdsTableUpdateCompanionBuilder,
-      (Household, $$HouseholdsTableReferences),
-      Household,
+      (HouseholdData, $$HouseholdsTableReferences),
+      HouseholdData,
       PrefetchHooks Function({
         bool address_id,
         bool household_type_id,
@@ -8358,7 +8378,8 @@ typedef $$MonthlyIncomesTableUpdateCompanionBuilder =
     });
 
 final class $$MonthlyIncomesTableReferences
-    extends BaseReferences<_$AppDatabase, $MonthlyIncomesTable, MonthlyIncome> {
+    extends
+        BaseReferences<_$AppDatabase, $MonthlyIncomesTable, MonthlyIncomeData> {
   $$MonthlyIncomesTableReferences(
     super.$_db,
     super.$_table,
@@ -8502,14 +8523,14 @@ class $$MonthlyIncomesTableTableManager
         RootTableManager<
           _$AppDatabase,
           $MonthlyIncomesTable,
-          MonthlyIncome,
+          MonthlyIncomeData,
           $$MonthlyIncomesTableFilterComposer,
           $$MonthlyIncomesTableOrderingComposer,
           $$MonthlyIncomesTableAnnotationComposer,
           $$MonthlyIncomesTableCreateCompanionBuilder,
           $$MonthlyIncomesTableUpdateCompanionBuilder,
-          (MonthlyIncome, $$MonthlyIncomesTableReferences),
-          MonthlyIncome,
+          (MonthlyIncomeData, $$MonthlyIncomesTableReferences),
+          MonthlyIncomeData,
           PrefetchHooks Function({bool personsRefs})
         > {
   $$MonthlyIncomesTableTableManager(
@@ -8564,7 +8585,7 @@ class $$MonthlyIncomesTableTableManager
                 return [
                   if (personsRefs)
                     await $_getPrefetchedData<
-                      MonthlyIncome,
+                      MonthlyIncomeData,
                       $MonthlyIncomesTable,
                       PersonData
                     >(
@@ -8597,14 +8618,14 @@ typedef $$MonthlyIncomesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $MonthlyIncomesTable,
-      MonthlyIncome,
+      MonthlyIncomeData,
       $$MonthlyIncomesTableFilterComposer,
       $$MonthlyIncomesTableOrderingComposer,
       $$MonthlyIncomesTableAnnotationComposer,
       $$MonthlyIncomesTableCreateCompanionBuilder,
       $$MonthlyIncomesTableUpdateCompanionBuilder,
-      (MonthlyIncome, $$MonthlyIncomesTableReferences),
-      MonthlyIncome,
+      (MonthlyIncomeData, $$MonthlyIncomesTableReferences),
+      MonthlyIncomeData,
       PrefetchHooks Function({bool personsRefs})
     >;
 typedef $$DailyIncomesTableCreateCompanionBuilder =
@@ -8619,7 +8640,7 @@ typedef $$DailyIncomesTableUpdateCompanionBuilder =
     });
 
 final class $$DailyIncomesTableReferences
-    extends BaseReferences<_$AppDatabase, $DailyIncomesTable, DailyIncome> {
+    extends BaseReferences<_$AppDatabase, $DailyIncomesTable, DailyIncomeData> {
   $$DailyIncomesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static MultiTypedResultKey<$PersonsTable, List<PersonData>> _personsRefsTable(
@@ -8759,14 +8780,14 @@ class $$DailyIncomesTableTableManager
         RootTableManager<
           _$AppDatabase,
           $DailyIncomesTable,
-          DailyIncome,
+          DailyIncomeData,
           $$DailyIncomesTableFilterComposer,
           $$DailyIncomesTableOrderingComposer,
           $$DailyIncomesTableAnnotationComposer,
           $$DailyIncomesTableCreateCompanionBuilder,
           $$DailyIncomesTableUpdateCompanionBuilder,
-          (DailyIncome, $$DailyIncomesTableReferences),
-          DailyIncome,
+          (DailyIncomeData, $$DailyIncomesTableReferences),
+          DailyIncomeData,
           PrefetchHooks Function({bool personsRefs})
         > {
   $$DailyIncomesTableTableManager(_$AppDatabase db, $DailyIncomesTable table)
@@ -8816,7 +8837,7 @@ class $$DailyIncomesTableTableManager
                 return [
                   if (personsRefs)
                     await $_getPrefetchedData<
-                      DailyIncome,
+                      DailyIncomeData,
                       $DailyIncomesTable,
                       PersonData
                     >(
@@ -8848,14 +8869,14 @@ typedef $$DailyIncomesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $DailyIncomesTable,
-      DailyIncome,
+      DailyIncomeData,
       $$DailyIncomesTableFilterComposer,
       $$DailyIncomesTableOrderingComposer,
       $$DailyIncomesTableAnnotationComposer,
       $$DailyIncomesTableCreateCompanionBuilder,
       $$DailyIncomesTableUpdateCompanionBuilder,
-      (DailyIncome, $$DailyIncomesTableReferences),
-      DailyIncome,
+      (DailyIncomeData, $$DailyIncomesTableReferences),
+      DailyIncomeData,
       PrefetchHooks Function({bool personsRefs})
     >;
 typedef $$EducationTableCreateCompanionBuilder =
