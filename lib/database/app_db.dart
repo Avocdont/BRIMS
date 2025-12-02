@@ -32,7 +32,6 @@ part 'app_db.g.dart';
     Education,
     MonthlyIncomes,
     DailyIncomes,
-    Households,
     HouseholdTypes,
     BuildingTypes,
     OwnershipTypes,
@@ -47,9 +46,14 @@ class AppDatabase extends _$AppDatabase {
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
-    // Windows, Linux, macOS, Android, iOS — works everywhere
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File(path.join(dir.path, 'brims.db'));
+    final dbDir = Directory(r'C:\BarangaySystemData');
+
+    if (!await dbDir.exists()) {
+      await dbDir.create(recursive: true);
+    }
+
+    final file = File(path.join(dbDir.path, 'app.db'));
+
     return NativeDatabase.createInBackground(file);
   });
 }
