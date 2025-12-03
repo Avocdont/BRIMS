@@ -43,3 +43,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+# Excluded for git push
+lib/database/tables/profiling/occupation_lookup_table.dart
+lib/database/tables/profiling/occupation_table.dart
+lib/database/tables/livelihood/
+lib/database/tables/household/utility_lookup_table.dart
