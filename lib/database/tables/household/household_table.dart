@@ -1,7 +1,5 @@
 import 'package:brims/database/tables/enums.dart';
-import 'package:brims/database/tables/household/building_type_table.dart';
-import 'package:brims/database/tables/household/household_type_table.dart';
-import 'package:brims/database/tables/household/ownership_type_table.dart';
+import 'package:brims/database/tables/household/household_lookup_table.dart';
 import 'package:brims/database/tables/profiling/address_table.dart';
 import 'package:drift/drift.dart';
 

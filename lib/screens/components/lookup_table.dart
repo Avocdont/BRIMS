@@ -1,9 +1,11 @@
-import 'package:brims/screens/components/lookup_dialog.dart';
+import 'package:brims/screens/components/delete_lookup.dart';
+import 'package:brims/screens/components/edit_lookup.dart';
 import 'package:flutter/material.dart';
 
 class LookupTable<T> extends StatelessWidget {
   final List<String> columns;
-  final List<T> items;
+  final List<T> items; // Row data
+  // A callback function that returns a List<dynamic>
   final List<dynamic> Function(T item) buildRow;
   final void Function(T item, List<dynamic> newValues)? onEdit;
   final void Function(T item)? onDelete;
@@ -23,16 +25,15 @@ class LookupTable<T> extends StatelessWidget {
       children: [
         DataTable(
           columns: [
-            ...columns
-                .map(
-                  (c) => DataColumn(
-                    label: Text(
-                      c,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                )
-                .toList(),
+            ...columns.map(
+              // For every column, return DataColumn
+              (column) => DataColumn(
+                label: Text(
+                  column,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
             const DataColumn(
               label: Text(
                 "Actions",
@@ -70,7 +71,7 @@ class LookupTable<T> extends StatelessWidget {
                                     showDialog(
                                       context: context,
                                       builder:
-                                          (_) => LookupForm(
+                                          (_) => EditLookup(
                                             columns: columns,
                                             rowData: row,
                                             onSave:
@@ -81,10 +82,24 @@ class LookupTable<T> extends StatelessWidget {
                                   }
                                 },
                               ),
+
                               IconButton(
                                 icon: const Icon(Icons.delete),
                                 color: Colors.red.shade400,
-                                onPressed: () => onDelete?.call(item),
+                                onPressed:
+                                    () => {
+                                      if (onDelete != null)
+                                        {
+                                          showDialog(
+                                            context: context,
+                                            builder:
+                                                (_) => DeleteLookup<T>(
+                                                  item: item,
+                                                  onDelete: onDelete!,
+                                                ),
+                                          ),
+                                        },
+                                    },
                               ),
                             ],
                           ),

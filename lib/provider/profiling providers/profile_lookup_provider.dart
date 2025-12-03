@@ -1,12 +1,12 @@
 import 'package:brims/database/app_db.dart';
-import 'package:brims/repository/profiling%20repositories/lookup_repository.dart';
+import 'package:brims/repository/profiling%20repositories/profile_lookup_repository.dart';
 import 'package:flutter/material.dart';
 
-class LookupProvider extends ChangeNotifier {
-  LookupProvider() {
-    getAllNationalities();
+class ProfileLookupProvider extends ChangeNotifier {
+  ProfileLookupProvider() {
+    loadAllLookups();
   }
-  LookupRepository _lookupRepository = LookupRepository();
+  final ProfileLookupRepository _lookupRepository = ProfileLookupRepository();
 
   List<NationalityData> _allNationalities = [];
   List<NationalityData> get allNationalities => _allNationalities;
@@ -29,6 +29,16 @@ class LookupProvider extends ChangeNotifier {
   List<DailyIncomeData> _allDailyIncomes = [];
   List<DailyIncomeData> get allDailyIncomes => _allDailyIncomes;
 
+  Future<void> loadAllLookups() async {
+    await getAllNationalities();
+    await getAllEthnicities();
+    await getAllReligions();
+    await getAllEducation();
+    await getAllBloodTypes();
+    await getAllMonthlyIncomes();
+    await getAllDailyIncomes();
+  }
+
   // ------------ Nationalities ------------
   getAllNationalities() async {
     _allNationalities = await _lookupRepository.allNationalities();
@@ -37,17 +47,17 @@ class LookupProvider extends ChangeNotifier {
 
   addNationality(NationalitiesCompanion nc) async {
     await _lookupRepository.addNationality(nc);
-    getAllNationalities();
+    await getAllNationalities();
   }
 
   updateNationality(NationalitiesCompanion nc) async {
     await _lookupRepository.updateNationality(nc);
-    getAllNationalities();
+    await getAllNationalities();
   }
 
   deleteNationality(int id) async {
     await _lookupRepository.deleteNationality(id);
-    getAllNationalities();
+    await getAllNationalities();
   }
 
   // ------------ Ethnicities ------------
@@ -59,17 +69,17 @@ class LookupProvider extends ChangeNotifier {
 
   addEthnicity(EthnicitiesCompanion ec) async {
     await _lookupRepository.addEthnicity(ec);
-    getAllEthnicities();
+    await getAllEthnicities();
   }
 
   updateEthnicity(EthnicitiesCompanion ec) async {
     await _lookupRepository.updateEthnicity(ec);
-    getAllEthnicities();
+    await getAllEthnicities();
   }
 
   deleteEthnicity(int id) async {
     await _lookupRepository.deleteEthnicity(id);
-    getAllEthnicities();
+    await getAllEthnicities();
   }
 
   // ------------ Religions ------------
@@ -81,17 +91,17 @@ class LookupProvider extends ChangeNotifier {
 
   addReligion(ReligionsCompanion rc) async {
     await _lookupRepository.addReligion(rc);
-    getAllReligions();
+    await getAllReligions();
   }
 
   updateReligion(ReligionsCompanion rc) async {
     await _lookupRepository.updateReligion(rc);
-    getAllReligions();
+    await getAllReligions();
   }
 
   deleteReligion(int id) async {
     await _lookupRepository.deleteReligion(id);
-    getAllReligions();
+    await getAllReligions();
   }
 
   // ------------ Education ------------
@@ -103,17 +113,17 @@ class LookupProvider extends ChangeNotifier {
 
   addEducation(EducationCompanion ec) async {
     await _lookupRepository.addEducation(ec);
-    getAllEducation();
+    await getAllEducation();
   }
 
   updateEducation(EducationCompanion ec) async {
     await _lookupRepository.updateEducation(ec);
-    getAllEducation();
+    await getAllEducation();
   }
 
   deleteEducation(int id) async {
     await _lookupRepository.deleteEducation(id);
-    getAllEducation();
+    await getAllEducation();
   }
 
   // ------------ Blood Types ------------
@@ -125,17 +135,17 @@ class LookupProvider extends ChangeNotifier {
 
   addBloodType(BloodTypesCompanion bc) async {
     await _lookupRepository.addBloodType(bc);
-    getAllBloodTypes();
+    await getAllBloodTypes();
   }
 
   updateBloodType(BloodTypesCompanion bc) async {
     await _lookupRepository.updateBloodType(bc);
-    getAllBloodTypes();
+    await getAllBloodTypes();
   }
 
   deleteBloodType(int id) async {
     await _lookupRepository.deleteBloodType(id);
-    getAllBloodTypes();
+    await getAllBloodTypes();
   }
 
   // ------------ Monthly Incomes ------------
@@ -147,17 +157,17 @@ class LookupProvider extends ChangeNotifier {
 
   addMonthlyIncome(MonthlyIncomesCompanion mic) async {
     await _lookupRepository.addMonthlyIncome(mic);
-    getAllMonthlyIncomes();
+    await getAllMonthlyIncomes();
   }
 
   updateMonthlyIncome(MonthlyIncomesCompanion mic) async {
     await _lookupRepository.updateMonthlyIncome(mic);
-    getAllMonthlyIncomes();
+    await getAllMonthlyIncomes();
   }
 
   deleteMonthlyIncome(int id) async {
     await _lookupRepository.deleteMonthlyIncome(id);
-    getAllMonthlyIncomes();
+    await getAllMonthlyIncomes();
   }
 
   // ------------ Daily Incomes ------------
@@ -169,16 +179,16 @@ class LookupProvider extends ChangeNotifier {
 
   addDailyIncome(DailyIncomesCompanion dc) async {
     await _lookupRepository.addDailyIncome(dc);
-    getAllDailyIncomes();
+    await getAllDailyIncomes();
   }
 
   updateDailyIncome(DailyIncomesCompanion dc) async {
     await _lookupRepository.updateDailyIncome(dc);
-    getAllDailyIncomes();
+    await getAllDailyIncomes();
   }
 
   deleteDailyIncome(int id) async {
     await _lookupRepository.deleteDailyIncome(id);
-    getAllDailyIncomes();
+    await getAllDailyIncomes();
   }
 }

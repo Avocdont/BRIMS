@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 
-class AddRowDialog extends StatefulWidget {
+class AddLookup extends StatefulWidget {
   final List<String> columns; // Column names
   final Future<void> Function(List<String> values)
   onInsert; // Callback function
 
-  const AddRowDialog({
-    super.key,
-    required this.columns,
-    required this.onInsert,
-  });
+  const AddLookup({super.key, required this.columns, required this.onInsert});
 
   @override
-  State<AddRowDialog> createState() => _AddRowDialogState();
+  State<AddLookup> createState() => _AddLookupState();
 }
 
-class _AddRowDialogState extends State<AddRowDialog> {
+class _AddLookupState extends State<AddLookup> {
   final _formKey = GlobalKey<FormState>();
   late List<TextEditingController> _controllers;
 
@@ -68,6 +64,7 @@ class _AddRowDialogState extends State<AddRowDialog> {
                     ),
                     TextFormField(
                       controller: _controllers[index],
+                      style: TextStyle(color: Colors.black),
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.grey.shade100,
@@ -92,9 +89,9 @@ class _AddRowDialogState extends State<AddRowDialog> {
           child: const Text("Cancel"),
         ),
         ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
           onPressed: _insert,
-          child: const Text("Insert"),
+          child: const Text("Insert", style: TextStyle(color: Colors.black)),
         ),
       ],
     );

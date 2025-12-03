@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 
-/// ========================
-/// LookupForm (editable dialog)
-/// ========================
-class LookupForm extends StatefulWidget {
+class EditLookup extends StatefulWidget {
   final List<String> columns; // Column names
   final List<dynamic> rowData; // Current values
   final void Function(List<dynamic> newValues) onSave;
 
-  const LookupForm({
+  const EditLookup({
     super.key,
     required this.columns,
     required this.rowData,
@@ -16,19 +13,23 @@ class LookupForm extends StatefulWidget {
   });
 
   @override
-  State<LookupForm> createState() => _LookupFormState();
+  State<EditLookup> createState() => _EditLookupState();
 }
 
-class _LookupFormState extends State<LookupForm> {
+class _EditLookupState extends State<EditLookup> {
   final _formKey = GlobalKey<FormState>();
   late List<TextEditingController> _controllers;
+
+  // Header hit text field
+  // text field
+  // Save Cancel
 
   @override
   void initState() {
     super.initState();
     _controllers = List.generate(
       widget.columns.length,
-      (i) => TextEditingController(text: widget.rowData[i].toString()),
+      (index) => TextEditingController(text: widget.rowData[index].toString()),
     );
   }
 
@@ -68,6 +69,7 @@ class _LookupFormState extends State<LookupForm> {
                     ),
                     TextFormField(
                       controller: _controllers[i],
+                      style: TextStyle(color: Colors.black),
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.grey.shade100,

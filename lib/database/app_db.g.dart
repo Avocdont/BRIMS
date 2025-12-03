@@ -659,17 +659,17 @@ class $BloodTypesTable extends BloodTypes
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-    'name',
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
     aliasedName,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [blood_type_id, name];
+  List<GeneratedColumn> get $columns => [blood_type_id, type];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -691,13 +691,13 @@ class $BloodTypesTable extends BloodTypes
         ),
       );
     }
-    if (data.containsKey('name')) {
+    if (data.containsKey('type')) {
       context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
       );
     } else if (isInserting) {
-      context.missing(_nameMeta);
+      context.missing(_typeMeta);
     }
     return context;
   }
@@ -713,10 +713,10 @@ class $BloodTypesTable extends BloodTypes
             DriftSqlType.int,
             data['${effectivePrefix}blood_type_id'],
           )!,
-      name:
+      type:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
-            data['${effectivePrefix}name'],
+            data['${effectivePrefix}type'],
           )!,
     );
   }
@@ -729,20 +729,20 @@ class $BloodTypesTable extends BloodTypes
 
 class BloodTypeData extends DataClass implements Insertable<BloodTypeData> {
   final int blood_type_id;
-  final String name;
-  const BloodTypeData({required this.blood_type_id, required this.name});
+  final String type;
+  const BloodTypeData({required this.blood_type_id, required this.type});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['blood_type_id'] = Variable<int>(blood_type_id);
-    map['name'] = Variable<String>(name);
+    map['type'] = Variable<String>(type);
     return map;
   }
 
   BloodTypesCompanion toCompanion(bool nullToAbsent) {
     return BloodTypesCompanion(
       blood_type_id: Value(blood_type_id),
-      name: Value(name),
+      type: Value(type),
     );
   }
 
@@ -753,7 +753,7 @@ class BloodTypeData extends DataClass implements Insertable<BloodTypeData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return BloodTypeData(
       blood_type_id: serializer.fromJson<int>(json['blood_type_id']),
-      name: serializer.fromJson<String>(json['name']),
+      type: serializer.fromJson<String>(json['type']),
     );
   }
   @override
@@ -761,13 +761,13 @@ class BloodTypeData extends DataClass implements Insertable<BloodTypeData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'blood_type_id': serializer.toJson<int>(blood_type_id),
-      'name': serializer.toJson<String>(name),
+      'type': serializer.toJson<String>(type),
     };
   }
 
-  BloodTypeData copyWith({int? blood_type_id, String? name}) => BloodTypeData(
+  BloodTypeData copyWith({int? blood_type_id, String? type}) => BloodTypeData(
     blood_type_id: blood_type_id ?? this.blood_type_id,
-    name: name ?? this.name,
+    type: type ?? this.type,
   );
   BloodTypeData copyWithCompanion(BloodTypesCompanion data) {
     return BloodTypeData(
@@ -775,7 +775,7 @@ class BloodTypeData extends DataClass implements Insertable<BloodTypeData> {
           data.blood_type_id.present
               ? data.blood_type_id.value
               : this.blood_type_id,
-      name: data.name.present ? data.name.value : this.name,
+      type: data.type.present ? data.type.value : this.type,
     );
   }
 
@@ -783,49 +783,49 @@ class BloodTypeData extends DataClass implements Insertable<BloodTypeData> {
   String toString() {
     return (StringBuffer('BloodTypeData(')
           ..write('blood_type_id: $blood_type_id, ')
-          ..write('name: $name')
+          ..write('type: $type')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(blood_type_id, name);
+  int get hashCode => Object.hash(blood_type_id, type);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is BloodTypeData &&
           other.blood_type_id == this.blood_type_id &&
-          other.name == this.name);
+          other.type == this.type);
 }
 
 class BloodTypesCompanion extends UpdateCompanion<BloodTypeData> {
   final Value<int> blood_type_id;
-  final Value<String> name;
+  final Value<String> type;
   const BloodTypesCompanion({
     this.blood_type_id = const Value.absent(),
-    this.name = const Value.absent(),
+    this.type = const Value.absent(),
   });
   BloodTypesCompanion.insert({
     this.blood_type_id = const Value.absent(),
-    required String name,
-  }) : name = Value(name);
+    required String type,
+  }) : type = Value(type);
   static Insertable<BloodTypeData> custom({
     Expression<int>? blood_type_id,
-    Expression<String>? name,
+    Expression<String>? type,
   }) {
     return RawValuesInsertable({
       if (blood_type_id != null) 'blood_type_id': blood_type_id,
-      if (name != null) 'name': name,
+      if (type != null) 'type': type,
     });
   }
 
   BloodTypesCompanion copyWith({
     Value<int>? blood_type_id,
-    Value<String>? name,
+    Value<String>? type,
   }) {
     return BloodTypesCompanion(
       blood_type_id: blood_type_id ?? this.blood_type_id,
-      name: name ?? this.name,
+      type: type ?? this.type,
     );
   }
 
@@ -835,8 +835,8 @@ class BloodTypesCompanion extends UpdateCompanion<BloodTypeData> {
     if (blood_type_id.present) {
       map['blood_type_id'] = Variable<int>(blood_type_id.value);
     }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
     }
     return map;
   }
@@ -845,7 +845,7 @@ class BloodTypesCompanion extends UpdateCompanion<BloodTypeData> {
   String toString() {
     return (StringBuffer('BloodTypesCompanion(')
           ..write('blood_type_id: $blood_type_id, ')
-          ..write('name: $name')
+          ..write('type: $type')
           ..write(')'))
         .toString();
   }
@@ -1273,17 +1273,17 @@ class $HouseholdTypesTable extends HouseholdTypes
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-    'name',
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
     aliasedName,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [household_type_id, name];
+  List<GeneratedColumn> get $columns => [household_type_id, type];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1305,13 +1305,13 @@ class $HouseholdTypesTable extends HouseholdTypes
         ),
       );
     }
-    if (data.containsKey('name')) {
+    if (data.containsKey('type')) {
       context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
       );
     } else if (isInserting) {
-      context.missing(_nameMeta);
+      context.missing(_typeMeta);
     }
     return context;
   }
@@ -1327,10 +1327,10 @@ class $HouseholdTypesTable extends HouseholdTypes
             DriftSqlType.int,
             data['${effectivePrefix}household_type_id'],
           )!,
-      name:
+      type:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
-            data['${effectivePrefix}name'],
+            data['${effectivePrefix}type'],
           )!,
     );
   }
@@ -1344,23 +1344,23 @@ class $HouseholdTypesTable extends HouseholdTypes
 class HouseholdTypeData extends DataClass
     implements Insertable<HouseholdTypeData> {
   final int household_type_id;
-  final String name;
+  final String type;
   const HouseholdTypeData({
     required this.household_type_id,
-    required this.name,
+    required this.type,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['household_type_id'] = Variable<int>(household_type_id);
-    map['name'] = Variable<String>(name);
+    map['type'] = Variable<String>(type);
     return map;
   }
 
   HouseholdTypesCompanion toCompanion(bool nullToAbsent) {
     return HouseholdTypesCompanion(
       household_type_id: Value(household_type_id),
-      name: Value(name),
+      type: Value(type),
     );
   }
 
@@ -1371,7 +1371,7 @@ class HouseholdTypeData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return HouseholdTypeData(
       household_type_id: serializer.fromJson<int>(json['household_type_id']),
-      name: serializer.fromJson<String>(json['name']),
+      type: serializer.fromJson<String>(json['type']),
     );
   }
   @override
@@ -1379,14 +1379,14 @@ class HouseholdTypeData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'household_type_id': serializer.toJson<int>(household_type_id),
-      'name': serializer.toJson<String>(name),
+      'type': serializer.toJson<String>(type),
     };
   }
 
-  HouseholdTypeData copyWith({int? household_type_id, String? name}) =>
+  HouseholdTypeData copyWith({int? household_type_id, String? type}) =>
       HouseholdTypeData(
         household_type_id: household_type_id ?? this.household_type_id,
-        name: name ?? this.name,
+        type: type ?? this.type,
       );
   HouseholdTypeData copyWithCompanion(HouseholdTypesCompanion data) {
     return HouseholdTypeData(
@@ -1394,7 +1394,7 @@ class HouseholdTypeData extends DataClass
           data.household_type_id.present
               ? data.household_type_id.value
               : this.household_type_id,
-      name: data.name.present ? data.name.value : this.name,
+      type: data.type.present ? data.type.value : this.type,
     );
   }
 
@@ -1402,49 +1402,49 @@ class HouseholdTypeData extends DataClass
   String toString() {
     return (StringBuffer('HouseholdTypeData(')
           ..write('household_type_id: $household_type_id, ')
-          ..write('name: $name')
+          ..write('type: $type')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(household_type_id, name);
+  int get hashCode => Object.hash(household_type_id, type);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is HouseholdTypeData &&
           other.household_type_id == this.household_type_id &&
-          other.name == this.name);
+          other.type == this.type);
 }
 
 class HouseholdTypesCompanion extends UpdateCompanion<HouseholdTypeData> {
   final Value<int> household_type_id;
-  final Value<String> name;
+  final Value<String> type;
   const HouseholdTypesCompanion({
     this.household_type_id = const Value.absent(),
-    this.name = const Value.absent(),
+    this.type = const Value.absent(),
   });
   HouseholdTypesCompanion.insert({
     this.household_type_id = const Value.absent(),
-    required String name,
-  }) : name = Value(name);
+    required String type,
+  }) : type = Value(type);
   static Insertable<HouseholdTypeData> custom({
     Expression<int>? household_type_id,
-    Expression<String>? name,
+    Expression<String>? type,
   }) {
     return RawValuesInsertable({
       if (household_type_id != null) 'household_type_id': household_type_id,
-      if (name != null) 'name': name,
+      if (type != null) 'type': type,
     });
   }
 
   HouseholdTypesCompanion copyWith({
     Value<int>? household_type_id,
-    Value<String>? name,
+    Value<String>? type,
   }) {
     return HouseholdTypesCompanion(
       household_type_id: household_type_id ?? this.household_type_id,
-      name: name ?? this.name,
+      type: type ?? this.type,
     );
   }
 
@@ -1454,8 +1454,8 @@ class HouseholdTypesCompanion extends UpdateCompanion<HouseholdTypeData> {
     if (household_type_id.present) {
       map['household_type_id'] = Variable<int>(household_type_id.value);
     }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
     }
     return map;
   }
@@ -1464,7 +1464,7 @@ class HouseholdTypesCompanion extends UpdateCompanion<HouseholdTypeData> {
   String toString() {
     return (StringBuffer('HouseholdTypesCompanion(')
           ..write('household_type_id: $household_type_id, ')
-          ..write('name: $name')
+          ..write('type: $type')
           ..write(')'))
         .toString();
   }
@@ -1491,17 +1491,17 @@ class $BuildingTypesTable extends BuildingTypes
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-    'name',
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
     aliasedName,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [building_type_id, name];
+  List<GeneratedColumn> get $columns => [building_type_id, type];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1523,13 +1523,13 @@ class $BuildingTypesTable extends BuildingTypes
         ),
       );
     }
-    if (data.containsKey('name')) {
+    if (data.containsKey('type')) {
       context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
       );
     } else if (isInserting) {
-      context.missing(_nameMeta);
+      context.missing(_typeMeta);
     }
     return context;
   }
@@ -1545,10 +1545,10 @@ class $BuildingTypesTable extends BuildingTypes
             DriftSqlType.int,
             data['${effectivePrefix}building_type_id'],
           )!,
-      name:
+      type:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
-            data['${effectivePrefix}name'],
+            data['${effectivePrefix}type'],
           )!,
     );
   }
@@ -1562,20 +1562,20 @@ class $BuildingTypesTable extends BuildingTypes
 class BuildingTypeData extends DataClass
     implements Insertable<BuildingTypeData> {
   final int building_type_id;
-  final String name;
-  const BuildingTypeData({required this.building_type_id, required this.name});
+  final String type;
+  const BuildingTypeData({required this.building_type_id, required this.type});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['building_type_id'] = Variable<int>(building_type_id);
-    map['name'] = Variable<String>(name);
+    map['type'] = Variable<String>(type);
     return map;
   }
 
   BuildingTypesCompanion toCompanion(bool nullToAbsent) {
     return BuildingTypesCompanion(
       building_type_id: Value(building_type_id),
-      name: Value(name),
+      type: Value(type),
     );
   }
 
@@ -1586,7 +1586,7 @@ class BuildingTypeData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return BuildingTypeData(
       building_type_id: serializer.fromJson<int>(json['building_type_id']),
-      name: serializer.fromJson<String>(json['name']),
+      type: serializer.fromJson<String>(json['type']),
     );
   }
   @override
@@ -1594,14 +1594,14 @@ class BuildingTypeData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'building_type_id': serializer.toJson<int>(building_type_id),
-      'name': serializer.toJson<String>(name),
+      'type': serializer.toJson<String>(type),
     };
   }
 
-  BuildingTypeData copyWith({int? building_type_id, String? name}) =>
+  BuildingTypeData copyWith({int? building_type_id, String? type}) =>
       BuildingTypeData(
         building_type_id: building_type_id ?? this.building_type_id,
-        name: name ?? this.name,
+        type: type ?? this.type,
       );
   BuildingTypeData copyWithCompanion(BuildingTypesCompanion data) {
     return BuildingTypeData(
@@ -1609,7 +1609,7 @@ class BuildingTypeData extends DataClass
           data.building_type_id.present
               ? data.building_type_id.value
               : this.building_type_id,
-      name: data.name.present ? data.name.value : this.name,
+      type: data.type.present ? data.type.value : this.type,
     );
   }
 
@@ -1617,49 +1617,49 @@ class BuildingTypeData extends DataClass
   String toString() {
     return (StringBuffer('BuildingTypeData(')
           ..write('building_type_id: $building_type_id, ')
-          ..write('name: $name')
+          ..write('type: $type')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(building_type_id, name);
+  int get hashCode => Object.hash(building_type_id, type);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is BuildingTypeData &&
           other.building_type_id == this.building_type_id &&
-          other.name == this.name);
+          other.type == this.type);
 }
 
 class BuildingTypesCompanion extends UpdateCompanion<BuildingTypeData> {
   final Value<int> building_type_id;
-  final Value<String> name;
+  final Value<String> type;
   const BuildingTypesCompanion({
     this.building_type_id = const Value.absent(),
-    this.name = const Value.absent(),
+    this.type = const Value.absent(),
   });
   BuildingTypesCompanion.insert({
     this.building_type_id = const Value.absent(),
-    required String name,
-  }) : name = Value(name);
+    required String type,
+  }) : type = Value(type);
   static Insertable<BuildingTypeData> custom({
     Expression<int>? building_type_id,
-    Expression<String>? name,
+    Expression<String>? type,
   }) {
     return RawValuesInsertable({
       if (building_type_id != null) 'building_type_id': building_type_id,
-      if (name != null) 'name': name,
+      if (type != null) 'type': type,
     });
   }
 
   BuildingTypesCompanion copyWith({
     Value<int>? building_type_id,
-    Value<String>? name,
+    Value<String>? type,
   }) {
     return BuildingTypesCompanion(
       building_type_id: building_type_id ?? this.building_type_id,
-      name: name ?? this.name,
+      type: type ?? this.type,
     );
   }
 
@@ -1669,8 +1669,8 @@ class BuildingTypesCompanion extends UpdateCompanion<BuildingTypeData> {
     if (building_type_id.present) {
       map['building_type_id'] = Variable<int>(building_type_id.value);
     }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
     }
     return map;
   }
@@ -1679,7 +1679,7 @@ class BuildingTypesCompanion extends UpdateCompanion<BuildingTypeData> {
   String toString() {
     return (StringBuffer('BuildingTypesCompanion(')
           ..write('building_type_id: $building_type_id, ')
-          ..write('name: $name')
+          ..write('type: $type')
           ..write(')'))
         .toString();
   }
@@ -1706,17 +1706,17 @@ class $OwnershipTypesTable extends OwnershipTypes
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-    'name',
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
     aliasedName,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [ownership_type_id, name];
+  List<GeneratedColumn> get $columns => [ownership_type_id, type];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1738,13 +1738,13 @@ class $OwnershipTypesTable extends OwnershipTypes
         ),
       );
     }
-    if (data.containsKey('name')) {
+    if (data.containsKey('type')) {
       context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
       );
     } else if (isInserting) {
-      context.missing(_nameMeta);
+      context.missing(_typeMeta);
     }
     return context;
   }
@@ -1760,10 +1760,10 @@ class $OwnershipTypesTable extends OwnershipTypes
             DriftSqlType.int,
             data['${effectivePrefix}ownership_type_id'],
           )!,
-      name:
+      type:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
-            data['${effectivePrefix}name'],
+            data['${effectivePrefix}type'],
           )!,
     );
   }
@@ -1777,23 +1777,23 @@ class $OwnershipTypesTable extends OwnershipTypes
 class OwnershipTypeData extends DataClass
     implements Insertable<OwnershipTypeData> {
   final int ownership_type_id;
-  final String name;
+  final String type;
   const OwnershipTypeData({
     required this.ownership_type_id,
-    required this.name,
+    required this.type,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['ownership_type_id'] = Variable<int>(ownership_type_id);
-    map['name'] = Variable<String>(name);
+    map['type'] = Variable<String>(type);
     return map;
   }
 
   OwnershipTypesCompanion toCompanion(bool nullToAbsent) {
     return OwnershipTypesCompanion(
       ownership_type_id: Value(ownership_type_id),
-      name: Value(name),
+      type: Value(type),
     );
   }
 
@@ -1804,7 +1804,7 @@ class OwnershipTypeData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return OwnershipTypeData(
       ownership_type_id: serializer.fromJson<int>(json['ownership_type_id']),
-      name: serializer.fromJson<String>(json['name']),
+      type: serializer.fromJson<String>(json['type']),
     );
   }
   @override
@@ -1812,14 +1812,14 @@ class OwnershipTypeData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'ownership_type_id': serializer.toJson<int>(ownership_type_id),
-      'name': serializer.toJson<String>(name),
+      'type': serializer.toJson<String>(type),
     };
   }
 
-  OwnershipTypeData copyWith({int? ownership_type_id, String? name}) =>
+  OwnershipTypeData copyWith({int? ownership_type_id, String? type}) =>
       OwnershipTypeData(
         ownership_type_id: ownership_type_id ?? this.ownership_type_id,
-        name: name ?? this.name,
+        type: type ?? this.type,
       );
   OwnershipTypeData copyWithCompanion(OwnershipTypesCompanion data) {
     return OwnershipTypeData(
@@ -1827,7 +1827,7 @@ class OwnershipTypeData extends DataClass
           data.ownership_type_id.present
               ? data.ownership_type_id.value
               : this.ownership_type_id,
-      name: data.name.present ? data.name.value : this.name,
+      type: data.type.present ? data.type.value : this.type,
     );
   }
 
@@ -1835,49 +1835,49 @@ class OwnershipTypeData extends DataClass
   String toString() {
     return (StringBuffer('OwnershipTypeData(')
           ..write('ownership_type_id: $ownership_type_id, ')
-          ..write('name: $name')
+          ..write('type: $type')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(ownership_type_id, name);
+  int get hashCode => Object.hash(ownership_type_id, type);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is OwnershipTypeData &&
           other.ownership_type_id == this.ownership_type_id &&
-          other.name == this.name);
+          other.type == this.type);
 }
 
 class OwnershipTypesCompanion extends UpdateCompanion<OwnershipTypeData> {
   final Value<int> ownership_type_id;
-  final Value<String> name;
+  final Value<String> type;
   const OwnershipTypesCompanion({
     this.ownership_type_id = const Value.absent(),
-    this.name = const Value.absent(),
+    this.type = const Value.absent(),
   });
   OwnershipTypesCompanion.insert({
     this.ownership_type_id = const Value.absent(),
-    required String name,
-  }) : name = Value(name);
+    required String type,
+  }) : type = Value(type);
   static Insertable<OwnershipTypeData> custom({
     Expression<int>? ownership_type_id,
-    Expression<String>? name,
+    Expression<String>? type,
   }) {
     return RawValuesInsertable({
       if (ownership_type_id != null) 'ownership_type_id': ownership_type_id,
-      if (name != null) 'name': name,
+      if (type != null) 'type': type,
     });
   }
 
   OwnershipTypesCompanion copyWith({
     Value<int>? ownership_type_id,
-    Value<String>? name,
+    Value<String>? type,
   }) {
     return OwnershipTypesCompanion(
       ownership_type_id: ownership_type_id ?? this.ownership_type_id,
-      name: name ?? this.name,
+      type: type ?? this.type,
     );
   }
 
@@ -1887,8 +1887,8 @@ class OwnershipTypesCompanion extends UpdateCompanion<OwnershipTypeData> {
     if (ownership_type_id.present) {
       map['ownership_type_id'] = Variable<int>(ownership_type_id.value);
     }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
     }
     return map;
   }
@@ -1897,7 +1897,7 @@ class OwnershipTypesCompanion extends UpdateCompanion<OwnershipTypeData> {
   String toString() {
     return (StringBuffer('OwnershipTypesCompanion(')
           ..write('ownership_type_id: $ownership_type_id, ')
-          ..write('name: $name')
+          ..write('type: $type')
           ..write(')'))
         .toString();
   }
@@ -6083,12 +6083,12 @@ typedef $$EthnicitiesTableProcessedTableManager =
 typedef $$BloodTypesTableCreateCompanionBuilder =
     BloodTypesCompanion Function({
       Value<int> blood_type_id,
-      required String name,
+      required String type,
     });
 typedef $$BloodTypesTableUpdateCompanionBuilder =
     BloodTypesCompanion Function({
       Value<int> blood_type_id,
-      Value<String> name,
+      Value<String> type,
     });
 
 final class $$BloodTypesTableReferences
@@ -6133,8 +6133,8 @@ class $$BloodTypesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6178,8 +6178,8 @@ class $$BloodTypesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -6198,8 +6198,8 @@ class $$BloodTypesTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
 
   Expression<T> personsRefs<T extends Object>(
     Expression<T> Function($$PersonsTableAnnotationComposer a) f,
@@ -6256,16 +6256,16 @@ class $$BloodTypesTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> blood_type_id = const Value.absent(),
-                Value<String> name = const Value.absent(),
+                Value<String> type = const Value.absent(),
               }) =>
-                  BloodTypesCompanion(blood_type_id: blood_type_id, name: name),
+                  BloodTypesCompanion(blood_type_id: blood_type_id, type: type),
           createCompanionCallback:
               ({
                 Value<int> blood_type_id = const Value.absent(),
-                required String name,
+                required String type,
               }) => BloodTypesCompanion.insert(
                 blood_type_id: blood_type_id,
-                name: name,
+                type: type,
               ),
           withReferenceMapper:
               (p0) =>
@@ -6755,12 +6755,12 @@ typedef $$AddressesTableProcessedTableManager =
 typedef $$HouseholdTypesTableCreateCompanionBuilder =
     HouseholdTypesCompanion Function({
       Value<int> household_type_id,
-      required String name,
+      required String type,
     });
 typedef $$HouseholdTypesTableUpdateCompanionBuilder =
     HouseholdTypesCompanion Function({
       Value<int> household_type_id,
-      Value<String> name,
+      Value<String> type,
     });
 
 final class $$HouseholdTypesTableReferences
@@ -6809,8 +6809,8 @@ class $$HouseholdTypesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6854,8 +6854,8 @@ class $$HouseholdTypesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -6874,8 +6874,8 @@ class $$HouseholdTypesTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
 
   Expression<T> householdsRefs<T extends Object>(
     Expression<T> Function($$HouseholdsTableAnnotationComposer a) f,
@@ -6938,18 +6938,18 @@ class $$HouseholdTypesTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> household_type_id = const Value.absent(),
-                Value<String> name = const Value.absent(),
+                Value<String> type = const Value.absent(),
               }) => HouseholdTypesCompanion(
                 household_type_id: household_type_id,
-                name: name,
+                type: type,
               ),
           createCompanionCallback:
               ({
                 Value<int> household_type_id = const Value.absent(),
-                required String name,
+                required String type,
               }) => HouseholdTypesCompanion.insert(
                 household_type_id: household_type_id,
-                name: name,
+                type: type,
               ),
           withReferenceMapper:
               (p0) =>
@@ -7016,12 +7016,12 @@ typedef $$HouseholdTypesTableProcessedTableManager =
 typedef $$BuildingTypesTableCreateCompanionBuilder =
     BuildingTypesCompanion Function({
       Value<int> building_type_id,
-      required String name,
+      required String type,
     });
 typedef $$BuildingTypesTableUpdateCompanionBuilder =
     BuildingTypesCompanion Function({
       Value<int> building_type_id,
-      Value<String> name,
+      Value<String> type,
     });
 
 final class $$BuildingTypesTableReferences
@@ -7070,8 +7070,8 @@ class $$BuildingTypesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -7115,8 +7115,8 @@ class $$BuildingTypesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -7135,8 +7135,8 @@ class $$BuildingTypesTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
 
   Expression<T> householdsRefs<T extends Object>(
     Expression<T> Function($$HouseholdsTableAnnotationComposer a) f,
@@ -7197,18 +7197,18 @@ class $$BuildingTypesTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> building_type_id = const Value.absent(),
-                Value<String> name = const Value.absent(),
+                Value<String> type = const Value.absent(),
               }) => BuildingTypesCompanion(
                 building_type_id: building_type_id,
-                name: name,
+                type: type,
               ),
           createCompanionCallback:
               ({
                 Value<int> building_type_id = const Value.absent(),
-                required String name,
+                required String type,
               }) => BuildingTypesCompanion.insert(
                 building_type_id: building_type_id,
-                name: name,
+                type: type,
               ),
           withReferenceMapper:
               (p0) =>
@@ -7274,12 +7274,12 @@ typedef $$BuildingTypesTableProcessedTableManager =
 typedef $$OwnershipTypesTableCreateCompanionBuilder =
     OwnershipTypesCompanion Function({
       Value<int> ownership_type_id,
-      required String name,
+      required String type,
     });
 typedef $$OwnershipTypesTableUpdateCompanionBuilder =
     OwnershipTypesCompanion Function({
       Value<int> ownership_type_id,
-      Value<String> name,
+      Value<String> type,
     });
 
 final class $$OwnershipTypesTableReferences
@@ -7328,8 +7328,8 @@ class $$OwnershipTypesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -7373,8 +7373,8 @@ class $$OwnershipTypesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -7393,8 +7393,8 @@ class $$OwnershipTypesTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
 
   Expression<T> householdsRefs<T extends Object>(
     Expression<T> Function($$HouseholdsTableAnnotationComposer a) f,
@@ -7457,18 +7457,18 @@ class $$OwnershipTypesTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> ownership_type_id = const Value.absent(),
-                Value<String> name = const Value.absent(),
+                Value<String> type = const Value.absent(),
               }) => OwnershipTypesCompanion(
                 ownership_type_id: ownership_type_id,
-                name: name,
+                type: type,
               ),
           createCompanionCallback:
               ({
                 Value<int> ownership_type_id = const Value.absent(),
-                required String name,
+                required String type,
               }) => OwnershipTypesCompanion.insert(
                 ownership_type_id: ownership_type_id,
-                name: name,
+                type: type,
               ),
           withReferenceMapper:
               (p0) =>

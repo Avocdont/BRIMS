@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:brims/database/app_db.dart';
 import 'package:brims/locator.dart';
 
-class LookupRepository {
+class ProfileLookupRepository {
   AppDatabase db = locator.get<AppDatabase>();
 
   // ------------ Nationalities ------------

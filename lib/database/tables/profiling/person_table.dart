@@ -1,13 +1,7 @@
 import 'package:brims/database/tables/enums.dart';
 import 'package:brims/database/tables/household/household_table.dart';
 import 'package:brims/database/tables/profiling/address_table.dart';
-import 'package:brims/database/tables/profiling/blood_type_table.dart';
-import 'package:brims/database/tables/profiling/daily_income_table.dart';
-import 'package:brims/database/tables/profiling/education_table.dart';
-import 'package:brims/database/tables/profiling/ethnicity_table.dart';
-import 'package:brims/database/tables/profiling/monthly_income_table.dart';
-import 'package:brims/database/tables/profiling/nationality_table.dart';
-import 'package:brims/database/tables/profiling/religion_table.dart';
+import 'package:brims/database/tables/profiling/profiling_lookup_table.dart';
 import 'package:drift/drift.dart';
 
 @DataClassName('PersonData')
