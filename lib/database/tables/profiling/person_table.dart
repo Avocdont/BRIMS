@@ -1,7 +1,7 @@
 import 'package:brims/database/tables/enums.dart';
 import 'package:brims/database/tables/household/household_table.dart';
 import 'package:brims/database/tables/profiling/address_table.dart';
-import 'package:brims/database/tables/profiling/profiling_lookup_table.dart';
+import 'package:brims/database/tables/lookups/profiling_lookup_table.dart';
 import 'package:drift/drift.dart';
 
 @DataClassName('PersonData')

@@ -22,6 +22,10 @@ class PersonProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  getPersonById(int id) async {
+    return await _personRepository.getPersonByID(id);
+  }
+
   addPerson(PersonsCompanion p) async {
     await _personRepository.addPerson(p);
     getAllPersons();

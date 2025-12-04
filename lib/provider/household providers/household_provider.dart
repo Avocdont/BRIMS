@@ -1,39 +1,76 @@
-/*import 'dart:developer';
-import 'package:flutter/material.dart';
 import 'package:brims/database/app_db.dart';
-import 'package:brims/repository/household repositories/household_repository.dart';
+import 'package:brims/repository/household%20repositories/household_repository.dart';
+import 'package:flutter/material.dart';
 
-class PersonProvider extends ChangeNotifier {
-  PersonProvider() {
-    getAllPersons();
-  }
-  final PersonRepository _personRepository = PersonRepository();
+class HouseholdProvider extends ChangeNotifier {
+  final HouseholdRepository _lookupRepository = HouseholdRepository();
 
-  List<PersonData> _allPersons = [];
-  List<PersonData> get allPersons => _allPersons;
+  List<HouseholdData> _allHouseholds = [];
+  List<HouseholdData> get allHouseholds => _allHouseholds;
 
-  List<PersonData> _currentPersons = [];
-  List<PersonData> get currentPersons => _currentPersons;
+  List<AddressData> _allAddresses = [];
+  List<AddressData> get allAddresses => _allAddresses;
 
-  getAllPersons() async {
-    _allPersons = await _personRepository.allPersons();
-    _currentPersons = _allPersons;
-    log("PersonProvider: Loaded all $_allPersons person records");
+  getAllHouseholds() async {
+    _allHouseholds = await _lookupRepository.allHouseholds();
     notifyListeners();
   }
 
-  addPerson(PersonsCompanion p) async {
-    await _personRepository.addPerson(p);
-    getAllPersons();
+  getHouseholdByID(int id) async {
+    return await _lookupRepository.getHouseholdByID(id);
   }
 
-  updatePerson(PersonsCompanion p) async {
-    await _personRepository.updatePerson(p);
-    getAllPersons();
+  addHousehold(HouseholdsCompanion hc) async {
+    await _lookupRepository.addHousehold(hc);
+    getAllHouseholds();
   }
 
-  deletePerson(int id) async {
-    await _personRepository.deletePerson(id);
-    getAllPersons();
+  updateHousehold(HouseholdsCompanion hc) async {
+    await _lookupRepository.updateHousehold(hc);
+    getAllHouseholds();
   }
-}*/
+
+  deleteHousehold(int id) async {
+    await _lookupRepository.deleteHousehold(id);
+    getAllHouseholds();
+  }
+
+  getAllAddresses() async {
+    _allAddresses = await _lookupRepository.allAddresses();
+    notifyListeners();
+  }
+
+  getAddressByID(int id) async {
+    return await _lookupRepository.getAddressByID(id);
+  }
+
+  addAddress(AddressesCompanion ac) async {
+    await _lookupRepository.addAddress(ac);
+    getAllAddresses();
+  }
+
+  updateAddress(AddressesCompanion ac) async {
+    await _lookupRepository.updateAddress(ac);
+    getAllAddresses();
+  }
+
+  deleteAddress(int id) async {
+    await _lookupRepository.deleteAddress(id);
+    getAllAddresses();
+  }
+
+  searchAddresses({
+    // Named parameters, optional but you have to specify which arguments you're gonna pass. Ex: Zone : "1B"
+    String? zone,
+    String? street,
+    String? block,
+    String? lot,
+  }) async {
+    await _lookupRepository.searchAddresses(
+      zone: zone,
+      street: street,
+      block: block,
+      lot: lot,
+    );
+  }
+}

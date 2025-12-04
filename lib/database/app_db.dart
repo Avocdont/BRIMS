@@ -1,9 +1,18 @@
 import 'dart:io';
+import 'package:brims/database/tables/farming/farming_table.dart';
 import 'package:brims/database/tables/household/household_table.dart';
+import 'package:brims/database/tables/lookups/farming_lookup_table.dart';
+import 'package:brims/database/tables/lookups/medinfo_lookup_table.dart';
+import 'package:brims/database/tables/lookups/question_lookup_table.dart';
+import 'package:brims/database/tables/medical%20aspects/medical_info_table1.dart';
 import 'package:brims/database/tables/profiling/address_table.dart';
+import 'package:brims/database/tables/profiling/citizen_registry_table.dart';
+import 'package:brims/database/tables/profiling/contact_info_table.dart';
+import 'package:brims/database/tables/profiling/occupations_table.dart';
 import 'package:brims/database/tables/profiling/person_table.dart';
-import 'package:brims/database/tables/household/household_lookup_table.dart';
-import 'package:brims/database/tables/profiling/profiling_lookup_table.dart';
+import 'package:brims/database/tables/lookups/household_lookup_tables.dart';
+import 'package:brims/database/tables/lookups/profiling_lookup_table.dart';
+import 'package:brims/database/tables/profiling/transient_table.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:brims/database/tables/enums.dart';
@@ -24,9 +33,45 @@ part 'app_db.g.dart';
     Education,
     MonthlyIncomes,
     DailyIncomes,
-    HouseholdTypes,
+    Occupations,
+    Emails,
+    PhoneNumbers,
+    Gadgets,
+    GovermentPrograms,
+    VoterRegistries,
+    RegisteredSeniors,
+    Disabilities,
+    Enrolled,
+    CTCRecords,
+    BrgyHistories,
     BuildingTypes,
-    OwnershipTypes,
+    MigrantTransients,
+    HouseholdRelationships,
+    RelationshipTypes,
+    Services,
+    PrimaryNeeds,
+    FemaleMortalities,
+    ChildMortalities,
+    FutureResidencies,
+    DeliveryPlaces,
+    AssistedPersons,
+    VisitReasons,
+    FpSources,
+    FpMethods,
+    Fishing,
+    Agriculture,
+    Livestock,
+    LivestockProducts,
+    FishingProducts,
+    AgriProducts,
+    Questions,
+    QuestionChoices,
+    HouseholdResponses,
+    FamilyPlans,
+    MaternalInfos,
+    VisitedFacilities,
+    HealthInsurances,
+    NewbornInfos,
   ],
 )
 class AppDatabase extends _$AppDatabase {
