@@ -30,6 +30,9 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider<ProfileLookupProvider>(
           create: (_) => ProfileLookupProvider(),
         ),
+        ChangeNotifierProvider<HouseholdProvider>(
+          create: (_) => HouseholdProvider(),
+        ),
         ChangeNotifierProvider<HouseholdLookupProvider>(
           create: (_) => HouseholdLookupProvider(),
         ),

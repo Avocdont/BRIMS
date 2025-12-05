@@ -69,8 +69,6 @@ class _AddPersonPageState extends State<AddPersonPage> {
   TextEditingController _blockController = TextEditingController();
   TextEditingController _lotController = TextEditingController();
 
-  bool _addNewAddress = false;
-
   String? _newZone;
   String? _newStreet;
   String? _newBlock;
@@ -85,6 +83,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
   TextEditingController _phoneNumberController = TextEditingController();
 
   // Insert to occupation table
+  bool? _hasOccupation;
   TextEditingController _occupationController = TextEditingController();
   OccupationStatus? _selectedOccupationStatus;
   OccupationType? _selectedOccupationType;
@@ -1140,43 +1139,74 @@ class _AddPersonPageState extends State<AddPersonPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Occupation:"),
-                    TextFormField(
-                      controller: _occupationController,
-                      decoration: InputDecoration(
-                        hintText: "Enter your email here",
-                        border: OutlineInputBorder(),
-                      ),
+                    Text("Has occupation?"),
+                    RadioListTile<bool>(
+                      title: Text("Yes"),
+                      value: true,
+                      groupValue: _hasOccupation,
+                      onChanged: (value) {
+                        setState(() {
+                          _hasOccupation = value;
+                        });
+                      },
                     ),
-                    Text("Occupation Status:"),
-                    ...OccupationStatus.values.map((val) {
-                      return RadioListTile<OccupationStatus>(
-                        title: Text(val.label),
-                        value: val,
-                        groupValue: _selectedOccupationStatus,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedOccupationStatus = value;
-                          });
-                        },
-                      );
-                    }),
-                    Text("Occupation Type:"),
-                    ...OccupationType.values.map((val) {
-                      return RadioListTile<OccupationType>(
-                        title: Text(val.label),
-                        value: val,
-                        groupValue: _selectedOccupationType,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedOccupationType = value;
-                          });
-                        },
-                      );
-                    }),
+                    RadioListTile<bool>(
+                      title: Text("No"),
+                      value: false,
+                      groupValue: _hasOccupation,
+                      onChanged: (value) {
+                        setState(() {
+                          _hasOccupation = value;
+                        });
+                      },
+                    ),
                   ],
                 ),
               ),
+              _hasOccupation == true
+                  ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Occupation:"),
+                        TextFormField(
+                          controller: _occupationController,
+                          decoration: InputDecoration(
+                            hintText: "Enter occupation here",
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        Text("Occupation Status:"),
+                        ...OccupationStatus.values.map((val) {
+                          return RadioListTile<OccupationStatus>(
+                            title: Text(val.label),
+                            value: val,
+                            groupValue: _selectedOccupationStatus,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedOccupationStatus = value;
+                              });
+                            },
+                          );
+                        }),
+                        Text("Occupation Type:"),
+                        ...OccupationType.values.map((val) {
+                          return RadioListTile<OccupationType>(
+                            title: Text(val.label),
+                            value: val,
+                            groupValue: _selectedOccupationType,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedOccupationType = value;
+                              });
+                            },
+                          );
+                        }),
+                      ],
+                    ),
+                  )
+                  : SizedBox.shrink(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
