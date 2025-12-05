@@ -59,4 +59,56 @@ class HouseholdLookupRepository {
       log(e.toString());
     }
   }
+
+  Future<List<RelationshipTypeData>> allRelationshipTypes() async {
+    try {
+      return await db.select(db.relationshipTypes).get();
+    } catch (e) {
+      log(e.toString());
+
+      return [];
+    }
+  }
+
+  getRelationshipTypeByID(int id) async {
+    try {
+      return await (db.select(db.relationshipTypes)..where(
+        (relationshipType) => relationshipType.relationship_id.equals(
+          id,
+        ), // buildingtype here specifically is a row
+      )).getSingle(); // .. is a cascde operator
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  addRelationshipType(RelationshipTypesCompanion rtc) async {
+    // BuildingTypesCompanion is a Drift generated type safe table inserter that enforces required fields, prevents illegal values, and lets you choose which columns to insert or update
+    try {
+      return await db
+          .into(db.relationshipTypes)
+          .insert(rtc); // Returns id of the inserted row
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  updateRelationshipType(RelationshipTypesCompanion rtc) async {
+    // btc holds row data
+    try {
+      return await db.update(db.relationshipTypes).replace(rtc);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  deleteRelationshipType(int id) async {
+    try {
+      return await (db.delete(db.relationshipTypes)..where(
+        (relationshipType) => relationshipType.relationship_id.equals(id),
+      )).go();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 }

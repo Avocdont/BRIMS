@@ -8,11 +8,18 @@ class HouseholdProvider extends ChangeNotifier {
   List<HouseholdData> _allHouseholds = [];
   List<HouseholdData> get allHouseholds => _allHouseholds;
 
+  List<HouseholdData> _currentHouseholds = [];
+  List<HouseholdData> get currentHouseholds => _currentHouseholds;
+
   List<AddressData> _allAddresses = [];
   List<AddressData> get allAddresses => _allAddresses;
 
+  List<AddressData> _currentAddresses = [];
+  List<AddressData> get currentAddresses => _currentAddresses;
+
   getAllHouseholds() async {
     _allHouseholds = await _lookupRepository.allHouseholds();
+    _currentHouseholds = _allHouseholds;
     notifyListeners();
   }
 
@@ -37,6 +44,7 @@ class HouseholdProvider extends ChangeNotifier {
 
   getAllAddresses() async {
     _allAddresses = await _lookupRepository.allAddresses();
+    _currentAddresses = _allAddresses;
     notifyListeners();
   }
 
@@ -45,8 +53,9 @@ class HouseholdProvider extends ChangeNotifier {
   }
 
   addAddress(AddressesCompanion ac) async {
-    await _lookupRepository.addAddress(ac);
+    int addressId = await _lookupRepository.addAddress(ac);
     getAllAddresses();
+    return addressId;
   }
 
   updateAddress(AddressesCompanion ac) async {
@@ -66,7 +75,7 @@ class HouseholdProvider extends ChangeNotifier {
     String? block,
     String? lot,
   }) async {
-    await _lookupRepository.searchAddresses(
+    return await _lookupRepository.searchAddresses(
       zone: zone,
       street: street,
       block: block,

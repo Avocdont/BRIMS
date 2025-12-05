@@ -18,7 +18,6 @@ class PersonProvider extends ChangeNotifier {
   getAllPersons() async {
     _allPersons = await _personRepository.allPersons();
     _currentPersons = _allPersons;
-    log("PersonProvider: Loaded all $_allPersons person records");
     notifyListeners();
   }
 
@@ -27,8 +26,10 @@ class PersonProvider extends ChangeNotifier {
   }
 
   addPerson(PersonsCompanion p) async {
-    await _personRepository.addPerson(p);
+    int personId = await _personRepository.addPerson(p);
     getAllPersons();
+    log("Person Details: $p");
+    return personId;
   }
 
   updatePerson(PersonsCompanion p) async {

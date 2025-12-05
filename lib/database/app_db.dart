@@ -1,10 +1,11 @@
 import 'dart:io';
 import 'package:brims/database/tables/farming/farming_table.dart';
 import 'package:brims/database/tables/household/household_table.dart';
+import 'package:brims/database/tables/household/household_visit_table.dart';
 import 'package:brims/database/tables/lookups/farming_lookup_table.dart';
 import 'package:brims/database/tables/lookups/medinfo_lookup_table.dart';
 import 'package:brims/database/tables/lookups/question_lookup_table.dart';
-import 'package:brims/database/tables/medical%20aspects/medical_info_table1.dart';
+import 'package:brims/database/tables/medical/medical_info_table.dart';
 import 'package:brims/database/tables/profiling/address_table.dart';
 import 'package:brims/database/tables/profiling/citizen_registry_table.dart';
 import 'package:brims/database/tables/profiling/contact_info_table.dart';
@@ -13,6 +14,8 @@ import 'package:brims/database/tables/profiling/person_table.dart';
 import 'package:brims/database/tables/lookups/household_lookup_tables.dart';
 import 'package:brims/database/tables/lookups/profiling_lookup_table.dart';
 import 'package:brims/database/tables/profiling/transient_table.dart';
+import 'package:brims/database/tables/barangay/barangay_table.dart';
+import 'package:brims/database/tables/login credentials/login_table.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:brims/database/tables/enums.dart';
@@ -37,7 +40,6 @@ part 'app_db.g.dart';
     Emails,
     PhoneNumbers,
     Gadgets,
-    GovermentPrograms,
     VoterRegistries,
     RegisteredSeniors,
     Disabilities,
@@ -67,11 +69,16 @@ part 'app_db.g.dart';
     Questions,
     QuestionChoices,
     HouseholdResponses,
-    FamilyPlans,
-    MaternalInfos,
+    FamilyPlanning,
+    MaternalInformation,
     VisitedFacilities,
     HealthInsurances,
-    NewbornInfos,
+    NewbornInformation,
+    BarangayInfos,
+    BarangayOfficials,
+    LoginCredentials,
+    HouseholdVisits,
+    HouseholdMembers,
   ],
 )
 class AppDatabase extends _$AppDatabase {

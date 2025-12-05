@@ -2,10 +2,13 @@ import 'dart:developer';
 
 import 'package:brims/database/app_db.dart';
 import 'package:brims/locator.dart';
+import 'package:brims/repository/profiling%20repositories/person_repository.dart';
 import 'package:drift/drift.dart';
 
 class HouseholdRepository {
   AppDatabase db = locator.get<AppDatabase>();
+
+  PersonRepository personRepository = PersonRepository();
 
   Future<List<HouseholdData>> allHouseholds() async {
     try {
@@ -23,6 +26,18 @@ class HouseholdRepository {
         (household) => household.household_id.equals(
           id,
         ), // household here specifically is a row
+      )).getSingle(); // .. is a cascde operator
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  searchHouseholdHead(String lastName, String firstName) async {
+    try {
+      return await (db.select(db.persons)..where(
+        (persons) =>
+            persons.last_name.equals(lastName) &
+            persons.first_name.equals(firstName),
       )).getSingle(); // .. is a cascde operator
     } catch (e) {
       log(e.toString());
@@ -78,14 +93,7 @@ class HouseholdRepository {
   }
 
   addAddress(AddressesCompanion ac) async {
-    // HouseholdsCompanion is a Drift generated type safe table inserter that enforces required fields, prevents illegal values, and lets you choose which columns to insert or update
-    try {
-      return await db
-          .into(db.addresses)
-          .insert(ac); // Returns id of the inserted row
-    } catch (e) {
-      log(e.toString());
-    }
+    return await db.into(db.addresses).insert(ac);
   }
 
   updateAddress(AddressesCompanion ac) async {

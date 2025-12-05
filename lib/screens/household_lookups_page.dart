@@ -1,12 +1,11 @@
 import 'package:brims/database/app_db.dart';
+import 'package:brims/provider/household%20providers/household_lookup_provider.dart';
 import 'package:brims/screens/components/add_lookup.dart';
 import 'package:brims/screens/components/lookup_table.dart';
 import 'package:drift/drift.dart' as db;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as scn;
-
-import '../provider/household providers/household_lookup_provider.dart';
 
 class HouseholdLookups extends StatefulWidget {
   const HouseholdLookups({super.key});
@@ -30,57 +29,13 @@ class _HouseholdLookupsState extends State<HouseholdLookups> {
     return Scaffold(
       appBar: AppBar(),
       body: Consumer<HouseholdLookupProvider>(
-        builder: (_, lookupProvider, _) {
+        builder: (_, lookupProvider, __) {
           return SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
-                Text("Household Types").h4,
-                SizedBox(height: 10),
-                LookupTable<HouseholdTypeData>(
-                  columns: ["Type"],
-                  items:
-                      lookupProvider
-                          .allHouseholdTypes, // A list of HouseholdTypeData
-                  // Extract certain fields from each item
-                  buildRow: (item) => [item.type],
-                  onEdit: (item, newValues) {
-                    // Change item(NationalityData) to NationalitiesCompanion and store in companion
-                    final companion = item.toCompanion(true);
-                    // Copy all values from companion such as id + add the updated value
-                    final updated = companion.copyWith(
-                      // id : db.Value(1)
-                      type: db.Value(newValues[0]),
-                    );
-
-                    lookupProvider.updateHouseholdType(updated);
-                  },
-                  onDelete:
-                      (item) => lookupProvider.deleteHouseholdType(
-                        item.household_type_id,
-                      ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder:
-                          (_) => AddLookup(
-                            columns: ['Type'], // Columns for this table
-                            onInsert: (values) async {
-                              final companion = HouseholdTypesCompanion(
-                                type: db.Value(values[0]),
-                              );
-                              await lookupProvider.addHouseholdType(companion);
-                              setState(() {}); // refresh table // Refresh table
-                            },
-                          ),
-                    );
-                  },
-                  child: const Text("Add"),
-                ),
-                SizedBox(height: 10),
-                Text("Building types").h4,
+                // ------------ Building Types ------------
+                Text("Building Types").h4,
                 LookupTable<BuildingTypeData>(
                   columns: ["Type"],
                   items: lookupProvider.allBuildingTypes,
@@ -90,7 +45,6 @@ class _HouseholdLookupsState extends State<HouseholdLookups> {
                     final updated = companion.copyWith(
                       type: db.Value(newValues[0]),
                     );
-
                     lookupProvider.updateBuildingType(updated);
                   },
                   onDelete:
@@ -104,36 +58,37 @@ class _HouseholdLookupsState extends State<HouseholdLookups> {
                       context: context,
                       builder:
                           (_) => AddLookup(
-                            columns: ['Type'], // Columns for this table
+                            columns: ['Type'],
                             onInsert: (values) async {
                               final companion = BuildingTypesCompanion(
                                 type: db.Value(values[0]),
                               );
                               await lookupProvider.addBuildingType(companion);
-                              setState(() {}); // refresh table // Refresh table
+                              setState(() {});
                             },
                           ),
                     );
                   },
                   child: const Text("Add"),
                 ),
-                SizedBox(height: 10),
-                Text("Ownership types").h4,
-                LookupTable<OwnershipTypeData>(
-                  columns: ["Type"],
-                  items: lookupProvider.allOwnershipTypes,
-                  buildRow: (item) => [item.type],
+                SizedBox(height: 15),
+
+                // ------------ Relationship Types ------------
+                Text("Relationship Types").h4,
+                LookupTable<RelationshipTypeData>(
+                  columns: ["Relationship"],
+                  items: lookupProvider.allRelationshipTypes,
+                  buildRow: (item) => [item.relationship],
                   onEdit: (item, newValues) {
                     final companion = item.toCompanion(true);
                     final updated = companion.copyWith(
-                      type: db.Value(newValues[0]),
+                      relationship: db.Value(newValues[0]),
                     );
-
-                    lookupProvider.updateOwnershipType(updated);
+                    lookupProvider.updateRelationshipType(updated);
                   },
                   onDelete:
-                      (item) => lookupProvider.deleteOwnershipType(
-                        item.ownership_type_id,
+                      (item) => lookupProvider.deleteRelationshipType(
+                        item.relationship_id,
                       ),
                 ),
                 ElevatedButton(
@@ -142,13 +97,15 @@ class _HouseholdLookupsState extends State<HouseholdLookups> {
                       context: context,
                       builder:
                           (_) => AddLookup(
-                            columns: ['Type'], // Columns for this table
+                            columns: ['Relationship'],
                             onInsert: (values) async {
-                              final companion = OwnershipTypesCompanion(
-                                type: db.Value(values[0]),
+                              final companion = RelationshipTypesCompanion(
+                                relationship: db.Value(values[0]),
                               );
-                              await lookupProvider.addOwnershipType(companion);
-                              setState(() {}); // refresh table // Refresh table
+                              await lookupProvider.addRelationshipType(
+                                companion,
+                              );
+                              setState(() {});
                             },
                           ),
                     );

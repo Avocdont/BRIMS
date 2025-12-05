@@ -45,3 +45,23 @@ enum OwnershipTypes {
   rented,
   owned_or_being_amortized,
 }
+
+enum BarangayPositions {
+  punong_barangay,
+  brgy_secretary,
+  brgy_treasurer,
+  brgy_kagawad,
+  bhw,
+  bhrao,
+  brgy_aide,
+  sk_chairperson,
+  sk_kagawad,
+  brygy_tanod,
+  lupon_master,
+}
+
+enum UserType { admin, brgy_secretary, brgy_staff }
+
+enum ChangeType { added, updated, deleted }
+
+enum PageChanged { profiling, household }

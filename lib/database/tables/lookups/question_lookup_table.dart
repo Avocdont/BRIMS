@@ -6,7 +6,7 @@ class Questions extends Table {
   TextColumn get question => text()();
 }
 
-@DataClassName('QustionChoiceData')
+@DataClassName('QuestionChoiceData')
 class QuestionChoices extends Table {
   IntColumn get choice_id => integer().autoIncrement()();
   TextColumn get choice => text()();

@@ -2,8 +2,8 @@ import 'package:brims/database/tables/lookups/medinfo_lookup_table.dart';
 import 'package:brims/database/tables/profiling/person_table.dart';
 import 'package:drift/drift.dart';
 
-@DataClassName('NewbornInfoData')
-class NewbornInfos extends Table {
+@DataClassName('NewbornInformationData')
+class NewbornInformation extends Table {
   IntColumn get newborn_info_id => integer().autoIncrement()();
   IntColumn get person_id =>
       integer().references(Persons, #person_id, onDelete: KeyAction.cascade)();
@@ -45,8 +45,8 @@ class VisitedFacilities extends Table {
       )();
 }
 
-@DataClassName('MaternalInfoData')
-class MaternalInfos extends Table {
+@DataClassName('MaternalInformationData')
+class MaternalInformation extends Table {
   IntColumn get maternal_info_id => integer().autoIncrement()();
   IntColumn get person_id =>
       integer().references(Persons, #person_id, onDelete: KeyAction.cascade)();
@@ -56,9 +56,9 @@ class MaternalInfos extends Table {
   BoolColumn get fp_intention => boolean().nullable()();
 }
 
-@DataClassName('FamilyPlanData')
-class FamilyPlans extends Table {
-  IntColumn get family_plan_id => integer().autoIncrement()();
+@DataClassName('FamilyPlanningData')
+class FamilyPlanning extends Table {
+  IntColumn get family_planning_id => integer().autoIncrement()();
   IntColumn get person_id =>
       integer().references(Persons, #person_id, onDelete: KeyAction.cascade)();
   IntColumn get fp_method_id =>

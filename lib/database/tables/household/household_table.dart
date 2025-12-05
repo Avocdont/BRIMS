@@ -29,6 +29,19 @@ class Households extends Table {
   TextColumn get registration_status => textEnum<RegistrationStatus>()();
 }
 
+@DataClassName('HouseholdMemberData')
+class HouseholdMembers extends Table {
+  IntColumn get household_member_id => integer().autoIncrement()();
+  IntColumn get person_id =>
+      integer().references(Persons, #person_id, onDelete: KeyAction.cascade)();
+  IntColumn get household_id =>
+      integer().references(
+        Households,
+        #household_id,
+        onDelete: KeyAction.cascade,
+      )();
+}
+
 @DataClassName('HouseholdRelationship')
 class HouseholdRelationships extends Table {
   IntColumn get household_relationship_id => integer().autoIncrement()();

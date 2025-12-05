@@ -2,14 +2,6 @@ import 'package:brims/database/tables/lookups/profiling_lookup_table.dart';
 import 'package:brims/database/tables/profiling/person_table.dart';
 import 'package:drift/drift.dart';
 
-@DataClassName('GovernmentProgramData')
-class GovermentPrograms extends Table {
-  IntColumn get government_program_id => integer().autoIncrement()();
-  IntColumn get person_id =>
-      integer().references(Persons, #person_id, onDelete: KeyAction.cascade)();
-  TextColumn get name => text()();
-}
-
 @DataClassName('VoterRegistryData')
 class VoterRegistries extends Table {
   IntColumn get voter_registry_id => integer().autoIncrement()();

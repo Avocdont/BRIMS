@@ -1,5 +1,5 @@
 import 'package:brims/database/app_db.dart';
-import 'package:brims/repository/profiling%20repositories/profile_lookup_repository.dart';
+import 'package:brims/repository/lookup%20repositories/profile_lookup_repository.dart';
 import 'package:flutter/material.dart';
 
 class ProfileLookupProvider extends ChangeNotifier {

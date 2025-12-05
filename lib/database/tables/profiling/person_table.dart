@@ -40,12 +40,6 @@ class Persons extends Table {
         #blood_type_id,
         onDelete: KeyAction.restrict,
       )();
-  IntColumn get household_id =>
-      integer().nullable().references(
-        Households,
-        #household_id,
-        onDelete: KeyAction.restrict,
-      )();
   IntColumn get address_id =>
       integer().nullable().references(
         Addresses,
@@ -83,6 +77,7 @@ class Persons extends Table {
       )();
   BoolColumn get deceased => boolean().nullable()();
   DateTimeColumn get death_date => dateTime().nullable()();
-  DateTimeColumn get registration_date => dateTime().nullable()();
+  DateTimeColumn get registrationDate =>
+      dateTime().clientDefault(() => DateTime.now())();
   TextColumn get registration_status => textEnum<RegistrationStatus>()();
 }

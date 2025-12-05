@@ -1195,6 +1195,2554 @@ class AddressesCompanion extends UpdateCompanion<AddressData> {
   }
 }
 
+class $MonthlyIncomesTable extends MonthlyIncomes
+    with TableInfo<$MonthlyIncomesTable, MonthlyIncomeData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MonthlyIncomesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _monthly_income_idMeta = const VerificationMeta(
+    'monthly_income_id',
+  );
+  @override
+  late final GeneratedColumn<int> monthly_income_id = GeneratedColumn<int>(
+    'monthly_income_id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _rangeMeta = const VerificationMeta('range');
+  @override
+  late final GeneratedColumn<String> range = GeneratedColumn<String>(
+    'range',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [monthly_income_id, range];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'monthly_incomes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MonthlyIncomeData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('monthly_income_id')) {
+      context.handle(
+        _monthly_income_idMeta,
+        monthly_income_id.isAcceptableOrUnknown(
+          data['monthly_income_id']!,
+          _monthly_income_idMeta,
+        ),
+      );
+    }
+    if (data.containsKey('range')) {
+      context.handle(
+        _rangeMeta,
+        range.isAcceptableOrUnknown(data['range']!, _rangeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_rangeMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {monthly_income_id};
+  @override
+  MonthlyIncomeData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MonthlyIncomeData(
+      monthly_income_id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}monthly_income_id'],
+          )!,
+      range:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}range'],
+          )!,
+    );
+  }
+
+  @override
+  $MonthlyIncomesTable createAlias(String alias) {
+    return $MonthlyIncomesTable(attachedDatabase, alias);
+  }
+}
+
+class MonthlyIncomeData extends DataClass
+    implements Insertable<MonthlyIncomeData> {
+  final int monthly_income_id;
+  final String range;
+  const MonthlyIncomeData({
+    required this.monthly_income_id,
+    required this.range,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['monthly_income_id'] = Variable<int>(monthly_income_id);
+    map['range'] = Variable<String>(range);
+    return map;
+  }
+
+  MonthlyIncomesCompanion toCompanion(bool nullToAbsent) {
+    return MonthlyIncomesCompanion(
+      monthly_income_id: Value(monthly_income_id),
+      range: Value(range),
+    );
+  }
+
+  factory MonthlyIncomeData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MonthlyIncomeData(
+      monthly_income_id: serializer.fromJson<int>(json['monthly_income_id']),
+      range: serializer.fromJson<String>(json['range']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'monthly_income_id': serializer.toJson<int>(monthly_income_id),
+      'range': serializer.toJson<String>(range),
+    };
+  }
+
+  MonthlyIncomeData copyWith({int? monthly_income_id, String? range}) =>
+      MonthlyIncomeData(
+        monthly_income_id: monthly_income_id ?? this.monthly_income_id,
+        range: range ?? this.range,
+      );
+  MonthlyIncomeData copyWithCompanion(MonthlyIncomesCompanion data) {
+    return MonthlyIncomeData(
+      monthly_income_id:
+          data.monthly_income_id.present
+              ? data.monthly_income_id.value
+              : this.monthly_income_id,
+      range: data.range.present ? data.range.value : this.range,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MonthlyIncomeData(')
+          ..write('monthly_income_id: $monthly_income_id, ')
+          ..write('range: $range')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(monthly_income_id, range);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MonthlyIncomeData &&
+          other.monthly_income_id == this.monthly_income_id &&
+          other.range == this.range);
+}
+
+class MonthlyIncomesCompanion extends UpdateCompanion<MonthlyIncomeData> {
+  final Value<int> monthly_income_id;
+  final Value<String> range;
+  const MonthlyIncomesCompanion({
+    this.monthly_income_id = const Value.absent(),
+    this.range = const Value.absent(),
+  });
+  MonthlyIncomesCompanion.insert({
+    this.monthly_income_id = const Value.absent(),
+    required String range,
+  }) : range = Value(range);
+  static Insertable<MonthlyIncomeData> custom({
+    Expression<int>? monthly_income_id,
+    Expression<String>? range,
+  }) {
+    return RawValuesInsertable({
+      if (monthly_income_id != null) 'monthly_income_id': monthly_income_id,
+      if (range != null) 'range': range,
+    });
+  }
+
+  MonthlyIncomesCompanion copyWith({
+    Value<int>? monthly_income_id,
+    Value<String>? range,
+  }) {
+    return MonthlyIncomesCompanion(
+      monthly_income_id: monthly_income_id ?? this.monthly_income_id,
+      range: range ?? this.range,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (monthly_income_id.present) {
+      map['monthly_income_id'] = Variable<int>(monthly_income_id.value);
+    }
+    if (range.present) {
+      map['range'] = Variable<String>(range.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MonthlyIncomesCompanion(')
+          ..write('monthly_income_id: $monthly_income_id, ')
+          ..write('range: $range')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DailyIncomesTable extends DailyIncomes
+    with TableInfo<$DailyIncomesTable, DailyIncomeData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DailyIncomesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _daily_income_idMeta = const VerificationMeta(
+    'daily_income_id',
+  );
+  @override
+  late final GeneratedColumn<int> daily_income_id = GeneratedColumn<int>(
+    'daily_income_id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _rangeMeta = const VerificationMeta('range');
+  @override
+  late final GeneratedColumn<String> range = GeneratedColumn<String>(
+    'range',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [daily_income_id, range];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'daily_incomes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DailyIncomeData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('daily_income_id')) {
+      context.handle(
+        _daily_income_idMeta,
+        daily_income_id.isAcceptableOrUnknown(
+          data['daily_income_id']!,
+          _daily_income_idMeta,
+        ),
+      );
+    }
+    if (data.containsKey('range')) {
+      context.handle(
+        _rangeMeta,
+        range.isAcceptableOrUnknown(data['range']!, _rangeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_rangeMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {daily_income_id};
+  @override
+  DailyIncomeData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DailyIncomeData(
+      daily_income_id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}daily_income_id'],
+          )!,
+      range:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}range'],
+          )!,
+    );
+  }
+
+  @override
+  $DailyIncomesTable createAlias(String alias) {
+    return $DailyIncomesTable(attachedDatabase, alias);
+  }
+}
+
+class DailyIncomeData extends DataClass implements Insertable<DailyIncomeData> {
+  final int daily_income_id;
+  final String range;
+  const DailyIncomeData({required this.daily_income_id, required this.range});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['daily_income_id'] = Variable<int>(daily_income_id);
+    map['range'] = Variable<String>(range);
+    return map;
+  }
+
+  DailyIncomesCompanion toCompanion(bool nullToAbsent) {
+    return DailyIncomesCompanion(
+      daily_income_id: Value(daily_income_id),
+      range: Value(range),
+    );
+  }
+
+  factory DailyIncomeData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DailyIncomeData(
+      daily_income_id: serializer.fromJson<int>(json['daily_income_id']),
+      range: serializer.fromJson<String>(json['range']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'daily_income_id': serializer.toJson<int>(daily_income_id),
+      'range': serializer.toJson<String>(range),
+    };
+  }
+
+  DailyIncomeData copyWith({int? daily_income_id, String? range}) =>
+      DailyIncomeData(
+        daily_income_id: daily_income_id ?? this.daily_income_id,
+        range: range ?? this.range,
+      );
+  DailyIncomeData copyWithCompanion(DailyIncomesCompanion data) {
+    return DailyIncomeData(
+      daily_income_id:
+          data.daily_income_id.present
+              ? data.daily_income_id.value
+              : this.daily_income_id,
+      range: data.range.present ? data.range.value : this.range,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyIncomeData(')
+          ..write('daily_income_id: $daily_income_id, ')
+          ..write('range: $range')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(daily_income_id, range);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DailyIncomeData &&
+          other.daily_income_id == this.daily_income_id &&
+          other.range == this.range);
+}
+
+class DailyIncomesCompanion extends UpdateCompanion<DailyIncomeData> {
+  final Value<int> daily_income_id;
+  final Value<String> range;
+  const DailyIncomesCompanion({
+    this.daily_income_id = const Value.absent(),
+    this.range = const Value.absent(),
+  });
+  DailyIncomesCompanion.insert({
+    this.daily_income_id = const Value.absent(),
+    required String range,
+  }) : range = Value(range);
+  static Insertable<DailyIncomeData> custom({
+    Expression<int>? daily_income_id,
+    Expression<String>? range,
+  }) {
+    return RawValuesInsertable({
+      if (daily_income_id != null) 'daily_income_id': daily_income_id,
+      if (range != null) 'range': range,
+    });
+  }
+
+  DailyIncomesCompanion copyWith({
+    Value<int>? daily_income_id,
+    Value<String>? range,
+  }) {
+    return DailyIncomesCompanion(
+      daily_income_id: daily_income_id ?? this.daily_income_id,
+      range: range ?? this.range,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (daily_income_id.present) {
+      map['daily_income_id'] = Variable<int>(daily_income_id.value);
+    }
+    if (range.present) {
+      map['range'] = Variable<String>(range.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyIncomesCompanion(')
+          ..write('daily_income_id: $daily_income_id, ')
+          ..write('range: $range')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EducationTable extends Education
+    with TableInfo<$EducationTable, EducationData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EducationTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _education_idMeta = const VerificationMeta(
+    'education_id',
+  );
+  @override
+  late final GeneratedColumn<int> education_id = GeneratedColumn<int>(
+    'education_id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _levelMeta = const VerificationMeta('level');
+  @override
+  late final GeneratedColumn<String> level = GeneratedColumn<String>(
+    'level',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [education_id, level];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'education';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EducationData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('education_id')) {
+      context.handle(
+        _education_idMeta,
+        education_id.isAcceptableOrUnknown(
+          data['education_id']!,
+          _education_idMeta,
+        ),
+      );
+    }
+    if (data.containsKey('level')) {
+      context.handle(
+        _levelMeta,
+        level.isAcceptableOrUnknown(data['level']!, _levelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_levelMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {education_id};
+  @override
+  EducationData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EducationData(
+      education_id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}education_id'],
+          )!,
+      level:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}level'],
+          )!,
+    );
+  }
+
+  @override
+  $EducationTable createAlias(String alias) {
+    return $EducationTable(attachedDatabase, alias);
+  }
+}
+
+class EducationData extends DataClass implements Insertable<EducationData> {
+  final int education_id;
+  final String level;
+  const EducationData({required this.education_id, required this.level});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['education_id'] = Variable<int>(education_id);
+    map['level'] = Variable<String>(level);
+    return map;
+  }
+
+  EducationCompanion toCompanion(bool nullToAbsent) {
+    return EducationCompanion(
+      education_id: Value(education_id),
+      level: Value(level),
+    );
+  }
+
+  factory EducationData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EducationData(
+      education_id: serializer.fromJson<int>(json['education_id']),
+      level: serializer.fromJson<String>(json['level']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'education_id': serializer.toJson<int>(education_id),
+      'level': serializer.toJson<String>(level),
+    };
+  }
+
+  EducationData copyWith({int? education_id, String? level}) => EducationData(
+    education_id: education_id ?? this.education_id,
+    level: level ?? this.level,
+  );
+  EducationData copyWithCompanion(EducationCompanion data) {
+    return EducationData(
+      education_id:
+          data.education_id.present
+              ? data.education_id.value
+              : this.education_id,
+      level: data.level.present ? data.level.value : this.level,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EducationData(')
+          ..write('education_id: $education_id, ')
+          ..write('level: $level')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(education_id, level);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EducationData &&
+          other.education_id == this.education_id &&
+          other.level == this.level);
+}
+
+class EducationCompanion extends UpdateCompanion<EducationData> {
+  final Value<int> education_id;
+  final Value<String> level;
+  const EducationCompanion({
+    this.education_id = const Value.absent(),
+    this.level = const Value.absent(),
+  });
+  EducationCompanion.insert({
+    this.education_id = const Value.absent(),
+    required String level,
+  }) : level = Value(level);
+  static Insertable<EducationData> custom({
+    Expression<int>? education_id,
+    Expression<String>? level,
+  }) {
+    return RawValuesInsertable({
+      if (education_id != null) 'education_id': education_id,
+      if (level != null) 'level': level,
+    });
+  }
+
+  EducationCompanion copyWith({
+    Value<int>? education_id,
+    Value<String>? level,
+  }) {
+    return EducationCompanion(
+      education_id: education_id ?? this.education_id,
+      level: level ?? this.level,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (education_id.present) {
+      map['education_id'] = Variable<int>(education_id.value);
+    }
+    if (level.present) {
+      map['level'] = Variable<String>(level.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EducationCompanion(')
+          ..write('education_id: $education_id, ')
+          ..write('level: $level')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PersonsTable extends Persons with TableInfo<$PersonsTable, PersonData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PersonsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _person_idMeta = const VerificationMeta(
+    'person_id',
+  );
+  @override
+  late final GeneratedColumn<int> person_id = GeneratedColumn<int>(
+    'person_id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _last_nameMeta = const VerificationMeta(
+    'last_name',
+  );
+  @override
+  late final GeneratedColumn<String> last_name = GeneratedColumn<String>(
+    'last_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _first_nameMeta = const VerificationMeta(
+    'first_name',
+  );
+  @override
+  late final GeneratedColumn<String> first_name = GeneratedColumn<String>(
+    'first_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _middle_nameMeta = const VerificationMeta(
+    'middle_name',
+  );
+  @override
+  late final GeneratedColumn<String> middle_name = GeneratedColumn<String>(
+    'middle_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _suffixMeta = const VerificationMeta('suffix');
+  @override
+  late final GeneratedColumn<String> suffix = GeneratedColumn<String>(
+    'suffix',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<Sex?, String> sex =
+      GeneratedColumn<String>(
+        'sex',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<Sex?>($PersonsTable.$convertersexn);
+  static const VerificationMeta _ageMeta = const VerificationMeta('age');
+  @override
+  late final GeneratedColumn<int> age = GeneratedColumn<int>(
+    'age',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _birth_dateMeta = const VerificationMeta(
+    'birth_date',
+  );
+  @override
+  late final GeneratedColumn<DateTime> birth_date = GeneratedColumn<DateTime>(
+    'birth_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _birth_placeMeta = const VerificationMeta(
+    'birth_place',
+  );
+  @override
+  late final GeneratedColumn<String> birth_place = GeneratedColumn<String>(
+    'birth_place',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<CivilStatus?, String>
+  civil_status = GeneratedColumn<String>(
+    'civil_status',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  ).withConverter<CivilStatus?>($PersonsTable.$convertercivil_statusn);
+  static const VerificationMeta _religion_idMeta = const VerificationMeta(
+    'religion_id',
+  );
+  @override
+  late final GeneratedColumn<int> religion_id = GeneratedColumn<int>(
+    'religion_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES religions (religion_id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _nationality_idMeta = const VerificationMeta(
+    'nationality_id',
+  );
+  @override
+  late final GeneratedColumn<int> nationality_id = GeneratedColumn<int>(
+    'nationality_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES nationalities (nationality_id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _ethnicity_idMeta = const VerificationMeta(
+    'ethnicity_id',
+  );
+  @override
+  late final GeneratedColumn<int> ethnicity_id = GeneratedColumn<int>(
+    'ethnicity_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES ethnicities (ethnicity_id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _blood_type_idMeta = const VerificationMeta(
+    'blood_type_id',
+  );
+  @override
+  late final GeneratedColumn<int> blood_type_id = GeneratedColumn<int>(
+    'blood_type_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES blood_types (blood_type_id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _address_idMeta = const VerificationMeta(
+    'address_id',
+  );
+  @override
+  late final GeneratedColumn<int> address_id = GeneratedColumn<int>(
+    'address_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES addresses (address_id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _registration_placeMeta =
+      const VerificationMeta('registration_place');
+  @override
+  late final GeneratedColumn<String> registration_place =
+      GeneratedColumn<String>(
+        'registration_place',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  @override
+  late final GeneratedColumnWithTypeConverter<Residency?, String> residency =
+      GeneratedColumn<String>(
+        'residency',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<Residency?>($PersonsTable.$converterresidencyn);
+  static const VerificationMeta _years_of_residencyMeta =
+      const VerificationMeta('years_of_residency');
+  @override
+  late final GeneratedColumn<int> years_of_residency = GeneratedColumn<int>(
+    'years_of_residency',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<Transient?, String>
+  transient_type = GeneratedColumn<String>(
+    'transient_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  ).withConverter<Transient?>($PersonsTable.$convertertransient_typen);
+  static const VerificationMeta _monthly_income_idMeta = const VerificationMeta(
+    'monthly_income_id',
+  );
+  @override
+  late final GeneratedColumn<int> monthly_income_id = GeneratedColumn<int>(
+    'monthly_income_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES monthly_incomes (monthly_income_id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _daily_income_idMeta = const VerificationMeta(
+    'daily_income_id',
+  );
+  @override
+  late final GeneratedColumn<int> daily_income_id = GeneratedColumn<int>(
+    'daily_income_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES daily_incomes (daily_income_id) ON DELETE RESTRICT',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<SoloParent?, String> solo_parent =
+      GeneratedColumn<String>(
+        'solo_parent',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<SoloParent?>($PersonsTable.$convertersolo_parentn);
+  static const VerificationMeta _ofwMeta = const VerificationMeta('ofw');
+  @override
+  late final GeneratedColumn<bool> ofw = GeneratedColumn<bool>(
+    'ofw',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("ofw" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _literateMeta = const VerificationMeta(
+    'literate',
+  );
+  @override
+  late final GeneratedColumn<bool> literate = GeneratedColumn<bool>(
+    'literate',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("literate" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _pwdMeta = const VerificationMeta('pwd');
+  @override
+  late final GeneratedColumn<bool> pwd = GeneratedColumn<bool>(
+    'pwd',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("pwd" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _registered_voterMeta = const VerificationMeta(
+    'registered_voter',
+  );
+  @override
+  late final GeneratedColumn<bool> registered_voter = GeneratedColumn<bool>(
+    'registered_voter',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("registered_voter" IN (0, 1))',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<CurrentlyEnrolled?, String>
+  currently_enrolled = GeneratedColumn<String>(
+    'currently_enrolled',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  ).withConverter<CurrentlyEnrolled?>(
+    $PersonsTable.$convertercurrently_enrolledn,
+  );
+  static const VerificationMeta _education_idMeta = const VerificationMeta(
+    'education_id',
+  );
+  @override
+  late final GeneratedColumn<int> education_id = GeneratedColumn<int>(
+    'education_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES education (education_id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _deceasedMeta = const VerificationMeta(
+    'deceased',
+  );
+  @override
+  late final GeneratedColumn<bool> deceased = GeneratedColumn<bool>(
+    'deceased',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("deceased" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _death_dateMeta = const VerificationMeta(
+    'death_date',
+  );
+  @override
+  late final GeneratedColumn<DateTime> death_date = GeneratedColumn<DateTime>(
+    'death_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _registrationDateMeta = const VerificationMeta(
+    'registrationDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> registrationDate =
+      GeneratedColumn<DateTime>(
+        'registration_date',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+        clientDefault: () => DateTime.now(),
+      );
+  @override
+  late final GeneratedColumnWithTypeConverter<RegistrationStatus, String>
+  registration_status = GeneratedColumn<String>(
+    'registration_status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<RegistrationStatus>(
+    $PersonsTable.$converterregistration_status,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    person_id,
+    last_name,
+    first_name,
+    middle_name,
+    suffix,
+    sex,
+    age,
+    birth_date,
+    birth_place,
+    civil_status,
+    religion_id,
+    nationality_id,
+    ethnicity_id,
+    blood_type_id,
+    address_id,
+    registration_place,
+    residency,
+    years_of_residency,
+    transient_type,
+    monthly_income_id,
+    daily_income_id,
+    solo_parent,
+    ofw,
+    literate,
+    pwd,
+    registered_voter,
+    currently_enrolled,
+    education_id,
+    deceased,
+    death_date,
+    registrationDate,
+    registration_status,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'persons';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PersonData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('person_id')) {
+      context.handle(
+        _person_idMeta,
+        person_id.isAcceptableOrUnknown(data['person_id']!, _person_idMeta),
+      );
+    }
+    if (data.containsKey('last_name')) {
+      context.handle(
+        _last_nameMeta,
+        last_name.isAcceptableOrUnknown(data['last_name']!, _last_nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_last_nameMeta);
+    }
+    if (data.containsKey('first_name')) {
+      context.handle(
+        _first_nameMeta,
+        first_name.isAcceptableOrUnknown(data['first_name']!, _first_nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_first_nameMeta);
+    }
+    if (data.containsKey('middle_name')) {
+      context.handle(
+        _middle_nameMeta,
+        middle_name.isAcceptableOrUnknown(
+          data['middle_name']!,
+          _middle_nameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('suffix')) {
+      context.handle(
+        _suffixMeta,
+        suffix.isAcceptableOrUnknown(data['suffix']!, _suffixMeta),
+      );
+    }
+    if (data.containsKey('age')) {
+      context.handle(
+        _ageMeta,
+        age.isAcceptableOrUnknown(data['age']!, _ageMeta),
+      );
+    }
+    if (data.containsKey('birth_date')) {
+      context.handle(
+        _birth_dateMeta,
+        birth_date.isAcceptableOrUnknown(data['birth_date']!, _birth_dateMeta),
+      );
+    }
+    if (data.containsKey('birth_place')) {
+      context.handle(
+        _birth_placeMeta,
+        birth_place.isAcceptableOrUnknown(
+          data['birth_place']!,
+          _birth_placeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('religion_id')) {
+      context.handle(
+        _religion_idMeta,
+        religion_id.isAcceptableOrUnknown(
+          data['religion_id']!,
+          _religion_idMeta,
+        ),
+      );
+    }
+    if (data.containsKey('nationality_id')) {
+      context.handle(
+        _nationality_idMeta,
+        nationality_id.isAcceptableOrUnknown(
+          data['nationality_id']!,
+          _nationality_idMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ethnicity_id')) {
+      context.handle(
+        _ethnicity_idMeta,
+        ethnicity_id.isAcceptableOrUnknown(
+          data['ethnicity_id']!,
+          _ethnicity_idMeta,
+        ),
+      );
+    }
+    if (data.containsKey('blood_type_id')) {
+      context.handle(
+        _blood_type_idMeta,
+        blood_type_id.isAcceptableOrUnknown(
+          data['blood_type_id']!,
+          _blood_type_idMeta,
+        ),
+      );
+    }
+    if (data.containsKey('address_id')) {
+      context.handle(
+        _address_idMeta,
+        address_id.isAcceptableOrUnknown(data['address_id']!, _address_idMeta),
+      );
+    }
+    if (data.containsKey('registration_place')) {
+      context.handle(
+        _registration_placeMeta,
+        registration_place.isAcceptableOrUnknown(
+          data['registration_place']!,
+          _registration_placeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('years_of_residency')) {
+      context.handle(
+        _years_of_residencyMeta,
+        years_of_residency.isAcceptableOrUnknown(
+          data['years_of_residency']!,
+          _years_of_residencyMeta,
+        ),
+      );
+    }
+    if (data.containsKey('monthly_income_id')) {
+      context.handle(
+        _monthly_income_idMeta,
+        monthly_income_id.isAcceptableOrUnknown(
+          data['monthly_income_id']!,
+          _monthly_income_idMeta,
+        ),
+      );
+    }
+    if (data.containsKey('daily_income_id')) {
+      context.handle(
+        _daily_income_idMeta,
+        daily_income_id.isAcceptableOrUnknown(
+          data['daily_income_id']!,
+          _daily_income_idMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ofw')) {
+      context.handle(
+        _ofwMeta,
+        ofw.isAcceptableOrUnknown(data['ofw']!, _ofwMeta),
+      );
+    }
+    if (data.containsKey('literate')) {
+      context.handle(
+        _literateMeta,
+        literate.isAcceptableOrUnknown(data['literate']!, _literateMeta),
+      );
+    }
+    if (data.containsKey('pwd')) {
+      context.handle(
+        _pwdMeta,
+        pwd.isAcceptableOrUnknown(data['pwd']!, _pwdMeta),
+      );
+    }
+    if (data.containsKey('registered_voter')) {
+      context.handle(
+        _registered_voterMeta,
+        registered_voter.isAcceptableOrUnknown(
+          data['registered_voter']!,
+          _registered_voterMeta,
+        ),
+      );
+    }
+    if (data.containsKey('education_id')) {
+      context.handle(
+        _education_idMeta,
+        education_id.isAcceptableOrUnknown(
+          data['education_id']!,
+          _education_idMeta,
+        ),
+      );
+    }
+    if (data.containsKey('deceased')) {
+      context.handle(
+        _deceasedMeta,
+        deceased.isAcceptableOrUnknown(data['deceased']!, _deceasedMeta),
+      );
+    }
+    if (data.containsKey('death_date')) {
+      context.handle(
+        _death_dateMeta,
+        death_date.isAcceptableOrUnknown(data['death_date']!, _death_dateMeta),
+      );
+    }
+    if (data.containsKey('registration_date')) {
+      context.handle(
+        _registrationDateMeta,
+        registrationDate.isAcceptableOrUnknown(
+          data['registration_date']!,
+          _registrationDateMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {person_id};
+  @override
+  PersonData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PersonData(
+      person_id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}person_id'],
+          )!,
+      last_name:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}last_name'],
+          )!,
+      first_name:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}first_name'],
+          )!,
+      middle_name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}middle_name'],
+      ),
+      suffix: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}suffix'],
+      ),
+      sex: $PersonsTable.$convertersexn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}sex'],
+        ),
+      ),
+      age: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}age'],
+      ),
+      birth_date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}birth_date'],
+      ),
+      birth_place: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}birth_place'],
+      ),
+      civil_status: $PersonsTable.$convertercivil_statusn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}civil_status'],
+        ),
+      ),
+      religion_id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}religion_id'],
+      ),
+      nationality_id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}nationality_id'],
+      ),
+      ethnicity_id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}ethnicity_id'],
+      ),
+      blood_type_id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}blood_type_id'],
+      ),
+      address_id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}address_id'],
+      ),
+      registration_place: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}registration_place'],
+      ),
+      residency: $PersonsTable.$converterresidencyn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}residency'],
+        ),
+      ),
+      years_of_residency: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}years_of_residency'],
+      ),
+      transient_type: $PersonsTable.$convertertransient_typen.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}transient_type'],
+        ),
+      ),
+      monthly_income_id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}monthly_income_id'],
+      ),
+      daily_income_id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}daily_income_id'],
+      ),
+      solo_parent: $PersonsTable.$convertersolo_parentn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}solo_parent'],
+        ),
+      ),
+      ofw: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}ofw'],
+      ),
+      literate: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}literate'],
+      ),
+      pwd: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}pwd'],
+      ),
+      registered_voter: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}registered_voter'],
+      ),
+      currently_enrolled: $PersonsTable.$convertercurrently_enrolledn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}currently_enrolled'],
+        ),
+      ),
+      education_id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}education_id'],
+      ),
+      deceased: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}deceased'],
+      ),
+      death_date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}death_date'],
+      ),
+      registrationDate:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.dateTime,
+            data['${effectivePrefix}registration_date'],
+          )!,
+      registration_status: $PersonsTable.$converterregistration_status.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}registration_status'],
+        )!,
+      ),
+    );
+  }
+
+  @override
+  $PersonsTable createAlias(String alias) {
+    return $PersonsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<Sex, String, String> $convertersex =
+      const EnumNameConverter<Sex>(Sex.values);
+  static JsonTypeConverter2<Sex?, String?, String?> $convertersexn =
+      JsonTypeConverter2.asNullable($convertersex);
+  static JsonTypeConverter2<CivilStatus, String, String>
+  $convertercivil_status = const EnumNameConverter<CivilStatus>(
+    CivilStatus.values,
+  );
+  static JsonTypeConverter2<CivilStatus?, String?, String?>
+  $convertercivil_statusn = JsonTypeConverter2.asNullable(
+    $convertercivil_status,
+  );
+  static JsonTypeConverter2<Residency, String, String> $converterresidency =
+      const EnumNameConverter<Residency>(Residency.values);
+  static JsonTypeConverter2<Residency?, String?, String?> $converterresidencyn =
+      JsonTypeConverter2.asNullable($converterresidency);
+  static JsonTypeConverter2<Transient, String, String>
+  $convertertransient_type = const EnumNameConverter<Transient>(
+    Transient.values,
+  );
+  static JsonTypeConverter2<Transient?, String?, String?>
+  $convertertransient_typen = JsonTypeConverter2.asNullable(
+    $convertertransient_type,
+  );
+  static JsonTypeConverter2<SoloParent, String, String> $convertersolo_parent =
+      const EnumNameConverter<SoloParent>(SoloParent.values);
+  static JsonTypeConverter2<SoloParent?, String?, String?>
+  $convertersolo_parentn = JsonTypeConverter2.asNullable($convertersolo_parent);
+  static JsonTypeConverter2<CurrentlyEnrolled, String, String>
+  $convertercurrently_enrolled = const EnumNameConverter<CurrentlyEnrolled>(
+    CurrentlyEnrolled.values,
+  );
+  static JsonTypeConverter2<CurrentlyEnrolled?, String?, String?>
+  $convertercurrently_enrolledn = JsonTypeConverter2.asNullable(
+    $convertercurrently_enrolled,
+  );
+  static JsonTypeConverter2<RegistrationStatus, String, String>
+  $converterregistration_status = const EnumNameConverter<RegistrationStatus>(
+    RegistrationStatus.values,
+  );
+}
+
+class PersonData extends DataClass implements Insertable<PersonData> {
+  final int person_id;
+  final String last_name;
+  final String first_name;
+  final String? middle_name;
+  final String? suffix;
+  final Sex? sex;
+  final int? age;
+  final DateTime? birth_date;
+  final String? birth_place;
+  final CivilStatus? civil_status;
+  final int? religion_id;
+  final int? nationality_id;
+  final int? ethnicity_id;
+  final int? blood_type_id;
+  final int? address_id;
+  final String? registration_place;
+  final Residency? residency;
+  final int? years_of_residency;
+  final Transient? transient_type;
+  final int? monthly_income_id;
+  final int? daily_income_id;
+  final SoloParent? solo_parent;
+  final bool? ofw;
+  final bool? literate;
+  final bool? pwd;
+  final bool? registered_voter;
+  final CurrentlyEnrolled? currently_enrolled;
+  final int? education_id;
+  final bool? deceased;
+  final DateTime? death_date;
+  final DateTime registrationDate;
+  final RegistrationStatus registration_status;
+  const PersonData({
+    required this.person_id,
+    required this.last_name,
+    required this.first_name,
+    this.middle_name,
+    this.suffix,
+    this.sex,
+    this.age,
+    this.birth_date,
+    this.birth_place,
+    this.civil_status,
+    this.religion_id,
+    this.nationality_id,
+    this.ethnicity_id,
+    this.blood_type_id,
+    this.address_id,
+    this.registration_place,
+    this.residency,
+    this.years_of_residency,
+    this.transient_type,
+    this.monthly_income_id,
+    this.daily_income_id,
+    this.solo_parent,
+    this.ofw,
+    this.literate,
+    this.pwd,
+    this.registered_voter,
+    this.currently_enrolled,
+    this.education_id,
+    this.deceased,
+    this.death_date,
+    required this.registrationDate,
+    required this.registration_status,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['person_id'] = Variable<int>(person_id);
+    map['last_name'] = Variable<String>(last_name);
+    map['first_name'] = Variable<String>(first_name);
+    if (!nullToAbsent || middle_name != null) {
+      map['middle_name'] = Variable<String>(middle_name);
+    }
+    if (!nullToAbsent || suffix != null) {
+      map['suffix'] = Variable<String>(suffix);
+    }
+    if (!nullToAbsent || sex != null) {
+      map['sex'] = Variable<String>($PersonsTable.$convertersexn.toSql(sex));
+    }
+    if (!nullToAbsent || age != null) {
+      map['age'] = Variable<int>(age);
+    }
+    if (!nullToAbsent || birth_date != null) {
+      map['birth_date'] = Variable<DateTime>(birth_date);
+    }
+    if (!nullToAbsent || birth_place != null) {
+      map['birth_place'] = Variable<String>(birth_place);
+    }
+    if (!nullToAbsent || civil_status != null) {
+      map['civil_status'] = Variable<String>(
+        $PersonsTable.$convertercivil_statusn.toSql(civil_status),
+      );
+    }
+    if (!nullToAbsent || religion_id != null) {
+      map['religion_id'] = Variable<int>(religion_id);
+    }
+    if (!nullToAbsent || nationality_id != null) {
+      map['nationality_id'] = Variable<int>(nationality_id);
+    }
+    if (!nullToAbsent || ethnicity_id != null) {
+      map['ethnicity_id'] = Variable<int>(ethnicity_id);
+    }
+    if (!nullToAbsent || blood_type_id != null) {
+      map['blood_type_id'] = Variable<int>(blood_type_id);
+    }
+    if (!nullToAbsent || address_id != null) {
+      map['address_id'] = Variable<int>(address_id);
+    }
+    if (!nullToAbsent || registration_place != null) {
+      map['registration_place'] = Variable<String>(registration_place);
+    }
+    if (!nullToAbsent || residency != null) {
+      map['residency'] = Variable<String>(
+        $PersonsTable.$converterresidencyn.toSql(residency),
+      );
+    }
+    if (!nullToAbsent || years_of_residency != null) {
+      map['years_of_residency'] = Variable<int>(years_of_residency);
+    }
+    if (!nullToAbsent || transient_type != null) {
+      map['transient_type'] = Variable<String>(
+        $PersonsTable.$convertertransient_typen.toSql(transient_type),
+      );
+    }
+    if (!nullToAbsent || monthly_income_id != null) {
+      map['monthly_income_id'] = Variable<int>(monthly_income_id);
+    }
+    if (!nullToAbsent || daily_income_id != null) {
+      map['daily_income_id'] = Variable<int>(daily_income_id);
+    }
+    if (!nullToAbsent || solo_parent != null) {
+      map['solo_parent'] = Variable<String>(
+        $PersonsTable.$convertersolo_parentn.toSql(solo_parent),
+      );
+    }
+    if (!nullToAbsent || ofw != null) {
+      map['ofw'] = Variable<bool>(ofw);
+    }
+    if (!nullToAbsent || literate != null) {
+      map['literate'] = Variable<bool>(literate);
+    }
+    if (!nullToAbsent || pwd != null) {
+      map['pwd'] = Variable<bool>(pwd);
+    }
+    if (!nullToAbsent || registered_voter != null) {
+      map['registered_voter'] = Variable<bool>(registered_voter);
+    }
+    if (!nullToAbsent || currently_enrolled != null) {
+      map['currently_enrolled'] = Variable<String>(
+        $PersonsTable.$convertercurrently_enrolledn.toSql(currently_enrolled),
+      );
+    }
+    if (!nullToAbsent || education_id != null) {
+      map['education_id'] = Variable<int>(education_id);
+    }
+    if (!nullToAbsent || deceased != null) {
+      map['deceased'] = Variable<bool>(deceased);
+    }
+    if (!nullToAbsent || death_date != null) {
+      map['death_date'] = Variable<DateTime>(death_date);
+    }
+    map['registration_date'] = Variable<DateTime>(registrationDate);
+    {
+      map['registration_status'] = Variable<String>(
+        $PersonsTable.$converterregistration_status.toSql(registration_status),
+      );
+    }
+    return map;
+  }
+
+  PersonsCompanion toCompanion(bool nullToAbsent) {
+    return PersonsCompanion(
+      person_id: Value(person_id),
+      last_name: Value(last_name),
+      first_name: Value(first_name),
+      middle_name:
+          middle_name == null && nullToAbsent
+              ? const Value.absent()
+              : Value(middle_name),
+      suffix:
+          suffix == null && nullToAbsent ? const Value.absent() : Value(suffix),
+      sex: sex == null && nullToAbsent ? const Value.absent() : Value(sex),
+      age: age == null && nullToAbsent ? const Value.absent() : Value(age),
+      birth_date:
+          birth_date == null && nullToAbsent
+              ? const Value.absent()
+              : Value(birth_date),
+      birth_place:
+          birth_place == null && nullToAbsent
+              ? const Value.absent()
+              : Value(birth_place),
+      civil_status:
+          civil_status == null && nullToAbsent
+              ? const Value.absent()
+              : Value(civil_status),
+      religion_id:
+          religion_id == null && nullToAbsent
+              ? const Value.absent()
+              : Value(religion_id),
+      nationality_id:
+          nationality_id == null && nullToAbsent
+              ? const Value.absent()
+              : Value(nationality_id),
+      ethnicity_id:
+          ethnicity_id == null && nullToAbsent
+              ? const Value.absent()
+              : Value(ethnicity_id),
+      blood_type_id:
+          blood_type_id == null && nullToAbsent
+              ? const Value.absent()
+              : Value(blood_type_id),
+      address_id:
+          address_id == null && nullToAbsent
+              ? const Value.absent()
+              : Value(address_id),
+      registration_place:
+          registration_place == null && nullToAbsent
+              ? const Value.absent()
+              : Value(registration_place),
+      residency:
+          residency == null && nullToAbsent
+              ? const Value.absent()
+              : Value(residency),
+      years_of_residency:
+          years_of_residency == null && nullToAbsent
+              ? const Value.absent()
+              : Value(years_of_residency),
+      transient_type:
+          transient_type == null && nullToAbsent
+              ? const Value.absent()
+              : Value(transient_type),
+      monthly_income_id:
+          monthly_income_id == null && nullToAbsent
+              ? const Value.absent()
+              : Value(monthly_income_id),
+      daily_income_id:
+          daily_income_id == null && nullToAbsent
+              ? const Value.absent()
+              : Value(daily_income_id),
+      solo_parent:
+          solo_parent == null && nullToAbsent
+              ? const Value.absent()
+              : Value(solo_parent),
+      ofw: ofw == null && nullToAbsent ? const Value.absent() : Value(ofw),
+      literate:
+          literate == null && nullToAbsent
+              ? const Value.absent()
+              : Value(literate),
+      pwd: pwd == null && nullToAbsent ? const Value.absent() : Value(pwd),
+      registered_voter:
+          registered_voter == null && nullToAbsent
+              ? const Value.absent()
+              : Value(registered_voter),
+      currently_enrolled:
+          currently_enrolled == null && nullToAbsent
+              ? const Value.absent()
+              : Value(currently_enrolled),
+      education_id:
+          education_id == null && nullToAbsent
+              ? const Value.absent()
+              : Value(education_id),
+      deceased:
+          deceased == null && nullToAbsent
+              ? const Value.absent()
+              : Value(deceased),
+      death_date:
+          death_date == null && nullToAbsent
+              ? const Value.absent()
+              : Value(death_date),
+      registrationDate: Value(registrationDate),
+      registration_status: Value(registration_status),
+    );
+  }
+
+  factory PersonData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PersonData(
+      person_id: serializer.fromJson<int>(json['person_id']),
+      last_name: serializer.fromJson<String>(json['last_name']),
+      first_name: serializer.fromJson<String>(json['first_name']),
+      middle_name: serializer.fromJson<String?>(json['middle_name']),
+      suffix: serializer.fromJson<String?>(json['suffix']),
+      sex: $PersonsTable.$convertersexn.fromJson(
+        serializer.fromJson<String?>(json['sex']),
+      ),
+      age: serializer.fromJson<int?>(json['age']),
+      birth_date: serializer.fromJson<DateTime?>(json['birth_date']),
+      birth_place: serializer.fromJson<String?>(json['birth_place']),
+      civil_status: $PersonsTable.$convertercivil_statusn.fromJson(
+        serializer.fromJson<String?>(json['civil_status']),
+      ),
+      religion_id: serializer.fromJson<int?>(json['religion_id']),
+      nationality_id: serializer.fromJson<int?>(json['nationality_id']),
+      ethnicity_id: serializer.fromJson<int?>(json['ethnicity_id']),
+      blood_type_id: serializer.fromJson<int?>(json['blood_type_id']),
+      address_id: serializer.fromJson<int?>(json['address_id']),
+      registration_place: serializer.fromJson<String?>(
+        json['registration_place'],
+      ),
+      residency: $PersonsTable.$converterresidencyn.fromJson(
+        serializer.fromJson<String?>(json['residency']),
+      ),
+      years_of_residency: serializer.fromJson<int?>(json['years_of_residency']),
+      transient_type: $PersonsTable.$convertertransient_typen.fromJson(
+        serializer.fromJson<String?>(json['transient_type']),
+      ),
+      monthly_income_id: serializer.fromJson<int?>(json['monthly_income_id']),
+      daily_income_id: serializer.fromJson<int?>(json['daily_income_id']),
+      solo_parent: $PersonsTable.$convertersolo_parentn.fromJson(
+        serializer.fromJson<String?>(json['solo_parent']),
+      ),
+      ofw: serializer.fromJson<bool?>(json['ofw']),
+      literate: serializer.fromJson<bool?>(json['literate']),
+      pwd: serializer.fromJson<bool?>(json['pwd']),
+      registered_voter: serializer.fromJson<bool?>(json['registered_voter']),
+      currently_enrolled: $PersonsTable.$convertercurrently_enrolledn.fromJson(
+        serializer.fromJson<String?>(json['currently_enrolled']),
+      ),
+      education_id: serializer.fromJson<int?>(json['education_id']),
+      deceased: serializer.fromJson<bool?>(json['deceased']),
+      death_date: serializer.fromJson<DateTime?>(json['death_date']),
+      registrationDate: serializer.fromJson<DateTime>(json['registrationDate']),
+      registration_status: $PersonsTable.$converterregistration_status.fromJson(
+        serializer.fromJson<String>(json['registration_status']),
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'person_id': serializer.toJson<int>(person_id),
+      'last_name': serializer.toJson<String>(last_name),
+      'first_name': serializer.toJson<String>(first_name),
+      'middle_name': serializer.toJson<String?>(middle_name),
+      'suffix': serializer.toJson<String?>(suffix),
+      'sex': serializer.toJson<String?>(
+        $PersonsTable.$convertersexn.toJson(sex),
+      ),
+      'age': serializer.toJson<int?>(age),
+      'birth_date': serializer.toJson<DateTime?>(birth_date),
+      'birth_place': serializer.toJson<String?>(birth_place),
+      'civil_status': serializer.toJson<String?>(
+        $PersonsTable.$convertercivil_statusn.toJson(civil_status),
+      ),
+      'religion_id': serializer.toJson<int?>(religion_id),
+      'nationality_id': serializer.toJson<int?>(nationality_id),
+      'ethnicity_id': serializer.toJson<int?>(ethnicity_id),
+      'blood_type_id': serializer.toJson<int?>(blood_type_id),
+      'address_id': serializer.toJson<int?>(address_id),
+      'registration_place': serializer.toJson<String?>(registration_place),
+      'residency': serializer.toJson<String?>(
+        $PersonsTable.$converterresidencyn.toJson(residency),
+      ),
+      'years_of_residency': serializer.toJson<int?>(years_of_residency),
+      'transient_type': serializer.toJson<String?>(
+        $PersonsTable.$convertertransient_typen.toJson(transient_type),
+      ),
+      'monthly_income_id': serializer.toJson<int?>(monthly_income_id),
+      'daily_income_id': serializer.toJson<int?>(daily_income_id),
+      'solo_parent': serializer.toJson<String?>(
+        $PersonsTable.$convertersolo_parentn.toJson(solo_parent),
+      ),
+      'ofw': serializer.toJson<bool?>(ofw),
+      'literate': serializer.toJson<bool?>(literate),
+      'pwd': serializer.toJson<bool?>(pwd),
+      'registered_voter': serializer.toJson<bool?>(registered_voter),
+      'currently_enrolled': serializer.toJson<String?>(
+        $PersonsTable.$convertercurrently_enrolledn.toJson(currently_enrolled),
+      ),
+      'education_id': serializer.toJson<int?>(education_id),
+      'deceased': serializer.toJson<bool?>(deceased),
+      'death_date': serializer.toJson<DateTime?>(death_date),
+      'registrationDate': serializer.toJson<DateTime>(registrationDate),
+      'registration_status': serializer.toJson<String>(
+        $PersonsTable.$converterregistration_status.toJson(registration_status),
+      ),
+    };
+  }
+
+  PersonData copyWith({
+    int? person_id,
+    String? last_name,
+    String? first_name,
+    Value<String?> middle_name = const Value.absent(),
+    Value<String?> suffix = const Value.absent(),
+    Value<Sex?> sex = const Value.absent(),
+    Value<int?> age = const Value.absent(),
+    Value<DateTime?> birth_date = const Value.absent(),
+    Value<String?> birth_place = const Value.absent(),
+    Value<CivilStatus?> civil_status = const Value.absent(),
+    Value<int?> religion_id = const Value.absent(),
+    Value<int?> nationality_id = const Value.absent(),
+    Value<int?> ethnicity_id = const Value.absent(),
+    Value<int?> blood_type_id = const Value.absent(),
+    Value<int?> address_id = const Value.absent(),
+    Value<String?> registration_place = const Value.absent(),
+    Value<Residency?> residency = const Value.absent(),
+    Value<int?> years_of_residency = const Value.absent(),
+    Value<Transient?> transient_type = const Value.absent(),
+    Value<int?> monthly_income_id = const Value.absent(),
+    Value<int?> daily_income_id = const Value.absent(),
+    Value<SoloParent?> solo_parent = const Value.absent(),
+    Value<bool?> ofw = const Value.absent(),
+    Value<bool?> literate = const Value.absent(),
+    Value<bool?> pwd = const Value.absent(),
+    Value<bool?> registered_voter = const Value.absent(),
+    Value<CurrentlyEnrolled?> currently_enrolled = const Value.absent(),
+    Value<int?> education_id = const Value.absent(),
+    Value<bool?> deceased = const Value.absent(),
+    Value<DateTime?> death_date = const Value.absent(),
+    DateTime? registrationDate,
+    RegistrationStatus? registration_status,
+  }) => PersonData(
+    person_id: person_id ?? this.person_id,
+    last_name: last_name ?? this.last_name,
+    first_name: first_name ?? this.first_name,
+    middle_name: middle_name.present ? middle_name.value : this.middle_name,
+    suffix: suffix.present ? suffix.value : this.suffix,
+    sex: sex.present ? sex.value : this.sex,
+    age: age.present ? age.value : this.age,
+    birth_date: birth_date.present ? birth_date.value : this.birth_date,
+    birth_place: birth_place.present ? birth_place.value : this.birth_place,
+    civil_status: civil_status.present ? civil_status.value : this.civil_status,
+    religion_id: religion_id.present ? religion_id.value : this.religion_id,
+    nationality_id:
+        nationality_id.present ? nationality_id.value : this.nationality_id,
+    ethnicity_id: ethnicity_id.present ? ethnicity_id.value : this.ethnicity_id,
+    blood_type_id:
+        blood_type_id.present ? blood_type_id.value : this.blood_type_id,
+    address_id: address_id.present ? address_id.value : this.address_id,
+    registration_place:
+        registration_place.present
+            ? registration_place.value
+            : this.registration_place,
+    residency: residency.present ? residency.value : this.residency,
+    years_of_residency:
+        years_of_residency.present
+            ? years_of_residency.value
+            : this.years_of_residency,
+    transient_type:
+        transient_type.present ? transient_type.value : this.transient_type,
+    monthly_income_id:
+        monthly_income_id.present
+            ? monthly_income_id.value
+            : this.monthly_income_id,
+    daily_income_id:
+        daily_income_id.present ? daily_income_id.value : this.daily_income_id,
+    solo_parent: solo_parent.present ? solo_parent.value : this.solo_parent,
+    ofw: ofw.present ? ofw.value : this.ofw,
+    literate: literate.present ? literate.value : this.literate,
+    pwd: pwd.present ? pwd.value : this.pwd,
+    registered_voter:
+        registered_voter.present
+            ? registered_voter.value
+            : this.registered_voter,
+    currently_enrolled:
+        currently_enrolled.present
+            ? currently_enrolled.value
+            : this.currently_enrolled,
+    education_id: education_id.present ? education_id.value : this.education_id,
+    deceased: deceased.present ? deceased.value : this.deceased,
+    death_date: death_date.present ? death_date.value : this.death_date,
+    registrationDate: registrationDate ?? this.registrationDate,
+    registration_status: registration_status ?? this.registration_status,
+  );
+  PersonData copyWithCompanion(PersonsCompanion data) {
+    return PersonData(
+      person_id: data.person_id.present ? data.person_id.value : this.person_id,
+      last_name: data.last_name.present ? data.last_name.value : this.last_name,
+      first_name:
+          data.first_name.present ? data.first_name.value : this.first_name,
+      middle_name:
+          data.middle_name.present ? data.middle_name.value : this.middle_name,
+      suffix: data.suffix.present ? data.suffix.value : this.suffix,
+      sex: data.sex.present ? data.sex.value : this.sex,
+      age: data.age.present ? data.age.value : this.age,
+      birth_date:
+          data.birth_date.present ? data.birth_date.value : this.birth_date,
+      birth_place:
+          data.birth_place.present ? data.birth_place.value : this.birth_place,
+      civil_status:
+          data.civil_status.present
+              ? data.civil_status.value
+              : this.civil_status,
+      religion_id:
+          data.religion_id.present ? data.religion_id.value : this.religion_id,
+      nationality_id:
+          data.nationality_id.present
+              ? data.nationality_id.value
+              : this.nationality_id,
+      ethnicity_id:
+          data.ethnicity_id.present
+              ? data.ethnicity_id.value
+              : this.ethnicity_id,
+      blood_type_id:
+          data.blood_type_id.present
+              ? data.blood_type_id.value
+              : this.blood_type_id,
+      address_id:
+          data.address_id.present ? data.address_id.value : this.address_id,
+      registration_place:
+          data.registration_place.present
+              ? data.registration_place.value
+              : this.registration_place,
+      residency: data.residency.present ? data.residency.value : this.residency,
+      years_of_residency:
+          data.years_of_residency.present
+              ? data.years_of_residency.value
+              : this.years_of_residency,
+      transient_type:
+          data.transient_type.present
+              ? data.transient_type.value
+              : this.transient_type,
+      monthly_income_id:
+          data.monthly_income_id.present
+              ? data.monthly_income_id.value
+              : this.monthly_income_id,
+      daily_income_id:
+          data.daily_income_id.present
+              ? data.daily_income_id.value
+              : this.daily_income_id,
+      solo_parent:
+          data.solo_parent.present ? data.solo_parent.value : this.solo_parent,
+      ofw: data.ofw.present ? data.ofw.value : this.ofw,
+      literate: data.literate.present ? data.literate.value : this.literate,
+      pwd: data.pwd.present ? data.pwd.value : this.pwd,
+      registered_voter:
+          data.registered_voter.present
+              ? data.registered_voter.value
+              : this.registered_voter,
+      currently_enrolled:
+          data.currently_enrolled.present
+              ? data.currently_enrolled.value
+              : this.currently_enrolled,
+      education_id:
+          data.education_id.present
+              ? data.education_id.value
+              : this.education_id,
+      deceased: data.deceased.present ? data.deceased.value : this.deceased,
+      death_date:
+          data.death_date.present ? data.death_date.value : this.death_date,
+      registrationDate:
+          data.registrationDate.present
+              ? data.registrationDate.value
+              : this.registrationDate,
+      registration_status:
+          data.registration_status.present
+              ? data.registration_status.value
+              : this.registration_status,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PersonData(')
+          ..write('person_id: $person_id, ')
+          ..write('last_name: $last_name, ')
+          ..write('first_name: $first_name, ')
+          ..write('middle_name: $middle_name, ')
+          ..write('suffix: $suffix, ')
+          ..write('sex: $sex, ')
+          ..write('age: $age, ')
+          ..write('birth_date: $birth_date, ')
+          ..write('birth_place: $birth_place, ')
+          ..write('civil_status: $civil_status, ')
+          ..write('religion_id: $religion_id, ')
+          ..write('nationality_id: $nationality_id, ')
+          ..write('ethnicity_id: $ethnicity_id, ')
+          ..write('blood_type_id: $blood_type_id, ')
+          ..write('address_id: $address_id, ')
+          ..write('registration_place: $registration_place, ')
+          ..write('residency: $residency, ')
+          ..write('years_of_residency: $years_of_residency, ')
+          ..write('transient_type: $transient_type, ')
+          ..write('monthly_income_id: $monthly_income_id, ')
+          ..write('daily_income_id: $daily_income_id, ')
+          ..write('solo_parent: $solo_parent, ')
+          ..write('ofw: $ofw, ')
+          ..write('literate: $literate, ')
+          ..write('pwd: $pwd, ')
+          ..write('registered_voter: $registered_voter, ')
+          ..write('currently_enrolled: $currently_enrolled, ')
+          ..write('education_id: $education_id, ')
+          ..write('deceased: $deceased, ')
+          ..write('death_date: $death_date, ')
+          ..write('registrationDate: $registrationDate, ')
+          ..write('registration_status: $registration_status')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    person_id,
+    last_name,
+    first_name,
+    middle_name,
+    suffix,
+    sex,
+    age,
+    birth_date,
+    birth_place,
+    civil_status,
+    religion_id,
+    nationality_id,
+    ethnicity_id,
+    blood_type_id,
+    address_id,
+    registration_place,
+    residency,
+    years_of_residency,
+    transient_type,
+    monthly_income_id,
+    daily_income_id,
+    solo_parent,
+    ofw,
+    literate,
+    pwd,
+    registered_voter,
+    currently_enrolled,
+    education_id,
+    deceased,
+    death_date,
+    registrationDate,
+    registration_status,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PersonData &&
+          other.person_id == this.person_id &&
+          other.last_name == this.last_name &&
+          other.first_name == this.first_name &&
+          other.middle_name == this.middle_name &&
+          other.suffix == this.suffix &&
+          other.sex == this.sex &&
+          other.age == this.age &&
+          other.birth_date == this.birth_date &&
+          other.birth_place == this.birth_place &&
+          other.civil_status == this.civil_status &&
+          other.religion_id == this.religion_id &&
+          other.nationality_id == this.nationality_id &&
+          other.ethnicity_id == this.ethnicity_id &&
+          other.blood_type_id == this.blood_type_id &&
+          other.address_id == this.address_id &&
+          other.registration_place == this.registration_place &&
+          other.residency == this.residency &&
+          other.years_of_residency == this.years_of_residency &&
+          other.transient_type == this.transient_type &&
+          other.monthly_income_id == this.monthly_income_id &&
+          other.daily_income_id == this.daily_income_id &&
+          other.solo_parent == this.solo_parent &&
+          other.ofw == this.ofw &&
+          other.literate == this.literate &&
+          other.pwd == this.pwd &&
+          other.registered_voter == this.registered_voter &&
+          other.currently_enrolled == this.currently_enrolled &&
+          other.education_id == this.education_id &&
+          other.deceased == this.deceased &&
+          other.death_date == this.death_date &&
+          other.registrationDate == this.registrationDate &&
+          other.registration_status == this.registration_status);
+}
+
+class PersonsCompanion extends UpdateCompanion<PersonData> {
+  final Value<int> person_id;
+  final Value<String> last_name;
+  final Value<String> first_name;
+  final Value<String?> middle_name;
+  final Value<String?> suffix;
+  final Value<Sex?> sex;
+  final Value<int?> age;
+  final Value<DateTime?> birth_date;
+  final Value<String?> birth_place;
+  final Value<CivilStatus?> civil_status;
+  final Value<int?> religion_id;
+  final Value<int?> nationality_id;
+  final Value<int?> ethnicity_id;
+  final Value<int?> blood_type_id;
+  final Value<int?> address_id;
+  final Value<String?> registration_place;
+  final Value<Residency?> residency;
+  final Value<int?> years_of_residency;
+  final Value<Transient?> transient_type;
+  final Value<int?> monthly_income_id;
+  final Value<int?> daily_income_id;
+  final Value<SoloParent?> solo_parent;
+  final Value<bool?> ofw;
+  final Value<bool?> literate;
+  final Value<bool?> pwd;
+  final Value<bool?> registered_voter;
+  final Value<CurrentlyEnrolled?> currently_enrolled;
+  final Value<int?> education_id;
+  final Value<bool?> deceased;
+  final Value<DateTime?> death_date;
+  final Value<DateTime> registrationDate;
+  final Value<RegistrationStatus> registration_status;
+  const PersonsCompanion({
+    this.person_id = const Value.absent(),
+    this.last_name = const Value.absent(),
+    this.first_name = const Value.absent(),
+    this.middle_name = const Value.absent(),
+    this.suffix = const Value.absent(),
+    this.sex = const Value.absent(),
+    this.age = const Value.absent(),
+    this.birth_date = const Value.absent(),
+    this.birth_place = const Value.absent(),
+    this.civil_status = const Value.absent(),
+    this.religion_id = const Value.absent(),
+    this.nationality_id = const Value.absent(),
+    this.ethnicity_id = const Value.absent(),
+    this.blood_type_id = const Value.absent(),
+    this.address_id = const Value.absent(),
+    this.registration_place = const Value.absent(),
+    this.residency = const Value.absent(),
+    this.years_of_residency = const Value.absent(),
+    this.transient_type = const Value.absent(),
+    this.monthly_income_id = const Value.absent(),
+    this.daily_income_id = const Value.absent(),
+    this.solo_parent = const Value.absent(),
+    this.ofw = const Value.absent(),
+    this.literate = const Value.absent(),
+    this.pwd = const Value.absent(),
+    this.registered_voter = const Value.absent(),
+    this.currently_enrolled = const Value.absent(),
+    this.education_id = const Value.absent(),
+    this.deceased = const Value.absent(),
+    this.death_date = const Value.absent(),
+    this.registrationDate = const Value.absent(),
+    this.registration_status = const Value.absent(),
+  });
+  PersonsCompanion.insert({
+    this.person_id = const Value.absent(),
+    required String last_name,
+    required String first_name,
+    this.middle_name = const Value.absent(),
+    this.suffix = const Value.absent(),
+    this.sex = const Value.absent(),
+    this.age = const Value.absent(),
+    this.birth_date = const Value.absent(),
+    this.birth_place = const Value.absent(),
+    this.civil_status = const Value.absent(),
+    this.religion_id = const Value.absent(),
+    this.nationality_id = const Value.absent(),
+    this.ethnicity_id = const Value.absent(),
+    this.blood_type_id = const Value.absent(),
+    this.address_id = const Value.absent(),
+    this.registration_place = const Value.absent(),
+    this.residency = const Value.absent(),
+    this.years_of_residency = const Value.absent(),
+    this.transient_type = const Value.absent(),
+    this.monthly_income_id = const Value.absent(),
+    this.daily_income_id = const Value.absent(),
+    this.solo_parent = const Value.absent(),
+    this.ofw = const Value.absent(),
+    this.literate = const Value.absent(),
+    this.pwd = const Value.absent(),
+    this.registered_voter = const Value.absent(),
+    this.currently_enrolled = const Value.absent(),
+    this.education_id = const Value.absent(),
+    this.deceased = const Value.absent(),
+    this.death_date = const Value.absent(),
+    this.registrationDate = const Value.absent(),
+    required RegistrationStatus registration_status,
+  }) : last_name = Value(last_name),
+       first_name = Value(first_name),
+       registration_status = Value(registration_status);
+  static Insertable<PersonData> custom({
+    Expression<int>? person_id,
+    Expression<String>? last_name,
+    Expression<String>? first_name,
+    Expression<String>? middle_name,
+    Expression<String>? suffix,
+    Expression<String>? sex,
+    Expression<int>? age,
+    Expression<DateTime>? birth_date,
+    Expression<String>? birth_place,
+    Expression<String>? civil_status,
+    Expression<int>? religion_id,
+    Expression<int>? nationality_id,
+    Expression<int>? ethnicity_id,
+    Expression<int>? blood_type_id,
+    Expression<int>? address_id,
+    Expression<String>? registration_place,
+    Expression<String>? residency,
+    Expression<int>? years_of_residency,
+    Expression<String>? transient_type,
+    Expression<int>? monthly_income_id,
+    Expression<int>? daily_income_id,
+    Expression<String>? solo_parent,
+    Expression<bool>? ofw,
+    Expression<bool>? literate,
+    Expression<bool>? pwd,
+    Expression<bool>? registered_voter,
+    Expression<String>? currently_enrolled,
+    Expression<int>? education_id,
+    Expression<bool>? deceased,
+    Expression<DateTime>? death_date,
+    Expression<DateTime>? registrationDate,
+    Expression<String>? registration_status,
+  }) {
+    return RawValuesInsertable({
+      if (person_id != null) 'person_id': person_id,
+      if (last_name != null) 'last_name': last_name,
+      if (first_name != null) 'first_name': first_name,
+      if (middle_name != null) 'middle_name': middle_name,
+      if (suffix != null) 'suffix': suffix,
+      if (sex != null) 'sex': sex,
+      if (age != null) 'age': age,
+      if (birth_date != null) 'birth_date': birth_date,
+      if (birth_place != null) 'birth_place': birth_place,
+      if (civil_status != null) 'civil_status': civil_status,
+      if (religion_id != null) 'religion_id': religion_id,
+      if (nationality_id != null) 'nationality_id': nationality_id,
+      if (ethnicity_id != null) 'ethnicity_id': ethnicity_id,
+      if (blood_type_id != null) 'blood_type_id': blood_type_id,
+      if (address_id != null) 'address_id': address_id,
+      if (registration_place != null) 'registration_place': registration_place,
+      if (residency != null) 'residency': residency,
+      if (years_of_residency != null) 'years_of_residency': years_of_residency,
+      if (transient_type != null) 'transient_type': transient_type,
+      if (monthly_income_id != null) 'monthly_income_id': monthly_income_id,
+      if (daily_income_id != null) 'daily_income_id': daily_income_id,
+      if (solo_parent != null) 'solo_parent': solo_parent,
+      if (ofw != null) 'ofw': ofw,
+      if (literate != null) 'literate': literate,
+      if (pwd != null) 'pwd': pwd,
+      if (registered_voter != null) 'registered_voter': registered_voter,
+      if (currently_enrolled != null) 'currently_enrolled': currently_enrolled,
+      if (education_id != null) 'education_id': education_id,
+      if (deceased != null) 'deceased': deceased,
+      if (death_date != null) 'death_date': death_date,
+      if (registrationDate != null) 'registration_date': registrationDate,
+      if (registration_status != null)
+        'registration_status': registration_status,
+    });
+  }
+
+  PersonsCompanion copyWith({
+    Value<int>? person_id,
+    Value<String>? last_name,
+    Value<String>? first_name,
+    Value<String?>? middle_name,
+    Value<String?>? suffix,
+    Value<Sex?>? sex,
+    Value<int?>? age,
+    Value<DateTime?>? birth_date,
+    Value<String?>? birth_place,
+    Value<CivilStatus?>? civil_status,
+    Value<int?>? religion_id,
+    Value<int?>? nationality_id,
+    Value<int?>? ethnicity_id,
+    Value<int?>? blood_type_id,
+    Value<int?>? address_id,
+    Value<String?>? registration_place,
+    Value<Residency?>? residency,
+    Value<int?>? years_of_residency,
+    Value<Transient?>? transient_type,
+    Value<int?>? monthly_income_id,
+    Value<int?>? daily_income_id,
+    Value<SoloParent?>? solo_parent,
+    Value<bool?>? ofw,
+    Value<bool?>? literate,
+    Value<bool?>? pwd,
+    Value<bool?>? registered_voter,
+    Value<CurrentlyEnrolled?>? currently_enrolled,
+    Value<int?>? education_id,
+    Value<bool?>? deceased,
+    Value<DateTime?>? death_date,
+    Value<DateTime>? registrationDate,
+    Value<RegistrationStatus>? registration_status,
+  }) {
+    return PersonsCompanion(
+      person_id: person_id ?? this.person_id,
+      last_name: last_name ?? this.last_name,
+      first_name: first_name ?? this.first_name,
+      middle_name: middle_name ?? this.middle_name,
+      suffix: suffix ?? this.suffix,
+      sex: sex ?? this.sex,
+      age: age ?? this.age,
+      birth_date: birth_date ?? this.birth_date,
+      birth_place: birth_place ?? this.birth_place,
+      civil_status: civil_status ?? this.civil_status,
+      religion_id: religion_id ?? this.religion_id,
+      nationality_id: nationality_id ?? this.nationality_id,
+      ethnicity_id: ethnicity_id ?? this.ethnicity_id,
+      blood_type_id: blood_type_id ?? this.blood_type_id,
+      address_id: address_id ?? this.address_id,
+      registration_place: registration_place ?? this.registration_place,
+      residency: residency ?? this.residency,
+      years_of_residency: years_of_residency ?? this.years_of_residency,
+      transient_type: transient_type ?? this.transient_type,
+      monthly_income_id: monthly_income_id ?? this.monthly_income_id,
+      daily_income_id: daily_income_id ?? this.daily_income_id,
+      solo_parent: solo_parent ?? this.solo_parent,
+      ofw: ofw ?? this.ofw,
+      literate: literate ?? this.literate,
+      pwd: pwd ?? this.pwd,
+      registered_voter: registered_voter ?? this.registered_voter,
+      currently_enrolled: currently_enrolled ?? this.currently_enrolled,
+      education_id: education_id ?? this.education_id,
+      deceased: deceased ?? this.deceased,
+      death_date: death_date ?? this.death_date,
+      registrationDate: registrationDate ?? this.registrationDate,
+      registration_status: registration_status ?? this.registration_status,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (person_id.present) {
+      map['person_id'] = Variable<int>(person_id.value);
+    }
+    if (last_name.present) {
+      map['last_name'] = Variable<String>(last_name.value);
+    }
+    if (first_name.present) {
+      map['first_name'] = Variable<String>(first_name.value);
+    }
+    if (middle_name.present) {
+      map['middle_name'] = Variable<String>(middle_name.value);
+    }
+    if (suffix.present) {
+      map['suffix'] = Variable<String>(suffix.value);
+    }
+    if (sex.present) {
+      map['sex'] = Variable<String>(
+        $PersonsTable.$convertersexn.toSql(sex.value),
+      );
+    }
+    if (age.present) {
+      map['age'] = Variable<int>(age.value);
+    }
+    if (birth_date.present) {
+      map['birth_date'] = Variable<DateTime>(birth_date.value);
+    }
+    if (birth_place.present) {
+      map['birth_place'] = Variable<String>(birth_place.value);
+    }
+    if (civil_status.present) {
+      map['civil_status'] = Variable<String>(
+        $PersonsTable.$convertercivil_statusn.toSql(civil_status.value),
+      );
+    }
+    if (religion_id.present) {
+      map['religion_id'] = Variable<int>(religion_id.value);
+    }
+    if (nationality_id.present) {
+      map['nationality_id'] = Variable<int>(nationality_id.value);
+    }
+    if (ethnicity_id.present) {
+      map['ethnicity_id'] = Variable<int>(ethnicity_id.value);
+    }
+    if (blood_type_id.present) {
+      map['blood_type_id'] = Variable<int>(blood_type_id.value);
+    }
+    if (address_id.present) {
+      map['address_id'] = Variable<int>(address_id.value);
+    }
+    if (registration_place.present) {
+      map['registration_place'] = Variable<String>(registration_place.value);
+    }
+    if (residency.present) {
+      map['residency'] = Variable<String>(
+        $PersonsTable.$converterresidencyn.toSql(residency.value),
+      );
+    }
+    if (years_of_residency.present) {
+      map['years_of_residency'] = Variable<int>(years_of_residency.value);
+    }
+    if (transient_type.present) {
+      map['transient_type'] = Variable<String>(
+        $PersonsTable.$convertertransient_typen.toSql(transient_type.value),
+      );
+    }
+    if (monthly_income_id.present) {
+      map['monthly_income_id'] = Variable<int>(monthly_income_id.value);
+    }
+    if (daily_income_id.present) {
+      map['daily_income_id'] = Variable<int>(daily_income_id.value);
+    }
+    if (solo_parent.present) {
+      map['solo_parent'] = Variable<String>(
+        $PersonsTable.$convertersolo_parentn.toSql(solo_parent.value),
+      );
+    }
+    if (ofw.present) {
+      map['ofw'] = Variable<bool>(ofw.value);
+    }
+    if (literate.present) {
+      map['literate'] = Variable<bool>(literate.value);
+    }
+    if (pwd.present) {
+      map['pwd'] = Variable<bool>(pwd.value);
+    }
+    if (registered_voter.present) {
+      map['registered_voter'] = Variable<bool>(registered_voter.value);
+    }
+    if (currently_enrolled.present) {
+      map['currently_enrolled'] = Variable<String>(
+        $PersonsTable.$convertercurrently_enrolledn.toSql(
+          currently_enrolled.value,
+        ),
+      );
+    }
+    if (education_id.present) {
+      map['education_id'] = Variable<int>(education_id.value);
+    }
+    if (deceased.present) {
+      map['deceased'] = Variable<bool>(deceased.value);
+    }
+    if (death_date.present) {
+      map['death_date'] = Variable<DateTime>(death_date.value);
+    }
+    if (registrationDate.present) {
+      map['registration_date'] = Variable<DateTime>(registrationDate.value);
+    }
+    if (registration_status.present) {
+      map['registration_status'] = Variable<String>(
+        $PersonsTable.$converterregistration_status.toSql(
+          registration_status.value,
+        ),
+      );
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PersonsCompanion(')
+          ..write('person_id: $person_id, ')
+          ..write('last_name: $last_name, ')
+          ..write('first_name: $first_name, ')
+          ..write('middle_name: $middle_name, ')
+          ..write('suffix: $suffix, ')
+          ..write('sex: $sex, ')
+          ..write('age: $age, ')
+          ..write('birth_date: $birth_date, ')
+          ..write('birth_place: $birth_place, ')
+          ..write('civil_status: $civil_status, ')
+          ..write('religion_id: $religion_id, ')
+          ..write('nationality_id: $nationality_id, ')
+          ..write('ethnicity_id: $ethnicity_id, ')
+          ..write('blood_type_id: $blood_type_id, ')
+          ..write('address_id: $address_id, ')
+          ..write('registration_place: $registration_place, ')
+          ..write('residency: $residency, ')
+          ..write('years_of_residency: $years_of_residency, ')
+          ..write('transient_type: $transient_type, ')
+          ..write('monthly_income_id: $monthly_income_id, ')
+          ..write('daily_income_id: $daily_income_id, ')
+          ..write('solo_parent: $solo_parent, ')
+          ..write('ofw: $ofw, ')
+          ..write('literate: $literate, ')
+          ..write('pwd: $pwd, ')
+          ..write('registered_voter: $registered_voter, ')
+          ..write('currently_enrolled: $currently_enrolled, ')
+          ..write('education_id: $education_id, ')
+          ..write('deceased: $deceased, ')
+          ..write('death_date: $death_date, ')
+          ..write('registrationDate: $registrationDate, ')
+          ..write('registration_status: $registration_status')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $BuildingTypesTable extends BuildingTypes
     with TableInfo<$BuildingTypesTable, BuildingTypeData> {
   @override
@@ -2195,2621 +4743,6 @@ class HouseholdsCompanion extends UpdateCompanion<HouseholdData> {
           ..write('household_members_num: $household_members_num, ')
           ..write('female_mortality: $female_mortality, ')
           ..write('child_mortality: $child_mortality, ')
-          ..write('registration_date: $registration_date, ')
-          ..write('registration_status: $registration_status')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $MonthlyIncomesTable extends MonthlyIncomes
-    with TableInfo<$MonthlyIncomesTable, MonthlyIncomeData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $MonthlyIncomesTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _monthly_income_idMeta = const VerificationMeta(
-    'monthly_income_id',
-  );
-  @override
-  late final GeneratedColumn<int> monthly_income_id = GeneratedColumn<int>(
-    'monthly_income_id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _rangeMeta = const VerificationMeta('range');
-  @override
-  late final GeneratedColumn<String> range = GeneratedColumn<String>(
-    'range',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [monthly_income_id, range];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'monthly_incomes';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<MonthlyIncomeData> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('monthly_income_id')) {
-      context.handle(
-        _monthly_income_idMeta,
-        monthly_income_id.isAcceptableOrUnknown(
-          data['monthly_income_id']!,
-          _monthly_income_idMeta,
-        ),
-      );
-    }
-    if (data.containsKey('range')) {
-      context.handle(
-        _rangeMeta,
-        range.isAcceptableOrUnknown(data['range']!, _rangeMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_rangeMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {monthly_income_id};
-  @override
-  MonthlyIncomeData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return MonthlyIncomeData(
-      monthly_income_id:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}monthly_income_id'],
-          )!,
-      range:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}range'],
-          )!,
-    );
-  }
-
-  @override
-  $MonthlyIncomesTable createAlias(String alias) {
-    return $MonthlyIncomesTable(attachedDatabase, alias);
-  }
-}
-
-class MonthlyIncomeData extends DataClass
-    implements Insertable<MonthlyIncomeData> {
-  final int monthly_income_id;
-  final String range;
-  const MonthlyIncomeData({
-    required this.monthly_income_id,
-    required this.range,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['monthly_income_id'] = Variable<int>(monthly_income_id);
-    map['range'] = Variable<String>(range);
-    return map;
-  }
-
-  MonthlyIncomesCompanion toCompanion(bool nullToAbsent) {
-    return MonthlyIncomesCompanion(
-      monthly_income_id: Value(monthly_income_id),
-      range: Value(range),
-    );
-  }
-
-  factory MonthlyIncomeData.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return MonthlyIncomeData(
-      monthly_income_id: serializer.fromJson<int>(json['monthly_income_id']),
-      range: serializer.fromJson<String>(json['range']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'monthly_income_id': serializer.toJson<int>(monthly_income_id),
-      'range': serializer.toJson<String>(range),
-    };
-  }
-
-  MonthlyIncomeData copyWith({int? monthly_income_id, String? range}) =>
-      MonthlyIncomeData(
-        monthly_income_id: monthly_income_id ?? this.monthly_income_id,
-        range: range ?? this.range,
-      );
-  MonthlyIncomeData copyWithCompanion(MonthlyIncomesCompanion data) {
-    return MonthlyIncomeData(
-      monthly_income_id:
-          data.monthly_income_id.present
-              ? data.monthly_income_id.value
-              : this.monthly_income_id,
-      range: data.range.present ? data.range.value : this.range,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('MonthlyIncomeData(')
-          ..write('monthly_income_id: $monthly_income_id, ')
-          ..write('range: $range')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(monthly_income_id, range);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is MonthlyIncomeData &&
-          other.monthly_income_id == this.monthly_income_id &&
-          other.range == this.range);
-}
-
-class MonthlyIncomesCompanion extends UpdateCompanion<MonthlyIncomeData> {
-  final Value<int> monthly_income_id;
-  final Value<String> range;
-  const MonthlyIncomesCompanion({
-    this.monthly_income_id = const Value.absent(),
-    this.range = const Value.absent(),
-  });
-  MonthlyIncomesCompanion.insert({
-    this.monthly_income_id = const Value.absent(),
-    required String range,
-  }) : range = Value(range);
-  static Insertable<MonthlyIncomeData> custom({
-    Expression<int>? monthly_income_id,
-    Expression<String>? range,
-  }) {
-    return RawValuesInsertable({
-      if (monthly_income_id != null) 'monthly_income_id': monthly_income_id,
-      if (range != null) 'range': range,
-    });
-  }
-
-  MonthlyIncomesCompanion copyWith({
-    Value<int>? monthly_income_id,
-    Value<String>? range,
-  }) {
-    return MonthlyIncomesCompanion(
-      monthly_income_id: monthly_income_id ?? this.monthly_income_id,
-      range: range ?? this.range,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (monthly_income_id.present) {
-      map['monthly_income_id'] = Variable<int>(monthly_income_id.value);
-    }
-    if (range.present) {
-      map['range'] = Variable<String>(range.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('MonthlyIncomesCompanion(')
-          ..write('monthly_income_id: $monthly_income_id, ')
-          ..write('range: $range')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $DailyIncomesTable extends DailyIncomes
-    with TableInfo<$DailyIncomesTable, DailyIncomeData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $DailyIncomesTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _daily_income_idMeta = const VerificationMeta(
-    'daily_income_id',
-  );
-  @override
-  late final GeneratedColumn<int> daily_income_id = GeneratedColumn<int>(
-    'daily_income_id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _rangeMeta = const VerificationMeta('range');
-  @override
-  late final GeneratedColumn<String> range = GeneratedColumn<String>(
-    'range',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [daily_income_id, range];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'daily_incomes';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<DailyIncomeData> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('daily_income_id')) {
-      context.handle(
-        _daily_income_idMeta,
-        daily_income_id.isAcceptableOrUnknown(
-          data['daily_income_id']!,
-          _daily_income_idMeta,
-        ),
-      );
-    }
-    if (data.containsKey('range')) {
-      context.handle(
-        _rangeMeta,
-        range.isAcceptableOrUnknown(data['range']!, _rangeMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_rangeMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {daily_income_id};
-  @override
-  DailyIncomeData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return DailyIncomeData(
-      daily_income_id:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}daily_income_id'],
-          )!,
-      range:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}range'],
-          )!,
-    );
-  }
-
-  @override
-  $DailyIncomesTable createAlias(String alias) {
-    return $DailyIncomesTable(attachedDatabase, alias);
-  }
-}
-
-class DailyIncomeData extends DataClass implements Insertable<DailyIncomeData> {
-  final int daily_income_id;
-  final String range;
-  const DailyIncomeData({required this.daily_income_id, required this.range});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['daily_income_id'] = Variable<int>(daily_income_id);
-    map['range'] = Variable<String>(range);
-    return map;
-  }
-
-  DailyIncomesCompanion toCompanion(bool nullToAbsent) {
-    return DailyIncomesCompanion(
-      daily_income_id: Value(daily_income_id),
-      range: Value(range),
-    );
-  }
-
-  factory DailyIncomeData.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return DailyIncomeData(
-      daily_income_id: serializer.fromJson<int>(json['daily_income_id']),
-      range: serializer.fromJson<String>(json['range']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'daily_income_id': serializer.toJson<int>(daily_income_id),
-      'range': serializer.toJson<String>(range),
-    };
-  }
-
-  DailyIncomeData copyWith({int? daily_income_id, String? range}) =>
-      DailyIncomeData(
-        daily_income_id: daily_income_id ?? this.daily_income_id,
-        range: range ?? this.range,
-      );
-  DailyIncomeData copyWithCompanion(DailyIncomesCompanion data) {
-    return DailyIncomeData(
-      daily_income_id:
-          data.daily_income_id.present
-              ? data.daily_income_id.value
-              : this.daily_income_id,
-      range: data.range.present ? data.range.value : this.range,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('DailyIncomeData(')
-          ..write('daily_income_id: $daily_income_id, ')
-          ..write('range: $range')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(daily_income_id, range);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is DailyIncomeData &&
-          other.daily_income_id == this.daily_income_id &&
-          other.range == this.range);
-}
-
-class DailyIncomesCompanion extends UpdateCompanion<DailyIncomeData> {
-  final Value<int> daily_income_id;
-  final Value<String> range;
-  const DailyIncomesCompanion({
-    this.daily_income_id = const Value.absent(),
-    this.range = const Value.absent(),
-  });
-  DailyIncomesCompanion.insert({
-    this.daily_income_id = const Value.absent(),
-    required String range,
-  }) : range = Value(range);
-  static Insertable<DailyIncomeData> custom({
-    Expression<int>? daily_income_id,
-    Expression<String>? range,
-  }) {
-    return RawValuesInsertable({
-      if (daily_income_id != null) 'daily_income_id': daily_income_id,
-      if (range != null) 'range': range,
-    });
-  }
-
-  DailyIncomesCompanion copyWith({
-    Value<int>? daily_income_id,
-    Value<String>? range,
-  }) {
-    return DailyIncomesCompanion(
-      daily_income_id: daily_income_id ?? this.daily_income_id,
-      range: range ?? this.range,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (daily_income_id.present) {
-      map['daily_income_id'] = Variable<int>(daily_income_id.value);
-    }
-    if (range.present) {
-      map['range'] = Variable<String>(range.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('DailyIncomesCompanion(')
-          ..write('daily_income_id: $daily_income_id, ')
-          ..write('range: $range')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $EducationTable extends Education
-    with TableInfo<$EducationTable, EducationData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $EducationTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _education_idMeta = const VerificationMeta(
-    'education_id',
-  );
-  @override
-  late final GeneratedColumn<int> education_id = GeneratedColumn<int>(
-    'education_id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _levelMeta = const VerificationMeta('level');
-  @override
-  late final GeneratedColumn<String> level = GeneratedColumn<String>(
-    'level',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [education_id, level];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'education';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<EducationData> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('education_id')) {
-      context.handle(
-        _education_idMeta,
-        education_id.isAcceptableOrUnknown(
-          data['education_id']!,
-          _education_idMeta,
-        ),
-      );
-    }
-    if (data.containsKey('level')) {
-      context.handle(
-        _levelMeta,
-        level.isAcceptableOrUnknown(data['level']!, _levelMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_levelMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {education_id};
-  @override
-  EducationData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return EducationData(
-      education_id:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}education_id'],
-          )!,
-      level:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}level'],
-          )!,
-    );
-  }
-
-  @override
-  $EducationTable createAlias(String alias) {
-    return $EducationTable(attachedDatabase, alias);
-  }
-}
-
-class EducationData extends DataClass implements Insertable<EducationData> {
-  final int education_id;
-  final String level;
-  const EducationData({required this.education_id, required this.level});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['education_id'] = Variable<int>(education_id);
-    map['level'] = Variable<String>(level);
-    return map;
-  }
-
-  EducationCompanion toCompanion(bool nullToAbsent) {
-    return EducationCompanion(
-      education_id: Value(education_id),
-      level: Value(level),
-    );
-  }
-
-  factory EducationData.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return EducationData(
-      education_id: serializer.fromJson<int>(json['education_id']),
-      level: serializer.fromJson<String>(json['level']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'education_id': serializer.toJson<int>(education_id),
-      'level': serializer.toJson<String>(level),
-    };
-  }
-
-  EducationData copyWith({int? education_id, String? level}) => EducationData(
-    education_id: education_id ?? this.education_id,
-    level: level ?? this.level,
-  );
-  EducationData copyWithCompanion(EducationCompanion data) {
-    return EducationData(
-      education_id:
-          data.education_id.present
-              ? data.education_id.value
-              : this.education_id,
-      level: data.level.present ? data.level.value : this.level,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('EducationData(')
-          ..write('education_id: $education_id, ')
-          ..write('level: $level')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(education_id, level);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is EducationData &&
-          other.education_id == this.education_id &&
-          other.level == this.level);
-}
-
-class EducationCompanion extends UpdateCompanion<EducationData> {
-  final Value<int> education_id;
-  final Value<String> level;
-  const EducationCompanion({
-    this.education_id = const Value.absent(),
-    this.level = const Value.absent(),
-  });
-  EducationCompanion.insert({
-    this.education_id = const Value.absent(),
-    required String level,
-  }) : level = Value(level);
-  static Insertable<EducationData> custom({
-    Expression<int>? education_id,
-    Expression<String>? level,
-  }) {
-    return RawValuesInsertable({
-      if (education_id != null) 'education_id': education_id,
-      if (level != null) 'level': level,
-    });
-  }
-
-  EducationCompanion copyWith({
-    Value<int>? education_id,
-    Value<String>? level,
-  }) {
-    return EducationCompanion(
-      education_id: education_id ?? this.education_id,
-      level: level ?? this.level,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (education_id.present) {
-      map['education_id'] = Variable<int>(education_id.value);
-    }
-    if (level.present) {
-      map['level'] = Variable<String>(level.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('EducationCompanion(')
-          ..write('education_id: $education_id, ')
-          ..write('level: $level')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $PersonsTable extends Persons with TableInfo<$PersonsTable, PersonData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $PersonsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _person_idMeta = const VerificationMeta(
-    'person_id',
-  );
-  @override
-  late final GeneratedColumn<int> person_id = GeneratedColumn<int>(
-    'person_id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _last_nameMeta = const VerificationMeta(
-    'last_name',
-  );
-  @override
-  late final GeneratedColumn<String> last_name = GeneratedColumn<String>(
-    'last_name',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _first_nameMeta = const VerificationMeta(
-    'first_name',
-  );
-  @override
-  late final GeneratedColumn<String> first_name = GeneratedColumn<String>(
-    'first_name',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _middle_nameMeta = const VerificationMeta(
-    'middle_name',
-  );
-  @override
-  late final GeneratedColumn<String> middle_name = GeneratedColumn<String>(
-    'middle_name',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _suffixMeta = const VerificationMeta('suffix');
-  @override
-  late final GeneratedColumn<String> suffix = GeneratedColumn<String>(
-    'suffix',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  @override
-  late final GeneratedColumnWithTypeConverter<Sex?, String> sex =
-      GeneratedColumn<String>(
-        'sex',
-        aliasedName,
-        true,
-        type: DriftSqlType.string,
-        requiredDuringInsert: false,
-      ).withConverter<Sex?>($PersonsTable.$convertersexn);
-  static const VerificationMeta _ageMeta = const VerificationMeta('age');
-  @override
-  late final GeneratedColumn<int> age = GeneratedColumn<int>(
-    'age',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _birth_dateMeta = const VerificationMeta(
-    'birth_date',
-  );
-  @override
-  late final GeneratedColumn<DateTime> birth_date = GeneratedColumn<DateTime>(
-    'birth_date',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _birth_placeMeta = const VerificationMeta(
-    'birth_place',
-  );
-  @override
-  late final GeneratedColumn<String> birth_place = GeneratedColumn<String>(
-    'birth_place',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  @override
-  late final GeneratedColumnWithTypeConverter<CivilStatus?, String>
-  civil_status = GeneratedColumn<String>(
-    'civil_status',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  ).withConverter<CivilStatus?>($PersonsTable.$convertercivil_statusn);
-  static const VerificationMeta _religion_idMeta = const VerificationMeta(
-    'religion_id',
-  );
-  @override
-  late final GeneratedColumn<int> religion_id = GeneratedColumn<int>(
-    'religion_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES religions (religion_id) ON DELETE RESTRICT',
-    ),
-  );
-  static const VerificationMeta _nationality_idMeta = const VerificationMeta(
-    'nationality_id',
-  );
-  @override
-  late final GeneratedColumn<int> nationality_id = GeneratedColumn<int>(
-    'nationality_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES nationalities (nationality_id) ON DELETE RESTRICT',
-    ),
-  );
-  static const VerificationMeta _ethnicity_idMeta = const VerificationMeta(
-    'ethnicity_id',
-  );
-  @override
-  late final GeneratedColumn<int> ethnicity_id = GeneratedColumn<int>(
-    'ethnicity_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES ethnicities (ethnicity_id) ON DELETE RESTRICT',
-    ),
-  );
-  static const VerificationMeta _blood_type_idMeta = const VerificationMeta(
-    'blood_type_id',
-  );
-  @override
-  late final GeneratedColumn<int> blood_type_id = GeneratedColumn<int>(
-    'blood_type_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES blood_types (blood_type_id) ON DELETE RESTRICT',
-    ),
-  );
-  static const VerificationMeta _household_idMeta = const VerificationMeta(
-    'household_id',
-  );
-  @override
-  late final GeneratedColumn<int> household_id = GeneratedColumn<int>(
-    'household_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES households (household_id) ON DELETE RESTRICT',
-    ),
-  );
-  static const VerificationMeta _address_idMeta = const VerificationMeta(
-    'address_id',
-  );
-  @override
-  late final GeneratedColumn<int> address_id = GeneratedColumn<int>(
-    'address_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES addresses (address_id) ON DELETE RESTRICT',
-    ),
-  );
-  static const VerificationMeta _registration_placeMeta =
-      const VerificationMeta('registration_place');
-  @override
-  late final GeneratedColumn<String> registration_place =
-      GeneratedColumn<String>(
-        'registration_place',
-        aliasedName,
-        true,
-        type: DriftSqlType.string,
-        requiredDuringInsert: false,
-      );
-  @override
-  late final GeneratedColumnWithTypeConverter<Residency?, String> residency =
-      GeneratedColumn<String>(
-        'residency',
-        aliasedName,
-        true,
-        type: DriftSqlType.string,
-        requiredDuringInsert: false,
-      ).withConverter<Residency?>($PersonsTable.$converterresidencyn);
-  static const VerificationMeta _years_of_residencyMeta =
-      const VerificationMeta('years_of_residency');
-  @override
-  late final GeneratedColumn<int> years_of_residency = GeneratedColumn<int>(
-    'years_of_residency',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-  );
-  @override
-  late final GeneratedColumnWithTypeConverter<Transient?, String>
-  transient_type = GeneratedColumn<String>(
-    'transient_type',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  ).withConverter<Transient?>($PersonsTable.$convertertransient_typen);
-  static const VerificationMeta _monthly_income_idMeta = const VerificationMeta(
-    'monthly_income_id',
-  );
-  @override
-  late final GeneratedColumn<int> monthly_income_id = GeneratedColumn<int>(
-    'monthly_income_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES monthly_incomes (monthly_income_id) ON DELETE RESTRICT',
-    ),
-  );
-  static const VerificationMeta _daily_income_idMeta = const VerificationMeta(
-    'daily_income_id',
-  );
-  @override
-  late final GeneratedColumn<int> daily_income_id = GeneratedColumn<int>(
-    'daily_income_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES daily_incomes (daily_income_id) ON DELETE RESTRICT',
-    ),
-  );
-  @override
-  late final GeneratedColumnWithTypeConverter<SoloParent?, String> solo_parent =
-      GeneratedColumn<String>(
-        'solo_parent',
-        aliasedName,
-        true,
-        type: DriftSqlType.string,
-        requiredDuringInsert: false,
-      ).withConverter<SoloParent?>($PersonsTable.$convertersolo_parentn);
-  static const VerificationMeta _ofwMeta = const VerificationMeta('ofw');
-  @override
-  late final GeneratedColumn<bool> ofw = GeneratedColumn<bool>(
-    'ofw',
-    aliasedName,
-    true,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("ofw" IN (0, 1))',
-    ),
-  );
-  static const VerificationMeta _literateMeta = const VerificationMeta(
-    'literate',
-  );
-  @override
-  late final GeneratedColumn<bool> literate = GeneratedColumn<bool>(
-    'literate',
-    aliasedName,
-    true,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("literate" IN (0, 1))',
-    ),
-  );
-  static const VerificationMeta _pwdMeta = const VerificationMeta('pwd');
-  @override
-  late final GeneratedColumn<bool> pwd = GeneratedColumn<bool>(
-    'pwd',
-    aliasedName,
-    true,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("pwd" IN (0, 1))',
-    ),
-  );
-  static const VerificationMeta _registered_voterMeta = const VerificationMeta(
-    'registered_voter',
-  );
-  @override
-  late final GeneratedColumn<bool> registered_voter = GeneratedColumn<bool>(
-    'registered_voter',
-    aliasedName,
-    true,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("registered_voter" IN (0, 1))',
-    ),
-  );
-  @override
-  late final GeneratedColumnWithTypeConverter<CurrentlyEnrolled?, String>
-  currently_enrolled = GeneratedColumn<String>(
-    'currently_enrolled',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  ).withConverter<CurrentlyEnrolled?>(
-    $PersonsTable.$convertercurrently_enrolledn,
-  );
-  static const VerificationMeta _education_idMeta = const VerificationMeta(
-    'education_id',
-  );
-  @override
-  late final GeneratedColumn<int> education_id = GeneratedColumn<int>(
-    'education_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES education (education_id) ON DELETE RESTRICT',
-    ),
-  );
-  static const VerificationMeta _deceasedMeta = const VerificationMeta(
-    'deceased',
-  );
-  @override
-  late final GeneratedColumn<bool> deceased = GeneratedColumn<bool>(
-    'deceased',
-    aliasedName,
-    true,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("deceased" IN (0, 1))',
-    ),
-  );
-  static const VerificationMeta _death_dateMeta = const VerificationMeta(
-    'death_date',
-  );
-  @override
-  late final GeneratedColumn<DateTime> death_date = GeneratedColumn<DateTime>(
-    'death_date',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _registration_dateMeta = const VerificationMeta(
-    'registration_date',
-  );
-  @override
-  late final GeneratedColumn<DateTime> registration_date =
-      GeneratedColumn<DateTime>(
-        'registration_date',
-        aliasedName,
-        true,
-        type: DriftSqlType.dateTime,
-        requiredDuringInsert: false,
-      );
-  @override
-  late final GeneratedColumnWithTypeConverter<RegistrationStatus, String>
-  registration_status = GeneratedColumn<String>(
-    'registration_status',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  ).withConverter<RegistrationStatus>(
-    $PersonsTable.$converterregistration_status,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [
-    person_id,
-    last_name,
-    first_name,
-    middle_name,
-    suffix,
-    sex,
-    age,
-    birth_date,
-    birth_place,
-    civil_status,
-    religion_id,
-    nationality_id,
-    ethnicity_id,
-    blood_type_id,
-    household_id,
-    address_id,
-    registration_place,
-    residency,
-    years_of_residency,
-    transient_type,
-    monthly_income_id,
-    daily_income_id,
-    solo_parent,
-    ofw,
-    literate,
-    pwd,
-    registered_voter,
-    currently_enrolled,
-    education_id,
-    deceased,
-    death_date,
-    registration_date,
-    registration_status,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'persons';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<PersonData> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('person_id')) {
-      context.handle(
-        _person_idMeta,
-        person_id.isAcceptableOrUnknown(data['person_id']!, _person_idMeta),
-      );
-    }
-    if (data.containsKey('last_name')) {
-      context.handle(
-        _last_nameMeta,
-        last_name.isAcceptableOrUnknown(data['last_name']!, _last_nameMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_last_nameMeta);
-    }
-    if (data.containsKey('first_name')) {
-      context.handle(
-        _first_nameMeta,
-        first_name.isAcceptableOrUnknown(data['first_name']!, _first_nameMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_first_nameMeta);
-    }
-    if (data.containsKey('middle_name')) {
-      context.handle(
-        _middle_nameMeta,
-        middle_name.isAcceptableOrUnknown(
-          data['middle_name']!,
-          _middle_nameMeta,
-        ),
-      );
-    }
-    if (data.containsKey('suffix')) {
-      context.handle(
-        _suffixMeta,
-        suffix.isAcceptableOrUnknown(data['suffix']!, _suffixMeta),
-      );
-    }
-    if (data.containsKey('age')) {
-      context.handle(
-        _ageMeta,
-        age.isAcceptableOrUnknown(data['age']!, _ageMeta),
-      );
-    }
-    if (data.containsKey('birth_date')) {
-      context.handle(
-        _birth_dateMeta,
-        birth_date.isAcceptableOrUnknown(data['birth_date']!, _birth_dateMeta),
-      );
-    }
-    if (data.containsKey('birth_place')) {
-      context.handle(
-        _birth_placeMeta,
-        birth_place.isAcceptableOrUnknown(
-          data['birth_place']!,
-          _birth_placeMeta,
-        ),
-      );
-    }
-    if (data.containsKey('religion_id')) {
-      context.handle(
-        _religion_idMeta,
-        religion_id.isAcceptableOrUnknown(
-          data['religion_id']!,
-          _religion_idMeta,
-        ),
-      );
-    }
-    if (data.containsKey('nationality_id')) {
-      context.handle(
-        _nationality_idMeta,
-        nationality_id.isAcceptableOrUnknown(
-          data['nationality_id']!,
-          _nationality_idMeta,
-        ),
-      );
-    }
-    if (data.containsKey('ethnicity_id')) {
-      context.handle(
-        _ethnicity_idMeta,
-        ethnicity_id.isAcceptableOrUnknown(
-          data['ethnicity_id']!,
-          _ethnicity_idMeta,
-        ),
-      );
-    }
-    if (data.containsKey('blood_type_id')) {
-      context.handle(
-        _blood_type_idMeta,
-        blood_type_id.isAcceptableOrUnknown(
-          data['blood_type_id']!,
-          _blood_type_idMeta,
-        ),
-      );
-    }
-    if (data.containsKey('household_id')) {
-      context.handle(
-        _household_idMeta,
-        household_id.isAcceptableOrUnknown(
-          data['household_id']!,
-          _household_idMeta,
-        ),
-      );
-    }
-    if (data.containsKey('address_id')) {
-      context.handle(
-        _address_idMeta,
-        address_id.isAcceptableOrUnknown(data['address_id']!, _address_idMeta),
-      );
-    }
-    if (data.containsKey('registration_place')) {
-      context.handle(
-        _registration_placeMeta,
-        registration_place.isAcceptableOrUnknown(
-          data['registration_place']!,
-          _registration_placeMeta,
-        ),
-      );
-    }
-    if (data.containsKey('years_of_residency')) {
-      context.handle(
-        _years_of_residencyMeta,
-        years_of_residency.isAcceptableOrUnknown(
-          data['years_of_residency']!,
-          _years_of_residencyMeta,
-        ),
-      );
-    }
-    if (data.containsKey('monthly_income_id')) {
-      context.handle(
-        _monthly_income_idMeta,
-        monthly_income_id.isAcceptableOrUnknown(
-          data['monthly_income_id']!,
-          _monthly_income_idMeta,
-        ),
-      );
-    }
-    if (data.containsKey('daily_income_id')) {
-      context.handle(
-        _daily_income_idMeta,
-        daily_income_id.isAcceptableOrUnknown(
-          data['daily_income_id']!,
-          _daily_income_idMeta,
-        ),
-      );
-    }
-    if (data.containsKey('ofw')) {
-      context.handle(
-        _ofwMeta,
-        ofw.isAcceptableOrUnknown(data['ofw']!, _ofwMeta),
-      );
-    }
-    if (data.containsKey('literate')) {
-      context.handle(
-        _literateMeta,
-        literate.isAcceptableOrUnknown(data['literate']!, _literateMeta),
-      );
-    }
-    if (data.containsKey('pwd')) {
-      context.handle(
-        _pwdMeta,
-        pwd.isAcceptableOrUnknown(data['pwd']!, _pwdMeta),
-      );
-    }
-    if (data.containsKey('registered_voter')) {
-      context.handle(
-        _registered_voterMeta,
-        registered_voter.isAcceptableOrUnknown(
-          data['registered_voter']!,
-          _registered_voterMeta,
-        ),
-      );
-    }
-    if (data.containsKey('education_id')) {
-      context.handle(
-        _education_idMeta,
-        education_id.isAcceptableOrUnknown(
-          data['education_id']!,
-          _education_idMeta,
-        ),
-      );
-    }
-    if (data.containsKey('deceased')) {
-      context.handle(
-        _deceasedMeta,
-        deceased.isAcceptableOrUnknown(data['deceased']!, _deceasedMeta),
-      );
-    }
-    if (data.containsKey('death_date')) {
-      context.handle(
-        _death_dateMeta,
-        death_date.isAcceptableOrUnknown(data['death_date']!, _death_dateMeta),
-      );
-    }
-    if (data.containsKey('registration_date')) {
-      context.handle(
-        _registration_dateMeta,
-        registration_date.isAcceptableOrUnknown(
-          data['registration_date']!,
-          _registration_dateMeta,
-        ),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {person_id};
-  @override
-  PersonData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return PersonData(
-      person_id:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}person_id'],
-          )!,
-      last_name:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}last_name'],
-          )!,
-      first_name:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}first_name'],
-          )!,
-      middle_name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}middle_name'],
-      ),
-      suffix: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}suffix'],
-      ),
-      sex: $PersonsTable.$convertersexn.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}sex'],
-        ),
-      ),
-      age: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}age'],
-      ),
-      birth_date: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}birth_date'],
-      ),
-      birth_place: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}birth_place'],
-      ),
-      civil_status: $PersonsTable.$convertercivil_statusn.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}civil_status'],
-        ),
-      ),
-      religion_id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}religion_id'],
-      ),
-      nationality_id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}nationality_id'],
-      ),
-      ethnicity_id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}ethnicity_id'],
-      ),
-      blood_type_id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}blood_type_id'],
-      ),
-      household_id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}household_id'],
-      ),
-      address_id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}address_id'],
-      ),
-      registration_place: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}registration_place'],
-      ),
-      residency: $PersonsTable.$converterresidencyn.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}residency'],
-        ),
-      ),
-      years_of_residency: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}years_of_residency'],
-      ),
-      transient_type: $PersonsTable.$convertertransient_typen.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}transient_type'],
-        ),
-      ),
-      monthly_income_id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}monthly_income_id'],
-      ),
-      daily_income_id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}daily_income_id'],
-      ),
-      solo_parent: $PersonsTable.$convertersolo_parentn.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}solo_parent'],
-        ),
-      ),
-      ofw: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}ofw'],
-      ),
-      literate: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}literate'],
-      ),
-      pwd: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}pwd'],
-      ),
-      registered_voter: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}registered_voter'],
-      ),
-      currently_enrolled: $PersonsTable.$convertercurrently_enrolledn.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}currently_enrolled'],
-        ),
-      ),
-      education_id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}education_id'],
-      ),
-      deceased: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}deceased'],
-      ),
-      death_date: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}death_date'],
-      ),
-      registration_date: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}registration_date'],
-      ),
-      registration_status: $PersonsTable.$converterregistration_status.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}registration_status'],
-        )!,
-      ),
-    );
-  }
-
-  @override
-  $PersonsTable createAlias(String alias) {
-    return $PersonsTable(attachedDatabase, alias);
-  }
-
-  static JsonTypeConverter2<Sex, String, String> $convertersex =
-      const EnumNameConverter<Sex>(Sex.values);
-  static JsonTypeConverter2<Sex?, String?, String?> $convertersexn =
-      JsonTypeConverter2.asNullable($convertersex);
-  static JsonTypeConverter2<CivilStatus, String, String>
-  $convertercivil_status = const EnumNameConverter<CivilStatus>(
-    CivilStatus.values,
-  );
-  static JsonTypeConverter2<CivilStatus?, String?, String?>
-  $convertercivil_statusn = JsonTypeConverter2.asNullable(
-    $convertercivil_status,
-  );
-  static JsonTypeConverter2<Residency, String, String> $converterresidency =
-      const EnumNameConverter<Residency>(Residency.values);
-  static JsonTypeConverter2<Residency?, String?, String?> $converterresidencyn =
-      JsonTypeConverter2.asNullable($converterresidency);
-  static JsonTypeConverter2<Transient, String, String>
-  $convertertransient_type = const EnumNameConverter<Transient>(
-    Transient.values,
-  );
-  static JsonTypeConverter2<Transient?, String?, String?>
-  $convertertransient_typen = JsonTypeConverter2.asNullable(
-    $convertertransient_type,
-  );
-  static JsonTypeConverter2<SoloParent, String, String> $convertersolo_parent =
-      const EnumNameConverter<SoloParent>(SoloParent.values);
-  static JsonTypeConverter2<SoloParent?, String?, String?>
-  $convertersolo_parentn = JsonTypeConverter2.asNullable($convertersolo_parent);
-  static JsonTypeConverter2<CurrentlyEnrolled, String, String>
-  $convertercurrently_enrolled = const EnumNameConverter<CurrentlyEnrolled>(
-    CurrentlyEnrolled.values,
-  );
-  static JsonTypeConverter2<CurrentlyEnrolled?, String?, String?>
-  $convertercurrently_enrolledn = JsonTypeConverter2.asNullable(
-    $convertercurrently_enrolled,
-  );
-  static JsonTypeConverter2<RegistrationStatus, String, String>
-  $converterregistration_status = const EnumNameConverter<RegistrationStatus>(
-    RegistrationStatus.values,
-  );
-}
-
-class PersonData extends DataClass implements Insertable<PersonData> {
-  final int person_id;
-  final String last_name;
-  final String first_name;
-  final String? middle_name;
-  final String? suffix;
-  final Sex? sex;
-  final int? age;
-  final DateTime? birth_date;
-  final String? birth_place;
-  final CivilStatus? civil_status;
-  final int? religion_id;
-  final int? nationality_id;
-  final int? ethnicity_id;
-  final int? blood_type_id;
-  final int? household_id;
-  final int? address_id;
-  final String? registration_place;
-  final Residency? residency;
-  final int? years_of_residency;
-  final Transient? transient_type;
-  final int? monthly_income_id;
-  final int? daily_income_id;
-  final SoloParent? solo_parent;
-  final bool? ofw;
-  final bool? literate;
-  final bool? pwd;
-  final bool? registered_voter;
-  final CurrentlyEnrolled? currently_enrolled;
-  final int? education_id;
-  final bool? deceased;
-  final DateTime? death_date;
-  final DateTime? registration_date;
-  final RegistrationStatus registration_status;
-  const PersonData({
-    required this.person_id,
-    required this.last_name,
-    required this.first_name,
-    this.middle_name,
-    this.suffix,
-    this.sex,
-    this.age,
-    this.birth_date,
-    this.birth_place,
-    this.civil_status,
-    this.religion_id,
-    this.nationality_id,
-    this.ethnicity_id,
-    this.blood_type_id,
-    this.household_id,
-    this.address_id,
-    this.registration_place,
-    this.residency,
-    this.years_of_residency,
-    this.transient_type,
-    this.monthly_income_id,
-    this.daily_income_id,
-    this.solo_parent,
-    this.ofw,
-    this.literate,
-    this.pwd,
-    this.registered_voter,
-    this.currently_enrolled,
-    this.education_id,
-    this.deceased,
-    this.death_date,
-    this.registration_date,
-    required this.registration_status,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['person_id'] = Variable<int>(person_id);
-    map['last_name'] = Variable<String>(last_name);
-    map['first_name'] = Variable<String>(first_name);
-    if (!nullToAbsent || middle_name != null) {
-      map['middle_name'] = Variable<String>(middle_name);
-    }
-    if (!nullToAbsent || suffix != null) {
-      map['suffix'] = Variable<String>(suffix);
-    }
-    if (!nullToAbsent || sex != null) {
-      map['sex'] = Variable<String>($PersonsTable.$convertersexn.toSql(sex));
-    }
-    if (!nullToAbsent || age != null) {
-      map['age'] = Variable<int>(age);
-    }
-    if (!nullToAbsent || birth_date != null) {
-      map['birth_date'] = Variable<DateTime>(birth_date);
-    }
-    if (!nullToAbsent || birth_place != null) {
-      map['birth_place'] = Variable<String>(birth_place);
-    }
-    if (!nullToAbsent || civil_status != null) {
-      map['civil_status'] = Variable<String>(
-        $PersonsTable.$convertercivil_statusn.toSql(civil_status),
-      );
-    }
-    if (!nullToAbsent || religion_id != null) {
-      map['religion_id'] = Variable<int>(religion_id);
-    }
-    if (!nullToAbsent || nationality_id != null) {
-      map['nationality_id'] = Variable<int>(nationality_id);
-    }
-    if (!nullToAbsent || ethnicity_id != null) {
-      map['ethnicity_id'] = Variable<int>(ethnicity_id);
-    }
-    if (!nullToAbsent || blood_type_id != null) {
-      map['blood_type_id'] = Variable<int>(blood_type_id);
-    }
-    if (!nullToAbsent || household_id != null) {
-      map['household_id'] = Variable<int>(household_id);
-    }
-    if (!nullToAbsent || address_id != null) {
-      map['address_id'] = Variable<int>(address_id);
-    }
-    if (!nullToAbsent || registration_place != null) {
-      map['registration_place'] = Variable<String>(registration_place);
-    }
-    if (!nullToAbsent || residency != null) {
-      map['residency'] = Variable<String>(
-        $PersonsTable.$converterresidencyn.toSql(residency),
-      );
-    }
-    if (!nullToAbsent || years_of_residency != null) {
-      map['years_of_residency'] = Variable<int>(years_of_residency);
-    }
-    if (!nullToAbsent || transient_type != null) {
-      map['transient_type'] = Variable<String>(
-        $PersonsTable.$convertertransient_typen.toSql(transient_type),
-      );
-    }
-    if (!nullToAbsent || monthly_income_id != null) {
-      map['monthly_income_id'] = Variable<int>(monthly_income_id);
-    }
-    if (!nullToAbsent || daily_income_id != null) {
-      map['daily_income_id'] = Variable<int>(daily_income_id);
-    }
-    if (!nullToAbsent || solo_parent != null) {
-      map['solo_parent'] = Variable<String>(
-        $PersonsTable.$convertersolo_parentn.toSql(solo_parent),
-      );
-    }
-    if (!nullToAbsent || ofw != null) {
-      map['ofw'] = Variable<bool>(ofw);
-    }
-    if (!nullToAbsent || literate != null) {
-      map['literate'] = Variable<bool>(literate);
-    }
-    if (!nullToAbsent || pwd != null) {
-      map['pwd'] = Variable<bool>(pwd);
-    }
-    if (!nullToAbsent || registered_voter != null) {
-      map['registered_voter'] = Variable<bool>(registered_voter);
-    }
-    if (!nullToAbsent || currently_enrolled != null) {
-      map['currently_enrolled'] = Variable<String>(
-        $PersonsTable.$convertercurrently_enrolledn.toSql(currently_enrolled),
-      );
-    }
-    if (!nullToAbsent || education_id != null) {
-      map['education_id'] = Variable<int>(education_id);
-    }
-    if (!nullToAbsent || deceased != null) {
-      map['deceased'] = Variable<bool>(deceased);
-    }
-    if (!nullToAbsent || death_date != null) {
-      map['death_date'] = Variable<DateTime>(death_date);
-    }
-    if (!nullToAbsent || registration_date != null) {
-      map['registration_date'] = Variable<DateTime>(registration_date);
-    }
-    {
-      map['registration_status'] = Variable<String>(
-        $PersonsTable.$converterregistration_status.toSql(registration_status),
-      );
-    }
-    return map;
-  }
-
-  PersonsCompanion toCompanion(bool nullToAbsent) {
-    return PersonsCompanion(
-      person_id: Value(person_id),
-      last_name: Value(last_name),
-      first_name: Value(first_name),
-      middle_name:
-          middle_name == null && nullToAbsent
-              ? const Value.absent()
-              : Value(middle_name),
-      suffix:
-          suffix == null && nullToAbsent ? const Value.absent() : Value(suffix),
-      sex: sex == null && nullToAbsent ? const Value.absent() : Value(sex),
-      age: age == null && nullToAbsent ? const Value.absent() : Value(age),
-      birth_date:
-          birth_date == null && nullToAbsent
-              ? const Value.absent()
-              : Value(birth_date),
-      birth_place:
-          birth_place == null && nullToAbsent
-              ? const Value.absent()
-              : Value(birth_place),
-      civil_status:
-          civil_status == null && nullToAbsent
-              ? const Value.absent()
-              : Value(civil_status),
-      religion_id:
-          religion_id == null && nullToAbsent
-              ? const Value.absent()
-              : Value(religion_id),
-      nationality_id:
-          nationality_id == null && nullToAbsent
-              ? const Value.absent()
-              : Value(nationality_id),
-      ethnicity_id:
-          ethnicity_id == null && nullToAbsent
-              ? const Value.absent()
-              : Value(ethnicity_id),
-      blood_type_id:
-          blood_type_id == null && nullToAbsent
-              ? const Value.absent()
-              : Value(blood_type_id),
-      household_id:
-          household_id == null && nullToAbsent
-              ? const Value.absent()
-              : Value(household_id),
-      address_id:
-          address_id == null && nullToAbsent
-              ? const Value.absent()
-              : Value(address_id),
-      registration_place:
-          registration_place == null && nullToAbsent
-              ? const Value.absent()
-              : Value(registration_place),
-      residency:
-          residency == null && nullToAbsent
-              ? const Value.absent()
-              : Value(residency),
-      years_of_residency:
-          years_of_residency == null && nullToAbsent
-              ? const Value.absent()
-              : Value(years_of_residency),
-      transient_type:
-          transient_type == null && nullToAbsent
-              ? const Value.absent()
-              : Value(transient_type),
-      monthly_income_id:
-          monthly_income_id == null && nullToAbsent
-              ? const Value.absent()
-              : Value(monthly_income_id),
-      daily_income_id:
-          daily_income_id == null && nullToAbsent
-              ? const Value.absent()
-              : Value(daily_income_id),
-      solo_parent:
-          solo_parent == null && nullToAbsent
-              ? const Value.absent()
-              : Value(solo_parent),
-      ofw: ofw == null && nullToAbsent ? const Value.absent() : Value(ofw),
-      literate:
-          literate == null && nullToAbsent
-              ? const Value.absent()
-              : Value(literate),
-      pwd: pwd == null && nullToAbsent ? const Value.absent() : Value(pwd),
-      registered_voter:
-          registered_voter == null && nullToAbsent
-              ? const Value.absent()
-              : Value(registered_voter),
-      currently_enrolled:
-          currently_enrolled == null && nullToAbsent
-              ? const Value.absent()
-              : Value(currently_enrolled),
-      education_id:
-          education_id == null && nullToAbsent
-              ? const Value.absent()
-              : Value(education_id),
-      deceased:
-          deceased == null && nullToAbsent
-              ? const Value.absent()
-              : Value(deceased),
-      death_date:
-          death_date == null && nullToAbsent
-              ? const Value.absent()
-              : Value(death_date),
-      registration_date:
-          registration_date == null && nullToAbsent
-              ? const Value.absent()
-              : Value(registration_date),
-      registration_status: Value(registration_status),
-    );
-  }
-
-  factory PersonData.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return PersonData(
-      person_id: serializer.fromJson<int>(json['person_id']),
-      last_name: serializer.fromJson<String>(json['last_name']),
-      first_name: serializer.fromJson<String>(json['first_name']),
-      middle_name: serializer.fromJson<String?>(json['middle_name']),
-      suffix: serializer.fromJson<String?>(json['suffix']),
-      sex: $PersonsTable.$convertersexn.fromJson(
-        serializer.fromJson<String?>(json['sex']),
-      ),
-      age: serializer.fromJson<int?>(json['age']),
-      birth_date: serializer.fromJson<DateTime?>(json['birth_date']),
-      birth_place: serializer.fromJson<String?>(json['birth_place']),
-      civil_status: $PersonsTable.$convertercivil_statusn.fromJson(
-        serializer.fromJson<String?>(json['civil_status']),
-      ),
-      religion_id: serializer.fromJson<int?>(json['religion_id']),
-      nationality_id: serializer.fromJson<int?>(json['nationality_id']),
-      ethnicity_id: serializer.fromJson<int?>(json['ethnicity_id']),
-      blood_type_id: serializer.fromJson<int?>(json['blood_type_id']),
-      household_id: serializer.fromJson<int?>(json['household_id']),
-      address_id: serializer.fromJson<int?>(json['address_id']),
-      registration_place: serializer.fromJson<String?>(
-        json['registration_place'],
-      ),
-      residency: $PersonsTable.$converterresidencyn.fromJson(
-        serializer.fromJson<String?>(json['residency']),
-      ),
-      years_of_residency: serializer.fromJson<int?>(json['years_of_residency']),
-      transient_type: $PersonsTable.$convertertransient_typen.fromJson(
-        serializer.fromJson<String?>(json['transient_type']),
-      ),
-      monthly_income_id: serializer.fromJson<int?>(json['monthly_income_id']),
-      daily_income_id: serializer.fromJson<int?>(json['daily_income_id']),
-      solo_parent: $PersonsTable.$convertersolo_parentn.fromJson(
-        serializer.fromJson<String?>(json['solo_parent']),
-      ),
-      ofw: serializer.fromJson<bool?>(json['ofw']),
-      literate: serializer.fromJson<bool?>(json['literate']),
-      pwd: serializer.fromJson<bool?>(json['pwd']),
-      registered_voter: serializer.fromJson<bool?>(json['registered_voter']),
-      currently_enrolled: $PersonsTable.$convertercurrently_enrolledn.fromJson(
-        serializer.fromJson<String?>(json['currently_enrolled']),
-      ),
-      education_id: serializer.fromJson<int?>(json['education_id']),
-      deceased: serializer.fromJson<bool?>(json['deceased']),
-      death_date: serializer.fromJson<DateTime?>(json['death_date']),
-      registration_date: serializer.fromJson<DateTime?>(
-        json['registration_date'],
-      ),
-      registration_status: $PersonsTable.$converterregistration_status.fromJson(
-        serializer.fromJson<String>(json['registration_status']),
-      ),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'person_id': serializer.toJson<int>(person_id),
-      'last_name': serializer.toJson<String>(last_name),
-      'first_name': serializer.toJson<String>(first_name),
-      'middle_name': serializer.toJson<String?>(middle_name),
-      'suffix': serializer.toJson<String?>(suffix),
-      'sex': serializer.toJson<String?>(
-        $PersonsTable.$convertersexn.toJson(sex),
-      ),
-      'age': serializer.toJson<int?>(age),
-      'birth_date': serializer.toJson<DateTime?>(birth_date),
-      'birth_place': serializer.toJson<String?>(birth_place),
-      'civil_status': serializer.toJson<String?>(
-        $PersonsTable.$convertercivil_statusn.toJson(civil_status),
-      ),
-      'religion_id': serializer.toJson<int?>(religion_id),
-      'nationality_id': serializer.toJson<int?>(nationality_id),
-      'ethnicity_id': serializer.toJson<int?>(ethnicity_id),
-      'blood_type_id': serializer.toJson<int?>(blood_type_id),
-      'household_id': serializer.toJson<int?>(household_id),
-      'address_id': serializer.toJson<int?>(address_id),
-      'registration_place': serializer.toJson<String?>(registration_place),
-      'residency': serializer.toJson<String?>(
-        $PersonsTable.$converterresidencyn.toJson(residency),
-      ),
-      'years_of_residency': serializer.toJson<int?>(years_of_residency),
-      'transient_type': serializer.toJson<String?>(
-        $PersonsTable.$convertertransient_typen.toJson(transient_type),
-      ),
-      'monthly_income_id': serializer.toJson<int?>(monthly_income_id),
-      'daily_income_id': serializer.toJson<int?>(daily_income_id),
-      'solo_parent': serializer.toJson<String?>(
-        $PersonsTable.$convertersolo_parentn.toJson(solo_parent),
-      ),
-      'ofw': serializer.toJson<bool?>(ofw),
-      'literate': serializer.toJson<bool?>(literate),
-      'pwd': serializer.toJson<bool?>(pwd),
-      'registered_voter': serializer.toJson<bool?>(registered_voter),
-      'currently_enrolled': serializer.toJson<String?>(
-        $PersonsTable.$convertercurrently_enrolledn.toJson(currently_enrolled),
-      ),
-      'education_id': serializer.toJson<int?>(education_id),
-      'deceased': serializer.toJson<bool?>(deceased),
-      'death_date': serializer.toJson<DateTime?>(death_date),
-      'registration_date': serializer.toJson<DateTime?>(registration_date),
-      'registration_status': serializer.toJson<String>(
-        $PersonsTable.$converterregistration_status.toJson(registration_status),
-      ),
-    };
-  }
-
-  PersonData copyWith({
-    int? person_id,
-    String? last_name,
-    String? first_name,
-    Value<String?> middle_name = const Value.absent(),
-    Value<String?> suffix = const Value.absent(),
-    Value<Sex?> sex = const Value.absent(),
-    Value<int?> age = const Value.absent(),
-    Value<DateTime?> birth_date = const Value.absent(),
-    Value<String?> birth_place = const Value.absent(),
-    Value<CivilStatus?> civil_status = const Value.absent(),
-    Value<int?> religion_id = const Value.absent(),
-    Value<int?> nationality_id = const Value.absent(),
-    Value<int?> ethnicity_id = const Value.absent(),
-    Value<int?> blood_type_id = const Value.absent(),
-    Value<int?> household_id = const Value.absent(),
-    Value<int?> address_id = const Value.absent(),
-    Value<String?> registration_place = const Value.absent(),
-    Value<Residency?> residency = const Value.absent(),
-    Value<int?> years_of_residency = const Value.absent(),
-    Value<Transient?> transient_type = const Value.absent(),
-    Value<int?> monthly_income_id = const Value.absent(),
-    Value<int?> daily_income_id = const Value.absent(),
-    Value<SoloParent?> solo_parent = const Value.absent(),
-    Value<bool?> ofw = const Value.absent(),
-    Value<bool?> literate = const Value.absent(),
-    Value<bool?> pwd = const Value.absent(),
-    Value<bool?> registered_voter = const Value.absent(),
-    Value<CurrentlyEnrolled?> currently_enrolled = const Value.absent(),
-    Value<int?> education_id = const Value.absent(),
-    Value<bool?> deceased = const Value.absent(),
-    Value<DateTime?> death_date = const Value.absent(),
-    Value<DateTime?> registration_date = const Value.absent(),
-    RegistrationStatus? registration_status,
-  }) => PersonData(
-    person_id: person_id ?? this.person_id,
-    last_name: last_name ?? this.last_name,
-    first_name: first_name ?? this.first_name,
-    middle_name: middle_name.present ? middle_name.value : this.middle_name,
-    suffix: suffix.present ? suffix.value : this.suffix,
-    sex: sex.present ? sex.value : this.sex,
-    age: age.present ? age.value : this.age,
-    birth_date: birth_date.present ? birth_date.value : this.birth_date,
-    birth_place: birth_place.present ? birth_place.value : this.birth_place,
-    civil_status: civil_status.present ? civil_status.value : this.civil_status,
-    religion_id: religion_id.present ? religion_id.value : this.religion_id,
-    nationality_id:
-        nationality_id.present ? nationality_id.value : this.nationality_id,
-    ethnicity_id: ethnicity_id.present ? ethnicity_id.value : this.ethnicity_id,
-    blood_type_id:
-        blood_type_id.present ? blood_type_id.value : this.blood_type_id,
-    household_id: household_id.present ? household_id.value : this.household_id,
-    address_id: address_id.present ? address_id.value : this.address_id,
-    registration_place:
-        registration_place.present
-            ? registration_place.value
-            : this.registration_place,
-    residency: residency.present ? residency.value : this.residency,
-    years_of_residency:
-        years_of_residency.present
-            ? years_of_residency.value
-            : this.years_of_residency,
-    transient_type:
-        transient_type.present ? transient_type.value : this.transient_type,
-    monthly_income_id:
-        monthly_income_id.present
-            ? monthly_income_id.value
-            : this.monthly_income_id,
-    daily_income_id:
-        daily_income_id.present ? daily_income_id.value : this.daily_income_id,
-    solo_parent: solo_parent.present ? solo_parent.value : this.solo_parent,
-    ofw: ofw.present ? ofw.value : this.ofw,
-    literate: literate.present ? literate.value : this.literate,
-    pwd: pwd.present ? pwd.value : this.pwd,
-    registered_voter:
-        registered_voter.present
-            ? registered_voter.value
-            : this.registered_voter,
-    currently_enrolled:
-        currently_enrolled.present
-            ? currently_enrolled.value
-            : this.currently_enrolled,
-    education_id: education_id.present ? education_id.value : this.education_id,
-    deceased: deceased.present ? deceased.value : this.deceased,
-    death_date: death_date.present ? death_date.value : this.death_date,
-    registration_date:
-        registration_date.present
-            ? registration_date.value
-            : this.registration_date,
-    registration_status: registration_status ?? this.registration_status,
-  );
-  PersonData copyWithCompanion(PersonsCompanion data) {
-    return PersonData(
-      person_id: data.person_id.present ? data.person_id.value : this.person_id,
-      last_name: data.last_name.present ? data.last_name.value : this.last_name,
-      first_name:
-          data.first_name.present ? data.first_name.value : this.first_name,
-      middle_name:
-          data.middle_name.present ? data.middle_name.value : this.middle_name,
-      suffix: data.suffix.present ? data.suffix.value : this.suffix,
-      sex: data.sex.present ? data.sex.value : this.sex,
-      age: data.age.present ? data.age.value : this.age,
-      birth_date:
-          data.birth_date.present ? data.birth_date.value : this.birth_date,
-      birth_place:
-          data.birth_place.present ? data.birth_place.value : this.birth_place,
-      civil_status:
-          data.civil_status.present
-              ? data.civil_status.value
-              : this.civil_status,
-      religion_id:
-          data.religion_id.present ? data.religion_id.value : this.religion_id,
-      nationality_id:
-          data.nationality_id.present
-              ? data.nationality_id.value
-              : this.nationality_id,
-      ethnicity_id:
-          data.ethnicity_id.present
-              ? data.ethnicity_id.value
-              : this.ethnicity_id,
-      blood_type_id:
-          data.blood_type_id.present
-              ? data.blood_type_id.value
-              : this.blood_type_id,
-      household_id:
-          data.household_id.present
-              ? data.household_id.value
-              : this.household_id,
-      address_id:
-          data.address_id.present ? data.address_id.value : this.address_id,
-      registration_place:
-          data.registration_place.present
-              ? data.registration_place.value
-              : this.registration_place,
-      residency: data.residency.present ? data.residency.value : this.residency,
-      years_of_residency:
-          data.years_of_residency.present
-              ? data.years_of_residency.value
-              : this.years_of_residency,
-      transient_type:
-          data.transient_type.present
-              ? data.transient_type.value
-              : this.transient_type,
-      monthly_income_id:
-          data.monthly_income_id.present
-              ? data.monthly_income_id.value
-              : this.monthly_income_id,
-      daily_income_id:
-          data.daily_income_id.present
-              ? data.daily_income_id.value
-              : this.daily_income_id,
-      solo_parent:
-          data.solo_parent.present ? data.solo_parent.value : this.solo_parent,
-      ofw: data.ofw.present ? data.ofw.value : this.ofw,
-      literate: data.literate.present ? data.literate.value : this.literate,
-      pwd: data.pwd.present ? data.pwd.value : this.pwd,
-      registered_voter:
-          data.registered_voter.present
-              ? data.registered_voter.value
-              : this.registered_voter,
-      currently_enrolled:
-          data.currently_enrolled.present
-              ? data.currently_enrolled.value
-              : this.currently_enrolled,
-      education_id:
-          data.education_id.present
-              ? data.education_id.value
-              : this.education_id,
-      deceased: data.deceased.present ? data.deceased.value : this.deceased,
-      death_date:
-          data.death_date.present ? data.death_date.value : this.death_date,
-      registration_date:
-          data.registration_date.present
-              ? data.registration_date.value
-              : this.registration_date,
-      registration_status:
-          data.registration_status.present
-              ? data.registration_status.value
-              : this.registration_status,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PersonData(')
-          ..write('person_id: $person_id, ')
-          ..write('last_name: $last_name, ')
-          ..write('first_name: $first_name, ')
-          ..write('middle_name: $middle_name, ')
-          ..write('suffix: $suffix, ')
-          ..write('sex: $sex, ')
-          ..write('age: $age, ')
-          ..write('birth_date: $birth_date, ')
-          ..write('birth_place: $birth_place, ')
-          ..write('civil_status: $civil_status, ')
-          ..write('religion_id: $religion_id, ')
-          ..write('nationality_id: $nationality_id, ')
-          ..write('ethnicity_id: $ethnicity_id, ')
-          ..write('blood_type_id: $blood_type_id, ')
-          ..write('household_id: $household_id, ')
-          ..write('address_id: $address_id, ')
-          ..write('registration_place: $registration_place, ')
-          ..write('residency: $residency, ')
-          ..write('years_of_residency: $years_of_residency, ')
-          ..write('transient_type: $transient_type, ')
-          ..write('monthly_income_id: $monthly_income_id, ')
-          ..write('daily_income_id: $daily_income_id, ')
-          ..write('solo_parent: $solo_parent, ')
-          ..write('ofw: $ofw, ')
-          ..write('literate: $literate, ')
-          ..write('pwd: $pwd, ')
-          ..write('registered_voter: $registered_voter, ')
-          ..write('currently_enrolled: $currently_enrolled, ')
-          ..write('education_id: $education_id, ')
-          ..write('deceased: $deceased, ')
-          ..write('death_date: $death_date, ')
-          ..write('registration_date: $registration_date, ')
-          ..write('registration_status: $registration_status')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hashAll([
-    person_id,
-    last_name,
-    first_name,
-    middle_name,
-    suffix,
-    sex,
-    age,
-    birth_date,
-    birth_place,
-    civil_status,
-    religion_id,
-    nationality_id,
-    ethnicity_id,
-    blood_type_id,
-    household_id,
-    address_id,
-    registration_place,
-    residency,
-    years_of_residency,
-    transient_type,
-    monthly_income_id,
-    daily_income_id,
-    solo_parent,
-    ofw,
-    literate,
-    pwd,
-    registered_voter,
-    currently_enrolled,
-    education_id,
-    deceased,
-    death_date,
-    registration_date,
-    registration_status,
-  ]);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is PersonData &&
-          other.person_id == this.person_id &&
-          other.last_name == this.last_name &&
-          other.first_name == this.first_name &&
-          other.middle_name == this.middle_name &&
-          other.suffix == this.suffix &&
-          other.sex == this.sex &&
-          other.age == this.age &&
-          other.birth_date == this.birth_date &&
-          other.birth_place == this.birth_place &&
-          other.civil_status == this.civil_status &&
-          other.religion_id == this.religion_id &&
-          other.nationality_id == this.nationality_id &&
-          other.ethnicity_id == this.ethnicity_id &&
-          other.blood_type_id == this.blood_type_id &&
-          other.household_id == this.household_id &&
-          other.address_id == this.address_id &&
-          other.registration_place == this.registration_place &&
-          other.residency == this.residency &&
-          other.years_of_residency == this.years_of_residency &&
-          other.transient_type == this.transient_type &&
-          other.monthly_income_id == this.monthly_income_id &&
-          other.daily_income_id == this.daily_income_id &&
-          other.solo_parent == this.solo_parent &&
-          other.ofw == this.ofw &&
-          other.literate == this.literate &&
-          other.pwd == this.pwd &&
-          other.registered_voter == this.registered_voter &&
-          other.currently_enrolled == this.currently_enrolled &&
-          other.education_id == this.education_id &&
-          other.deceased == this.deceased &&
-          other.death_date == this.death_date &&
-          other.registration_date == this.registration_date &&
-          other.registration_status == this.registration_status);
-}
-
-class PersonsCompanion extends UpdateCompanion<PersonData> {
-  final Value<int> person_id;
-  final Value<String> last_name;
-  final Value<String> first_name;
-  final Value<String?> middle_name;
-  final Value<String?> suffix;
-  final Value<Sex?> sex;
-  final Value<int?> age;
-  final Value<DateTime?> birth_date;
-  final Value<String?> birth_place;
-  final Value<CivilStatus?> civil_status;
-  final Value<int?> religion_id;
-  final Value<int?> nationality_id;
-  final Value<int?> ethnicity_id;
-  final Value<int?> blood_type_id;
-  final Value<int?> household_id;
-  final Value<int?> address_id;
-  final Value<String?> registration_place;
-  final Value<Residency?> residency;
-  final Value<int?> years_of_residency;
-  final Value<Transient?> transient_type;
-  final Value<int?> monthly_income_id;
-  final Value<int?> daily_income_id;
-  final Value<SoloParent?> solo_parent;
-  final Value<bool?> ofw;
-  final Value<bool?> literate;
-  final Value<bool?> pwd;
-  final Value<bool?> registered_voter;
-  final Value<CurrentlyEnrolled?> currently_enrolled;
-  final Value<int?> education_id;
-  final Value<bool?> deceased;
-  final Value<DateTime?> death_date;
-  final Value<DateTime?> registration_date;
-  final Value<RegistrationStatus> registration_status;
-  const PersonsCompanion({
-    this.person_id = const Value.absent(),
-    this.last_name = const Value.absent(),
-    this.first_name = const Value.absent(),
-    this.middle_name = const Value.absent(),
-    this.suffix = const Value.absent(),
-    this.sex = const Value.absent(),
-    this.age = const Value.absent(),
-    this.birth_date = const Value.absent(),
-    this.birth_place = const Value.absent(),
-    this.civil_status = const Value.absent(),
-    this.religion_id = const Value.absent(),
-    this.nationality_id = const Value.absent(),
-    this.ethnicity_id = const Value.absent(),
-    this.blood_type_id = const Value.absent(),
-    this.household_id = const Value.absent(),
-    this.address_id = const Value.absent(),
-    this.registration_place = const Value.absent(),
-    this.residency = const Value.absent(),
-    this.years_of_residency = const Value.absent(),
-    this.transient_type = const Value.absent(),
-    this.monthly_income_id = const Value.absent(),
-    this.daily_income_id = const Value.absent(),
-    this.solo_parent = const Value.absent(),
-    this.ofw = const Value.absent(),
-    this.literate = const Value.absent(),
-    this.pwd = const Value.absent(),
-    this.registered_voter = const Value.absent(),
-    this.currently_enrolled = const Value.absent(),
-    this.education_id = const Value.absent(),
-    this.deceased = const Value.absent(),
-    this.death_date = const Value.absent(),
-    this.registration_date = const Value.absent(),
-    this.registration_status = const Value.absent(),
-  });
-  PersonsCompanion.insert({
-    this.person_id = const Value.absent(),
-    required String last_name,
-    required String first_name,
-    this.middle_name = const Value.absent(),
-    this.suffix = const Value.absent(),
-    this.sex = const Value.absent(),
-    this.age = const Value.absent(),
-    this.birth_date = const Value.absent(),
-    this.birth_place = const Value.absent(),
-    this.civil_status = const Value.absent(),
-    this.religion_id = const Value.absent(),
-    this.nationality_id = const Value.absent(),
-    this.ethnicity_id = const Value.absent(),
-    this.blood_type_id = const Value.absent(),
-    this.household_id = const Value.absent(),
-    this.address_id = const Value.absent(),
-    this.registration_place = const Value.absent(),
-    this.residency = const Value.absent(),
-    this.years_of_residency = const Value.absent(),
-    this.transient_type = const Value.absent(),
-    this.monthly_income_id = const Value.absent(),
-    this.daily_income_id = const Value.absent(),
-    this.solo_parent = const Value.absent(),
-    this.ofw = const Value.absent(),
-    this.literate = const Value.absent(),
-    this.pwd = const Value.absent(),
-    this.registered_voter = const Value.absent(),
-    this.currently_enrolled = const Value.absent(),
-    this.education_id = const Value.absent(),
-    this.deceased = const Value.absent(),
-    this.death_date = const Value.absent(),
-    this.registration_date = const Value.absent(),
-    required RegistrationStatus registration_status,
-  }) : last_name = Value(last_name),
-       first_name = Value(first_name),
-       registration_status = Value(registration_status);
-  static Insertable<PersonData> custom({
-    Expression<int>? person_id,
-    Expression<String>? last_name,
-    Expression<String>? first_name,
-    Expression<String>? middle_name,
-    Expression<String>? suffix,
-    Expression<String>? sex,
-    Expression<int>? age,
-    Expression<DateTime>? birth_date,
-    Expression<String>? birth_place,
-    Expression<String>? civil_status,
-    Expression<int>? religion_id,
-    Expression<int>? nationality_id,
-    Expression<int>? ethnicity_id,
-    Expression<int>? blood_type_id,
-    Expression<int>? household_id,
-    Expression<int>? address_id,
-    Expression<String>? registration_place,
-    Expression<String>? residency,
-    Expression<int>? years_of_residency,
-    Expression<String>? transient_type,
-    Expression<int>? monthly_income_id,
-    Expression<int>? daily_income_id,
-    Expression<String>? solo_parent,
-    Expression<bool>? ofw,
-    Expression<bool>? literate,
-    Expression<bool>? pwd,
-    Expression<bool>? registered_voter,
-    Expression<String>? currently_enrolled,
-    Expression<int>? education_id,
-    Expression<bool>? deceased,
-    Expression<DateTime>? death_date,
-    Expression<DateTime>? registration_date,
-    Expression<String>? registration_status,
-  }) {
-    return RawValuesInsertable({
-      if (person_id != null) 'person_id': person_id,
-      if (last_name != null) 'last_name': last_name,
-      if (first_name != null) 'first_name': first_name,
-      if (middle_name != null) 'middle_name': middle_name,
-      if (suffix != null) 'suffix': suffix,
-      if (sex != null) 'sex': sex,
-      if (age != null) 'age': age,
-      if (birth_date != null) 'birth_date': birth_date,
-      if (birth_place != null) 'birth_place': birth_place,
-      if (civil_status != null) 'civil_status': civil_status,
-      if (religion_id != null) 'religion_id': religion_id,
-      if (nationality_id != null) 'nationality_id': nationality_id,
-      if (ethnicity_id != null) 'ethnicity_id': ethnicity_id,
-      if (blood_type_id != null) 'blood_type_id': blood_type_id,
-      if (household_id != null) 'household_id': household_id,
-      if (address_id != null) 'address_id': address_id,
-      if (registration_place != null) 'registration_place': registration_place,
-      if (residency != null) 'residency': residency,
-      if (years_of_residency != null) 'years_of_residency': years_of_residency,
-      if (transient_type != null) 'transient_type': transient_type,
-      if (monthly_income_id != null) 'monthly_income_id': monthly_income_id,
-      if (daily_income_id != null) 'daily_income_id': daily_income_id,
-      if (solo_parent != null) 'solo_parent': solo_parent,
-      if (ofw != null) 'ofw': ofw,
-      if (literate != null) 'literate': literate,
-      if (pwd != null) 'pwd': pwd,
-      if (registered_voter != null) 'registered_voter': registered_voter,
-      if (currently_enrolled != null) 'currently_enrolled': currently_enrolled,
-      if (education_id != null) 'education_id': education_id,
-      if (deceased != null) 'deceased': deceased,
-      if (death_date != null) 'death_date': death_date,
-      if (registration_date != null) 'registration_date': registration_date,
-      if (registration_status != null)
-        'registration_status': registration_status,
-    });
-  }
-
-  PersonsCompanion copyWith({
-    Value<int>? person_id,
-    Value<String>? last_name,
-    Value<String>? first_name,
-    Value<String?>? middle_name,
-    Value<String?>? suffix,
-    Value<Sex?>? sex,
-    Value<int?>? age,
-    Value<DateTime?>? birth_date,
-    Value<String?>? birth_place,
-    Value<CivilStatus?>? civil_status,
-    Value<int?>? religion_id,
-    Value<int?>? nationality_id,
-    Value<int?>? ethnicity_id,
-    Value<int?>? blood_type_id,
-    Value<int?>? household_id,
-    Value<int?>? address_id,
-    Value<String?>? registration_place,
-    Value<Residency?>? residency,
-    Value<int?>? years_of_residency,
-    Value<Transient?>? transient_type,
-    Value<int?>? monthly_income_id,
-    Value<int?>? daily_income_id,
-    Value<SoloParent?>? solo_parent,
-    Value<bool?>? ofw,
-    Value<bool?>? literate,
-    Value<bool?>? pwd,
-    Value<bool?>? registered_voter,
-    Value<CurrentlyEnrolled?>? currently_enrolled,
-    Value<int?>? education_id,
-    Value<bool?>? deceased,
-    Value<DateTime?>? death_date,
-    Value<DateTime?>? registration_date,
-    Value<RegistrationStatus>? registration_status,
-  }) {
-    return PersonsCompanion(
-      person_id: person_id ?? this.person_id,
-      last_name: last_name ?? this.last_name,
-      first_name: first_name ?? this.first_name,
-      middle_name: middle_name ?? this.middle_name,
-      suffix: suffix ?? this.suffix,
-      sex: sex ?? this.sex,
-      age: age ?? this.age,
-      birth_date: birth_date ?? this.birth_date,
-      birth_place: birth_place ?? this.birth_place,
-      civil_status: civil_status ?? this.civil_status,
-      religion_id: religion_id ?? this.religion_id,
-      nationality_id: nationality_id ?? this.nationality_id,
-      ethnicity_id: ethnicity_id ?? this.ethnicity_id,
-      blood_type_id: blood_type_id ?? this.blood_type_id,
-      household_id: household_id ?? this.household_id,
-      address_id: address_id ?? this.address_id,
-      registration_place: registration_place ?? this.registration_place,
-      residency: residency ?? this.residency,
-      years_of_residency: years_of_residency ?? this.years_of_residency,
-      transient_type: transient_type ?? this.transient_type,
-      monthly_income_id: monthly_income_id ?? this.monthly_income_id,
-      daily_income_id: daily_income_id ?? this.daily_income_id,
-      solo_parent: solo_parent ?? this.solo_parent,
-      ofw: ofw ?? this.ofw,
-      literate: literate ?? this.literate,
-      pwd: pwd ?? this.pwd,
-      registered_voter: registered_voter ?? this.registered_voter,
-      currently_enrolled: currently_enrolled ?? this.currently_enrolled,
-      education_id: education_id ?? this.education_id,
-      deceased: deceased ?? this.deceased,
-      death_date: death_date ?? this.death_date,
-      registration_date: registration_date ?? this.registration_date,
-      registration_status: registration_status ?? this.registration_status,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (person_id.present) {
-      map['person_id'] = Variable<int>(person_id.value);
-    }
-    if (last_name.present) {
-      map['last_name'] = Variable<String>(last_name.value);
-    }
-    if (first_name.present) {
-      map['first_name'] = Variable<String>(first_name.value);
-    }
-    if (middle_name.present) {
-      map['middle_name'] = Variable<String>(middle_name.value);
-    }
-    if (suffix.present) {
-      map['suffix'] = Variable<String>(suffix.value);
-    }
-    if (sex.present) {
-      map['sex'] = Variable<String>(
-        $PersonsTable.$convertersexn.toSql(sex.value),
-      );
-    }
-    if (age.present) {
-      map['age'] = Variable<int>(age.value);
-    }
-    if (birth_date.present) {
-      map['birth_date'] = Variable<DateTime>(birth_date.value);
-    }
-    if (birth_place.present) {
-      map['birth_place'] = Variable<String>(birth_place.value);
-    }
-    if (civil_status.present) {
-      map['civil_status'] = Variable<String>(
-        $PersonsTable.$convertercivil_statusn.toSql(civil_status.value),
-      );
-    }
-    if (religion_id.present) {
-      map['religion_id'] = Variable<int>(religion_id.value);
-    }
-    if (nationality_id.present) {
-      map['nationality_id'] = Variable<int>(nationality_id.value);
-    }
-    if (ethnicity_id.present) {
-      map['ethnicity_id'] = Variable<int>(ethnicity_id.value);
-    }
-    if (blood_type_id.present) {
-      map['blood_type_id'] = Variable<int>(blood_type_id.value);
-    }
-    if (household_id.present) {
-      map['household_id'] = Variable<int>(household_id.value);
-    }
-    if (address_id.present) {
-      map['address_id'] = Variable<int>(address_id.value);
-    }
-    if (registration_place.present) {
-      map['registration_place'] = Variable<String>(registration_place.value);
-    }
-    if (residency.present) {
-      map['residency'] = Variable<String>(
-        $PersonsTable.$converterresidencyn.toSql(residency.value),
-      );
-    }
-    if (years_of_residency.present) {
-      map['years_of_residency'] = Variable<int>(years_of_residency.value);
-    }
-    if (transient_type.present) {
-      map['transient_type'] = Variable<String>(
-        $PersonsTable.$convertertransient_typen.toSql(transient_type.value),
-      );
-    }
-    if (monthly_income_id.present) {
-      map['monthly_income_id'] = Variable<int>(monthly_income_id.value);
-    }
-    if (daily_income_id.present) {
-      map['daily_income_id'] = Variable<int>(daily_income_id.value);
-    }
-    if (solo_parent.present) {
-      map['solo_parent'] = Variable<String>(
-        $PersonsTable.$convertersolo_parentn.toSql(solo_parent.value),
-      );
-    }
-    if (ofw.present) {
-      map['ofw'] = Variable<bool>(ofw.value);
-    }
-    if (literate.present) {
-      map['literate'] = Variable<bool>(literate.value);
-    }
-    if (pwd.present) {
-      map['pwd'] = Variable<bool>(pwd.value);
-    }
-    if (registered_voter.present) {
-      map['registered_voter'] = Variable<bool>(registered_voter.value);
-    }
-    if (currently_enrolled.present) {
-      map['currently_enrolled'] = Variable<String>(
-        $PersonsTable.$convertercurrently_enrolledn.toSql(
-          currently_enrolled.value,
-        ),
-      );
-    }
-    if (education_id.present) {
-      map['education_id'] = Variable<int>(education_id.value);
-    }
-    if (deceased.present) {
-      map['deceased'] = Variable<bool>(deceased.value);
-    }
-    if (death_date.present) {
-      map['death_date'] = Variable<DateTime>(death_date.value);
-    }
-    if (registration_date.present) {
-      map['registration_date'] = Variable<DateTime>(registration_date.value);
-    }
-    if (registration_status.present) {
-      map['registration_status'] = Variable<String>(
-        $PersonsTable.$converterregistration_status.toSql(
-          registration_status.value,
-        ),
-      );
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PersonsCompanion(')
-          ..write('person_id: $person_id, ')
-          ..write('last_name: $last_name, ')
-          ..write('first_name: $first_name, ')
-          ..write('middle_name: $middle_name, ')
-          ..write('suffix: $suffix, ')
-          ..write('sex: $sex, ')
-          ..write('age: $age, ')
-          ..write('birth_date: $birth_date, ')
-          ..write('birth_place: $birth_place, ')
-          ..write('civil_status: $civil_status, ')
-          ..write('religion_id: $religion_id, ')
-          ..write('nationality_id: $nationality_id, ')
-          ..write('ethnicity_id: $ethnicity_id, ')
-          ..write('blood_type_id: $blood_type_id, ')
-          ..write('household_id: $household_id, ')
-          ..write('address_id: $address_id, ')
-          ..write('registration_place: $registration_place, ')
-          ..write('residency: $residency, ')
-          ..write('years_of_residency: $years_of_residency, ')
-          ..write('transient_type: $transient_type, ')
-          ..write('monthly_income_id: $monthly_income_id, ')
-          ..write('daily_income_id: $daily_income_id, ')
-          ..write('solo_parent: $solo_parent, ')
-          ..write('ofw: $ofw, ')
-          ..write('literate: $literate, ')
-          ..write('pwd: $pwd, ')
-          ..write('registered_voter: $registered_voter, ')
-          ..write('currently_enrolled: $currently_enrolled, ')
-          ..write('education_id: $education_id, ')
-          ..write('deceased: $deceased, ')
-          ..write('death_date: $death_date, ')
           ..write('registration_date: $registration_date, ')
           ..write('registration_status: $registration_status')
           ..write(')'))
@@ -6088,284 +6021,6 @@ class GadgetsCompanion extends UpdateCompanion<GadgetData> {
           ..write('gadget_id: $gadget_id, ')
           ..write('person_id: $person_id, ')
           ..write('gadget: $gadget')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $GovermentProgramsTable extends GovermentPrograms
-    with TableInfo<$GovermentProgramsTable, GovernmentProgramData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $GovermentProgramsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _government_program_idMeta =
-      const VerificationMeta('government_program_id');
-  @override
-  late final GeneratedColumn<int> government_program_id = GeneratedColumn<int>(
-    'government_program_id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _person_idMeta = const VerificationMeta(
-    'person_id',
-  );
-  @override
-  late final GeneratedColumn<int> person_id = GeneratedColumn<int>(
-    'person_id',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES persons (person_id) ON DELETE CASCADE',
-    ),
-  );
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-    'name',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [
-    government_program_id,
-    person_id,
-    name,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'goverment_programs';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<GovernmentProgramData> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('government_program_id')) {
-      context.handle(
-        _government_program_idMeta,
-        government_program_id.isAcceptableOrUnknown(
-          data['government_program_id']!,
-          _government_program_idMeta,
-        ),
-      );
-    }
-    if (data.containsKey('person_id')) {
-      context.handle(
-        _person_idMeta,
-        person_id.isAcceptableOrUnknown(data['person_id']!, _person_idMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_person_idMeta);
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {government_program_id};
-  @override
-  GovernmentProgramData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return GovernmentProgramData(
-      government_program_id:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}government_program_id'],
-          )!,
-      person_id:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}person_id'],
-          )!,
-      name:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}name'],
-          )!,
-    );
-  }
-
-  @override
-  $GovermentProgramsTable createAlias(String alias) {
-    return $GovermentProgramsTable(attachedDatabase, alias);
-  }
-}
-
-class GovernmentProgramData extends DataClass
-    implements Insertable<GovernmentProgramData> {
-  final int government_program_id;
-  final int person_id;
-  final String name;
-  const GovernmentProgramData({
-    required this.government_program_id,
-    required this.person_id,
-    required this.name,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['government_program_id'] = Variable<int>(government_program_id);
-    map['person_id'] = Variable<int>(person_id);
-    map['name'] = Variable<String>(name);
-    return map;
-  }
-
-  GovermentProgramsCompanion toCompanion(bool nullToAbsent) {
-    return GovermentProgramsCompanion(
-      government_program_id: Value(government_program_id),
-      person_id: Value(person_id),
-      name: Value(name),
-    );
-  }
-
-  factory GovernmentProgramData.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return GovernmentProgramData(
-      government_program_id: serializer.fromJson<int>(
-        json['government_program_id'],
-      ),
-      person_id: serializer.fromJson<int>(json['person_id']),
-      name: serializer.fromJson<String>(json['name']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'government_program_id': serializer.toJson<int>(government_program_id),
-      'person_id': serializer.toJson<int>(person_id),
-      'name': serializer.toJson<String>(name),
-    };
-  }
-
-  GovernmentProgramData copyWith({
-    int? government_program_id,
-    int? person_id,
-    String? name,
-  }) => GovernmentProgramData(
-    government_program_id: government_program_id ?? this.government_program_id,
-    person_id: person_id ?? this.person_id,
-    name: name ?? this.name,
-  );
-  GovernmentProgramData copyWithCompanion(GovermentProgramsCompanion data) {
-    return GovernmentProgramData(
-      government_program_id:
-          data.government_program_id.present
-              ? data.government_program_id.value
-              : this.government_program_id,
-      person_id: data.person_id.present ? data.person_id.value : this.person_id,
-      name: data.name.present ? data.name.value : this.name,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('GovernmentProgramData(')
-          ..write('government_program_id: $government_program_id, ')
-          ..write('person_id: $person_id, ')
-          ..write('name: $name')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(government_program_id, person_id, name);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is GovernmentProgramData &&
-          other.government_program_id == this.government_program_id &&
-          other.person_id == this.person_id &&
-          other.name == this.name);
-}
-
-class GovermentProgramsCompanion
-    extends UpdateCompanion<GovernmentProgramData> {
-  final Value<int> government_program_id;
-  final Value<int> person_id;
-  final Value<String> name;
-  const GovermentProgramsCompanion({
-    this.government_program_id = const Value.absent(),
-    this.person_id = const Value.absent(),
-    this.name = const Value.absent(),
-  });
-  GovermentProgramsCompanion.insert({
-    this.government_program_id = const Value.absent(),
-    required int person_id,
-    required String name,
-  }) : person_id = Value(person_id),
-       name = Value(name);
-  static Insertable<GovernmentProgramData> custom({
-    Expression<int>? government_program_id,
-    Expression<int>? person_id,
-    Expression<String>? name,
-  }) {
-    return RawValuesInsertable({
-      if (government_program_id != null)
-        'government_program_id': government_program_id,
-      if (person_id != null) 'person_id': person_id,
-      if (name != null) 'name': name,
-    });
-  }
-
-  GovermentProgramsCompanion copyWith({
-    Value<int>? government_program_id,
-    Value<int>? person_id,
-    Value<String>? name,
-  }) {
-    return GovermentProgramsCompanion(
-      government_program_id:
-          government_program_id ?? this.government_program_id,
-      person_id: person_id ?? this.person_id,
-      name: name ?? this.name,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (government_program_id.present) {
-      map['government_program_id'] = Variable<int>(government_program_id.value);
-    }
-    if (person_id.present) {
-      map['person_id'] = Variable<int>(person_id.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('GovermentProgramsCompanion(')
-          ..write('government_program_id: $government_program_id, ')
-          ..write('person_id: $person_id, ')
-          ..write('name: $name')
           ..write(')'))
         .toString();
   }
@@ -14642,7 +14297,7 @@ class QuestionsCompanion extends UpdateCompanion<QuestionData> {
 }
 
 class $QuestionChoicesTable extends QuestionChoices
-    with TableInfo<$QuestionChoicesTable, QustionChoiceData> {
+    with TableInfo<$QuestionChoicesTable, QuestionChoiceData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -14694,7 +14349,7 @@ class $QuestionChoicesTable extends QuestionChoices
   static const String $name = 'question_choices';
   @override
   VerificationContext validateIntegrity(
-    Insertable<QustionChoiceData> instance, {
+    Insertable<QuestionChoiceData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -14730,9 +14385,9 @@ class $QuestionChoicesTable extends QuestionChoices
   @override
   Set<GeneratedColumn> get $primaryKey => {choice_id};
   @override
-  QustionChoiceData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  QuestionChoiceData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return QustionChoiceData(
+    return QuestionChoiceData(
       choice_id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -14757,12 +14412,12 @@ class $QuestionChoicesTable extends QuestionChoices
   }
 }
 
-class QustionChoiceData extends DataClass
-    implements Insertable<QustionChoiceData> {
+class QuestionChoiceData extends DataClass
+    implements Insertable<QuestionChoiceData> {
   final int choice_id;
   final String choice;
   final int question_id;
-  const QustionChoiceData({
+  const QuestionChoiceData({
     required this.choice_id,
     required this.choice,
     required this.question_id,
@@ -14784,12 +14439,12 @@ class QustionChoiceData extends DataClass
     );
   }
 
-  factory QustionChoiceData.fromJson(
+  factory QuestionChoiceData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return QustionChoiceData(
+    return QuestionChoiceData(
       choice_id: serializer.fromJson<int>(json['choice_id']),
       choice: serializer.fromJson<String>(json['choice']),
       question_id: serializer.fromJson<int>(json['question_id']),
@@ -14805,17 +14460,17 @@ class QustionChoiceData extends DataClass
     };
   }
 
-  QustionChoiceData copyWith({
+  QuestionChoiceData copyWith({
     int? choice_id,
     String? choice,
     int? question_id,
-  }) => QustionChoiceData(
+  }) => QuestionChoiceData(
     choice_id: choice_id ?? this.choice_id,
     choice: choice ?? this.choice,
     question_id: question_id ?? this.question_id,
   );
-  QustionChoiceData copyWithCompanion(QuestionChoicesCompanion data) {
-    return QustionChoiceData(
+  QuestionChoiceData copyWithCompanion(QuestionChoicesCompanion data) {
+    return QuestionChoiceData(
       choice_id: data.choice_id.present ? data.choice_id.value : this.choice_id,
       choice: data.choice.present ? data.choice.value : this.choice,
       question_id:
@@ -14825,7 +14480,7 @@ class QustionChoiceData extends DataClass
 
   @override
   String toString() {
-    return (StringBuffer('QustionChoiceData(')
+    return (StringBuffer('QuestionChoiceData(')
           ..write('choice_id: $choice_id, ')
           ..write('choice: $choice, ')
           ..write('question_id: $question_id')
@@ -14838,13 +14493,13 @@ class QustionChoiceData extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is QustionChoiceData &&
+      (other is QuestionChoiceData &&
           other.choice_id == this.choice_id &&
           other.choice == this.choice &&
           other.question_id == this.question_id);
 }
 
-class QuestionChoicesCompanion extends UpdateCompanion<QustionChoiceData> {
+class QuestionChoicesCompanion extends UpdateCompanion<QuestionChoiceData> {
   final Value<int> choice_id;
   final Value<String> choice;
   final Value<int> question_id;
@@ -14859,7 +14514,7 @@ class QuestionChoicesCompanion extends UpdateCompanion<QustionChoiceData> {
     required int question_id,
   }) : choice = Value(choice),
        question_id = Value(question_id);
-  static Insertable<QustionChoiceData> custom({
+  static Insertable<QuestionChoiceData> custom({
     Expression<int>? choice_id,
     Expression<String>? choice,
     Expression<int>? question_id,
@@ -15187,18 +14842,17 @@ class HouseholdResponsesCompanion
   }
 }
 
-class $FamilyPlansTable extends FamilyPlans
-    with TableInfo<$FamilyPlansTable, FamilyPlanData> {
+class $FamilyPlanningTable extends FamilyPlanning
+    with TableInfo<$FamilyPlanningTable, FamilyPlanningData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $FamilyPlansTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _family_plan_idMeta = const VerificationMeta(
-    'family_plan_id',
-  );
+  $FamilyPlanningTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _family_planning_idMeta =
+      const VerificationMeta('family_planning_id');
   @override
-  late final GeneratedColumn<int> family_plan_id = GeneratedColumn<int>(
-    'family_plan_id',
+  late final GeneratedColumn<int> family_planning_id = GeneratedColumn<int>(
+    'family_planning_id',
     aliasedName,
     false,
     hasAutoIncrement: true,
@@ -15252,7 +14906,7 @@ class $FamilyPlansTable extends FamilyPlans
   );
   @override
   List<GeneratedColumn> get $columns => [
-    family_plan_id,
+    family_planning_id,
     person_id,
     fp_method_id,
     fp_source_id,
@@ -15261,20 +14915,20 @@ class $FamilyPlansTable extends FamilyPlans
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'family_plans';
+  static const String $name = 'family_planning';
   @override
   VerificationContext validateIntegrity(
-    Insertable<FamilyPlanData> instance, {
+    Insertable<FamilyPlanningData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('family_plan_id')) {
+    if (data.containsKey('family_planning_id')) {
       context.handle(
-        _family_plan_idMeta,
-        family_plan_id.isAcceptableOrUnknown(
-          data['family_plan_id']!,
-          _family_plan_idMeta,
+        _family_planning_idMeta,
+        family_planning_id.isAcceptableOrUnknown(
+          data['family_planning_id']!,
+          _family_planning_idMeta,
         ),
       );
     }
@@ -15308,15 +14962,15 @@ class $FamilyPlansTable extends FamilyPlans
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {family_plan_id};
+  Set<GeneratedColumn> get $primaryKey => {family_planning_id};
   @override
-  FamilyPlanData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  FamilyPlanningData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return FamilyPlanData(
-      family_plan_id:
+    return FamilyPlanningData(
+      family_planning_id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
-            data['${effectivePrefix}family_plan_id'],
+            data['${effectivePrefix}family_planning_id'],
           )!,
       person_id:
           attachedDatabase.typeMapping.read(
@@ -15335,18 +14989,19 @@ class $FamilyPlansTable extends FamilyPlans
   }
 
   @override
-  $FamilyPlansTable createAlias(String alias) {
-    return $FamilyPlansTable(attachedDatabase, alias);
+  $FamilyPlanningTable createAlias(String alias) {
+    return $FamilyPlanningTable(attachedDatabase, alias);
   }
 }
 
-class FamilyPlanData extends DataClass implements Insertable<FamilyPlanData> {
-  final int family_plan_id;
+class FamilyPlanningData extends DataClass
+    implements Insertable<FamilyPlanningData> {
+  final int family_planning_id;
   final int person_id;
   final int? fp_method_id;
   final int? fp_source_id;
-  const FamilyPlanData({
-    required this.family_plan_id,
+  const FamilyPlanningData({
+    required this.family_planning_id,
     required this.person_id,
     this.fp_method_id,
     this.fp_source_id,
@@ -15354,7 +15009,7 @@ class FamilyPlanData extends DataClass implements Insertable<FamilyPlanData> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['family_plan_id'] = Variable<int>(family_plan_id);
+    map['family_planning_id'] = Variable<int>(family_planning_id);
     map['person_id'] = Variable<int>(person_id);
     if (!nullToAbsent || fp_method_id != null) {
       map['fp_method_id'] = Variable<int>(fp_method_id);
@@ -15365,9 +15020,9 @@ class FamilyPlanData extends DataClass implements Insertable<FamilyPlanData> {
     return map;
   }
 
-  FamilyPlansCompanion toCompanion(bool nullToAbsent) {
-    return FamilyPlansCompanion(
-      family_plan_id: Value(family_plan_id),
+  FamilyPlanningCompanion toCompanion(bool nullToAbsent) {
+    return FamilyPlanningCompanion(
+      family_planning_id: Value(family_planning_id),
       person_id: Value(person_id),
       fp_method_id:
           fp_method_id == null && nullToAbsent
@@ -15380,13 +15035,13 @@ class FamilyPlanData extends DataClass implements Insertable<FamilyPlanData> {
     );
   }
 
-  factory FamilyPlanData.fromJson(
+  factory FamilyPlanningData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return FamilyPlanData(
-      family_plan_id: serializer.fromJson<int>(json['family_plan_id']),
+    return FamilyPlanningData(
+      family_planning_id: serializer.fromJson<int>(json['family_planning_id']),
       person_id: serializer.fromJson<int>(json['person_id']),
       fp_method_id: serializer.fromJson<int?>(json['fp_method_id']),
       fp_source_id: serializer.fromJson<int?>(json['fp_source_id']),
@@ -15396,30 +15051,30 @@ class FamilyPlanData extends DataClass implements Insertable<FamilyPlanData> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'family_plan_id': serializer.toJson<int>(family_plan_id),
+      'family_planning_id': serializer.toJson<int>(family_planning_id),
       'person_id': serializer.toJson<int>(person_id),
       'fp_method_id': serializer.toJson<int?>(fp_method_id),
       'fp_source_id': serializer.toJson<int?>(fp_source_id),
     };
   }
 
-  FamilyPlanData copyWith({
-    int? family_plan_id,
+  FamilyPlanningData copyWith({
+    int? family_planning_id,
     int? person_id,
     Value<int?> fp_method_id = const Value.absent(),
     Value<int?> fp_source_id = const Value.absent(),
-  }) => FamilyPlanData(
-    family_plan_id: family_plan_id ?? this.family_plan_id,
+  }) => FamilyPlanningData(
+    family_planning_id: family_planning_id ?? this.family_planning_id,
     person_id: person_id ?? this.person_id,
     fp_method_id: fp_method_id.present ? fp_method_id.value : this.fp_method_id,
     fp_source_id: fp_source_id.present ? fp_source_id.value : this.fp_source_id,
   );
-  FamilyPlanData copyWithCompanion(FamilyPlansCompanion data) {
-    return FamilyPlanData(
-      family_plan_id:
-          data.family_plan_id.present
-              ? data.family_plan_id.value
-              : this.family_plan_id,
+  FamilyPlanningData copyWithCompanion(FamilyPlanningCompanion data) {
+    return FamilyPlanningData(
+      family_planning_id:
+          data.family_planning_id.present
+              ? data.family_planning_id.value
+              : this.family_planning_id,
       person_id: data.person_id.present ? data.person_id.value : this.person_id,
       fp_method_id:
           data.fp_method_id.present
@@ -15434,8 +15089,8 @@ class FamilyPlanData extends DataClass implements Insertable<FamilyPlanData> {
 
   @override
   String toString() {
-    return (StringBuffer('FamilyPlanData(')
-          ..write('family_plan_id: $family_plan_id, ')
+    return (StringBuffer('FamilyPlanningData(')
+          ..write('family_planning_id: $family_planning_id, ')
           ..write('person_id: $person_id, ')
           ..write('fp_method_id: $fp_method_id, ')
           ..write('fp_source_id: $fp_source_id')
@@ -15445,56 +15100,56 @@ class FamilyPlanData extends DataClass implements Insertable<FamilyPlanData> {
 
   @override
   int get hashCode =>
-      Object.hash(family_plan_id, person_id, fp_method_id, fp_source_id);
+      Object.hash(family_planning_id, person_id, fp_method_id, fp_source_id);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is FamilyPlanData &&
-          other.family_plan_id == this.family_plan_id &&
+      (other is FamilyPlanningData &&
+          other.family_planning_id == this.family_planning_id &&
           other.person_id == this.person_id &&
           other.fp_method_id == this.fp_method_id &&
           other.fp_source_id == this.fp_source_id);
 }
 
-class FamilyPlansCompanion extends UpdateCompanion<FamilyPlanData> {
-  final Value<int> family_plan_id;
+class FamilyPlanningCompanion extends UpdateCompanion<FamilyPlanningData> {
+  final Value<int> family_planning_id;
   final Value<int> person_id;
   final Value<int?> fp_method_id;
   final Value<int?> fp_source_id;
-  const FamilyPlansCompanion({
-    this.family_plan_id = const Value.absent(),
+  const FamilyPlanningCompanion({
+    this.family_planning_id = const Value.absent(),
     this.person_id = const Value.absent(),
     this.fp_method_id = const Value.absent(),
     this.fp_source_id = const Value.absent(),
   });
-  FamilyPlansCompanion.insert({
-    this.family_plan_id = const Value.absent(),
+  FamilyPlanningCompanion.insert({
+    this.family_planning_id = const Value.absent(),
     required int person_id,
     this.fp_method_id = const Value.absent(),
     this.fp_source_id = const Value.absent(),
   }) : person_id = Value(person_id);
-  static Insertable<FamilyPlanData> custom({
-    Expression<int>? family_plan_id,
+  static Insertable<FamilyPlanningData> custom({
+    Expression<int>? family_planning_id,
     Expression<int>? person_id,
     Expression<int>? fp_method_id,
     Expression<int>? fp_source_id,
   }) {
     return RawValuesInsertable({
-      if (family_plan_id != null) 'family_plan_id': family_plan_id,
+      if (family_planning_id != null) 'family_planning_id': family_planning_id,
       if (person_id != null) 'person_id': person_id,
       if (fp_method_id != null) 'fp_method_id': fp_method_id,
       if (fp_source_id != null) 'fp_source_id': fp_source_id,
     });
   }
 
-  FamilyPlansCompanion copyWith({
-    Value<int>? family_plan_id,
+  FamilyPlanningCompanion copyWith({
+    Value<int>? family_planning_id,
     Value<int>? person_id,
     Value<int?>? fp_method_id,
     Value<int?>? fp_source_id,
   }) {
-    return FamilyPlansCompanion(
-      family_plan_id: family_plan_id ?? this.family_plan_id,
+    return FamilyPlanningCompanion(
+      family_planning_id: family_planning_id ?? this.family_planning_id,
       person_id: person_id ?? this.person_id,
       fp_method_id: fp_method_id ?? this.fp_method_id,
       fp_source_id: fp_source_id ?? this.fp_source_id,
@@ -15504,8 +15159,8 @@ class FamilyPlansCompanion extends UpdateCompanion<FamilyPlanData> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (family_plan_id.present) {
-      map['family_plan_id'] = Variable<int>(family_plan_id.value);
+    if (family_planning_id.present) {
+      map['family_planning_id'] = Variable<int>(family_planning_id.value);
     }
     if (person_id.present) {
       map['person_id'] = Variable<int>(person_id.value);
@@ -15521,8 +15176,8 @@ class FamilyPlansCompanion extends UpdateCompanion<FamilyPlanData> {
 
   @override
   String toString() {
-    return (StringBuffer('FamilyPlansCompanion(')
-          ..write('family_plan_id: $family_plan_id, ')
+    return (StringBuffer('FamilyPlanningCompanion(')
+          ..write('family_planning_id: $family_planning_id, ')
           ..write('person_id: $person_id, ')
           ..write('fp_method_id: $fp_method_id, ')
           ..write('fp_source_id: $fp_source_id')
@@ -15531,12 +15186,12 @@ class FamilyPlansCompanion extends UpdateCompanion<FamilyPlanData> {
   }
 }
 
-class $MaternalInfosTable extends MaternalInfos
-    with TableInfo<$MaternalInfosTable, MaternalInfoData> {
+class $MaternalInformationTable extends MaternalInformation
+    with TableInfo<$MaternalInformationTable, MaternalInformationData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $MaternalInfosTable(this.attachedDatabase, [this._alias]);
+  $MaternalInformationTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _maternal_info_idMeta = const VerificationMeta(
     'maternal_info_id',
   );
@@ -15631,10 +15286,10 @@ class $MaternalInfosTable extends MaternalInfos
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'maternal_infos';
+  static const String $name = 'maternal_information';
   @override
   VerificationContext validateIntegrity(
-    Insertable<MaternalInfoData> instance, {
+    Insertable<MaternalInformationData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -15692,9 +15347,12 @@ class $MaternalInfosTable extends MaternalInfos
   @override
   Set<GeneratedColumn> get $primaryKey => {maternal_info_id};
   @override
-  MaternalInfoData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  MaternalInformationData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return MaternalInfoData(
+    return MaternalInformationData(
       maternal_info_id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -15725,20 +15383,20 @@ class $MaternalInfosTable extends MaternalInfos
   }
 
   @override
-  $MaternalInfosTable createAlias(String alias) {
-    return $MaternalInfosTable(attachedDatabase, alias);
+  $MaternalInformationTable createAlias(String alias) {
+    return $MaternalInformationTable(attachedDatabase, alias);
   }
 }
 
-class MaternalInfoData extends DataClass
-    implements Insertable<MaternalInfoData> {
+class MaternalInformationData extends DataClass
+    implements Insertable<MaternalInformationData> {
   final int maternal_info_id;
   final int person_id;
   final bool? pregnant;
   final bool? lactating;
   final int? living_children_num;
   final bool? fp_intention;
-  const MaternalInfoData({
+  const MaternalInformationData({
     required this.maternal_info_id,
     required this.person_id,
     this.pregnant,
@@ -15766,8 +15424,8 @@ class MaternalInfoData extends DataClass
     return map;
   }
 
-  MaternalInfosCompanion toCompanion(bool nullToAbsent) {
-    return MaternalInfosCompanion(
+  MaternalInformationCompanion toCompanion(bool nullToAbsent) {
+    return MaternalInformationCompanion(
       maternal_info_id: Value(maternal_info_id),
       person_id: Value(person_id),
       pregnant:
@@ -15789,12 +15447,12 @@ class MaternalInfoData extends DataClass
     );
   }
 
-  factory MaternalInfoData.fromJson(
+  factory MaternalInformationData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return MaternalInfoData(
+    return MaternalInformationData(
       maternal_info_id: serializer.fromJson<int>(json['maternal_info_id']),
       person_id: serializer.fromJson<int>(json['person_id']),
       pregnant: serializer.fromJson<bool?>(json['pregnant']),
@@ -15818,14 +15476,14 @@ class MaternalInfoData extends DataClass
     };
   }
 
-  MaternalInfoData copyWith({
+  MaternalInformationData copyWith({
     int? maternal_info_id,
     int? person_id,
     Value<bool?> pregnant = const Value.absent(),
     Value<bool?> lactating = const Value.absent(),
     Value<int?> living_children_num = const Value.absent(),
     Value<bool?> fp_intention = const Value.absent(),
-  }) => MaternalInfoData(
+  }) => MaternalInformationData(
     maternal_info_id: maternal_info_id ?? this.maternal_info_id,
     person_id: person_id ?? this.person_id,
     pregnant: pregnant.present ? pregnant.value : this.pregnant,
@@ -15836,8 +15494,8 @@ class MaternalInfoData extends DataClass
             : this.living_children_num,
     fp_intention: fp_intention.present ? fp_intention.value : this.fp_intention,
   );
-  MaternalInfoData copyWithCompanion(MaternalInfosCompanion data) {
-    return MaternalInfoData(
+  MaternalInformationData copyWithCompanion(MaternalInformationCompanion data) {
+    return MaternalInformationData(
       maternal_info_id:
           data.maternal_info_id.present
               ? data.maternal_info_id.value
@@ -15858,7 +15516,7 @@ class MaternalInfoData extends DataClass
 
   @override
   String toString() {
-    return (StringBuffer('MaternalInfoData(')
+    return (StringBuffer('MaternalInformationData(')
           ..write('maternal_info_id: $maternal_info_id, ')
           ..write('person_id: $person_id, ')
           ..write('pregnant: $pregnant, ')
@@ -15881,7 +15539,7 @@ class MaternalInfoData extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is MaternalInfoData &&
+      (other is MaternalInformationData &&
           other.maternal_info_id == this.maternal_info_id &&
           other.person_id == this.person_id &&
           other.pregnant == this.pregnant &&
@@ -15890,14 +15548,15 @@ class MaternalInfoData extends DataClass
           other.fp_intention == this.fp_intention);
 }
 
-class MaternalInfosCompanion extends UpdateCompanion<MaternalInfoData> {
+class MaternalInformationCompanion
+    extends UpdateCompanion<MaternalInformationData> {
   final Value<int> maternal_info_id;
   final Value<int> person_id;
   final Value<bool?> pregnant;
   final Value<bool?> lactating;
   final Value<int?> living_children_num;
   final Value<bool?> fp_intention;
-  const MaternalInfosCompanion({
+  const MaternalInformationCompanion({
     this.maternal_info_id = const Value.absent(),
     this.person_id = const Value.absent(),
     this.pregnant = const Value.absent(),
@@ -15905,7 +15564,7 @@ class MaternalInfosCompanion extends UpdateCompanion<MaternalInfoData> {
     this.living_children_num = const Value.absent(),
     this.fp_intention = const Value.absent(),
   });
-  MaternalInfosCompanion.insert({
+  MaternalInformationCompanion.insert({
     this.maternal_info_id = const Value.absent(),
     required int person_id,
     this.pregnant = const Value.absent(),
@@ -15913,7 +15572,7 @@ class MaternalInfosCompanion extends UpdateCompanion<MaternalInfoData> {
     this.living_children_num = const Value.absent(),
     this.fp_intention = const Value.absent(),
   }) : person_id = Value(person_id);
-  static Insertable<MaternalInfoData> custom({
+  static Insertable<MaternalInformationData> custom({
     Expression<int>? maternal_info_id,
     Expression<int>? person_id,
     Expression<bool>? pregnant,
@@ -15932,7 +15591,7 @@ class MaternalInfosCompanion extends UpdateCompanion<MaternalInfoData> {
     });
   }
 
-  MaternalInfosCompanion copyWith({
+  MaternalInformationCompanion copyWith({
     Value<int>? maternal_info_id,
     Value<int>? person_id,
     Value<bool?>? pregnant,
@@ -15940,7 +15599,7 @@ class MaternalInfosCompanion extends UpdateCompanion<MaternalInfoData> {
     Value<int?>? living_children_num,
     Value<bool?>? fp_intention,
   }) {
-    return MaternalInfosCompanion(
+    return MaternalInformationCompanion(
       maternal_info_id: maternal_info_id ?? this.maternal_info_id,
       person_id: person_id ?? this.person_id,
       pregnant: pregnant ?? this.pregnant,
@@ -15976,7 +15635,7 @@ class MaternalInfosCompanion extends UpdateCompanion<MaternalInfoData> {
 
   @override
   String toString() {
-    return (StringBuffer('MaternalInfosCompanion(')
+    return (StringBuffer('MaternalInformationCompanion(')
           ..write('maternal_info_id: $maternal_info_id, ')
           ..write('person_id: $person_id, ')
           ..write('pregnant: $pregnant, ')
@@ -16640,12 +16299,12 @@ class HealthInsurancesCompanion extends UpdateCompanion<HealthInsuranceData> {
   }
 }
 
-class $NewbornInfosTable extends NewbornInfos
-    with TableInfo<$NewbornInfosTable, NewbornInfoData> {
+class $NewbornInformationTable extends NewbornInformation
+    with TableInfo<$NewbornInformationTable, NewbornInformationData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $NewbornInfosTable(this.attachedDatabase, [this._alias]);
+  $NewbornInformationTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _newborn_info_idMeta = const VerificationMeta(
     'newborn_info_id',
   );
@@ -16728,10 +16387,10 @@ class $NewbornInfosTable extends NewbornInfos
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'newborn_infos';
+  static const String $name = 'newborn_information';
   @override
   VerificationContext validateIntegrity(
-    Insertable<NewbornInfoData> instance, {
+    Insertable<NewbornInformationData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -16786,9 +16445,9 @@ class $NewbornInfosTable extends NewbornInfos
   @override
   Set<GeneratedColumn> get $primaryKey => {newborn_info_id};
   @override
-  NewbornInfoData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  NewbornInformationData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return NewbornInfoData(
+    return NewbornInformationData(
       newborn_info_id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -16815,18 +16474,19 @@ class $NewbornInfosTable extends NewbornInfos
   }
 
   @override
-  $NewbornInfosTable createAlias(String alias) {
-    return $NewbornInfosTable(attachedDatabase, alias);
+  $NewbornInformationTable createAlias(String alias) {
+    return $NewbornInformationTable(attachedDatabase, alias);
   }
 }
 
-class NewbornInfoData extends DataClass implements Insertable<NewbornInfoData> {
+class NewbornInformationData extends DataClass
+    implements Insertable<NewbornInformationData> {
   final int newborn_info_id;
   final int person_id;
   final bool? immunization;
   final int? delivery_place_id;
   final int? assisted_person_id;
-  const NewbornInfoData({
+  const NewbornInformationData({
     required this.newborn_info_id,
     required this.person_id,
     this.immunization,
@@ -16850,8 +16510,8 @@ class NewbornInfoData extends DataClass implements Insertable<NewbornInfoData> {
     return map;
   }
 
-  NewbornInfosCompanion toCompanion(bool nullToAbsent) {
-    return NewbornInfosCompanion(
+  NewbornInformationCompanion toCompanion(bool nullToAbsent) {
+    return NewbornInformationCompanion(
       newborn_info_id: Value(newborn_info_id),
       person_id: Value(person_id),
       immunization:
@@ -16869,12 +16529,12 @@ class NewbornInfoData extends DataClass implements Insertable<NewbornInfoData> {
     );
   }
 
-  factory NewbornInfoData.fromJson(
+  factory NewbornInformationData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return NewbornInfoData(
+    return NewbornInformationData(
       newborn_info_id: serializer.fromJson<int>(json['newborn_info_id']),
       person_id: serializer.fromJson<int>(json['person_id']),
       immunization: serializer.fromJson<bool?>(json['immunization']),
@@ -16894,13 +16554,13 @@ class NewbornInfoData extends DataClass implements Insertable<NewbornInfoData> {
     };
   }
 
-  NewbornInfoData copyWith({
+  NewbornInformationData copyWith({
     int? newborn_info_id,
     int? person_id,
     Value<bool?> immunization = const Value.absent(),
     Value<int?> delivery_place_id = const Value.absent(),
     Value<int?> assisted_person_id = const Value.absent(),
-  }) => NewbornInfoData(
+  }) => NewbornInformationData(
     newborn_info_id: newborn_info_id ?? this.newborn_info_id,
     person_id: person_id ?? this.person_id,
     immunization: immunization.present ? immunization.value : this.immunization,
@@ -16913,8 +16573,8 @@ class NewbornInfoData extends DataClass implements Insertable<NewbornInfoData> {
             ? assisted_person_id.value
             : this.assisted_person_id,
   );
-  NewbornInfoData copyWithCompanion(NewbornInfosCompanion data) {
-    return NewbornInfoData(
+  NewbornInformationData copyWithCompanion(NewbornInformationCompanion data) {
+    return NewbornInformationData(
       newborn_info_id:
           data.newborn_info_id.present
               ? data.newborn_info_id.value
@@ -16937,7 +16597,7 @@ class NewbornInfoData extends DataClass implements Insertable<NewbornInfoData> {
 
   @override
   String toString() {
-    return (StringBuffer('NewbornInfoData(')
+    return (StringBuffer('NewbornInformationData(')
           ..write('newborn_info_id: $newborn_info_id, ')
           ..write('person_id: $person_id, ')
           ..write('immunization: $immunization, ')
@@ -16958,7 +16618,7 @@ class NewbornInfoData extends DataClass implements Insertable<NewbornInfoData> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is NewbornInfoData &&
+      (other is NewbornInformationData &&
           other.newborn_info_id == this.newborn_info_id &&
           other.person_id == this.person_id &&
           other.immunization == this.immunization &&
@@ -16966,27 +16626,28 @@ class NewbornInfoData extends DataClass implements Insertable<NewbornInfoData> {
           other.assisted_person_id == this.assisted_person_id);
 }
 
-class NewbornInfosCompanion extends UpdateCompanion<NewbornInfoData> {
+class NewbornInformationCompanion
+    extends UpdateCompanion<NewbornInformationData> {
   final Value<int> newborn_info_id;
   final Value<int> person_id;
   final Value<bool?> immunization;
   final Value<int?> delivery_place_id;
   final Value<int?> assisted_person_id;
-  const NewbornInfosCompanion({
+  const NewbornInformationCompanion({
     this.newborn_info_id = const Value.absent(),
     this.person_id = const Value.absent(),
     this.immunization = const Value.absent(),
     this.delivery_place_id = const Value.absent(),
     this.assisted_person_id = const Value.absent(),
   });
-  NewbornInfosCompanion.insert({
+  NewbornInformationCompanion.insert({
     this.newborn_info_id = const Value.absent(),
     required int person_id,
     this.immunization = const Value.absent(),
     this.delivery_place_id = const Value.absent(),
     this.assisted_person_id = const Value.absent(),
   }) : person_id = Value(person_id);
-  static Insertable<NewbornInfoData> custom({
+  static Insertable<NewbornInformationData> custom({
     Expression<int>? newborn_info_id,
     Expression<int>? person_id,
     Expression<bool>? immunization,
@@ -17002,14 +16663,14 @@ class NewbornInfosCompanion extends UpdateCompanion<NewbornInfoData> {
     });
   }
 
-  NewbornInfosCompanion copyWith({
+  NewbornInformationCompanion copyWith({
     Value<int>? newborn_info_id,
     Value<int>? person_id,
     Value<bool?>? immunization,
     Value<int?>? delivery_place_id,
     Value<int?>? assisted_person_id,
   }) {
-    return NewbornInfosCompanion(
+    return NewbornInformationCompanion(
       newborn_info_id: newborn_info_id ?? this.newborn_info_id,
       person_id: person_id ?? this.person_id,
       immunization: immunization ?? this.immunization,
@@ -17041,12 +16702,1845 @@ class NewbornInfosCompanion extends UpdateCompanion<NewbornInfoData> {
 
   @override
   String toString() {
-    return (StringBuffer('NewbornInfosCompanion(')
+    return (StringBuffer('NewbornInformationCompanion(')
           ..write('newborn_info_id: $newborn_info_id, ')
           ..write('person_id: $person_id, ')
           ..write('immunization: $immunization, ')
           ..write('delivery_place_id: $delivery_place_id, ')
           ..write('assisted_person_id: $assisted_person_id')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BarangayInfosTable extends BarangayInfos
+    with TableInfo<$BarangayInfosTable, BarangayInfoData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BarangayInfosTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _brgy_info_idMeta = const VerificationMeta(
+    'brgy_info_id',
+  );
+  @override
+  late final GeneratedColumn<int> brgy_info_id = GeneratedColumn<int>(
+    'brgy_info_id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _brgy_nameMeta = const VerificationMeta(
+    'brgy_name',
+  );
+  @override
+  late final GeneratedColumn<String> brgy_name = GeneratedColumn<String>(
+    'brgy_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _brgy_codeMeta = const VerificationMeta(
+    'brgy_code',
+  );
+  @override
+  late final GeneratedColumn<String> brgy_code = GeneratedColumn<String>(
+    'brgy_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _populationMeta = const VerificationMeta(
+    'population',
+  );
+  @override
+  late final GeneratedColumn<int> population = GeneratedColumn<int>(
+    'population',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _land_areaMeta = const VerificationMeta(
+    'land_area',
+  );
+  @override
+  late final GeneratedColumn<double> land_area = GeneratedColumn<double>(
+    'land_area',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    brgy_info_id,
+    brgy_name,
+    brgy_code,
+    population,
+    land_area,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'barangay_infos';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BarangayInfoData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('brgy_info_id')) {
+      context.handle(
+        _brgy_info_idMeta,
+        brgy_info_id.isAcceptableOrUnknown(
+          data['brgy_info_id']!,
+          _brgy_info_idMeta,
+        ),
+      );
+    }
+    if (data.containsKey('brgy_name')) {
+      context.handle(
+        _brgy_nameMeta,
+        brgy_name.isAcceptableOrUnknown(data['brgy_name']!, _brgy_nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_brgy_nameMeta);
+    }
+    if (data.containsKey('brgy_code')) {
+      context.handle(
+        _brgy_codeMeta,
+        brgy_code.isAcceptableOrUnknown(data['brgy_code']!, _brgy_codeMeta),
+      );
+    }
+    if (data.containsKey('population')) {
+      context.handle(
+        _populationMeta,
+        population.isAcceptableOrUnknown(data['population']!, _populationMeta),
+      );
+    }
+    if (data.containsKey('land_area')) {
+      context.handle(
+        _land_areaMeta,
+        land_area.isAcceptableOrUnknown(data['land_area']!, _land_areaMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {brgy_info_id};
+  @override
+  BarangayInfoData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BarangayInfoData(
+      brgy_info_id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}brgy_info_id'],
+          )!,
+      brgy_name:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}brgy_name'],
+          )!,
+      brgy_code: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}brgy_code'],
+      ),
+      population: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}population'],
+      ),
+      land_area: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}land_area'],
+      ),
+    );
+  }
+
+  @override
+  $BarangayInfosTable createAlias(String alias) {
+    return $BarangayInfosTable(attachedDatabase, alias);
+  }
+}
+
+class BarangayInfoData extends DataClass
+    implements Insertable<BarangayInfoData> {
+  final int brgy_info_id;
+  final String brgy_name;
+  final String? brgy_code;
+  final int? population;
+  final double? land_area;
+  const BarangayInfoData({
+    required this.brgy_info_id,
+    required this.brgy_name,
+    this.brgy_code,
+    this.population,
+    this.land_area,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['brgy_info_id'] = Variable<int>(brgy_info_id);
+    map['brgy_name'] = Variable<String>(brgy_name);
+    if (!nullToAbsent || brgy_code != null) {
+      map['brgy_code'] = Variable<String>(brgy_code);
+    }
+    if (!nullToAbsent || population != null) {
+      map['population'] = Variable<int>(population);
+    }
+    if (!nullToAbsent || land_area != null) {
+      map['land_area'] = Variable<double>(land_area);
+    }
+    return map;
+  }
+
+  BarangayInfosCompanion toCompanion(bool nullToAbsent) {
+    return BarangayInfosCompanion(
+      brgy_info_id: Value(brgy_info_id),
+      brgy_name: Value(brgy_name),
+      brgy_code:
+          brgy_code == null && nullToAbsent
+              ? const Value.absent()
+              : Value(brgy_code),
+      population:
+          population == null && nullToAbsent
+              ? const Value.absent()
+              : Value(population),
+      land_area:
+          land_area == null && nullToAbsent
+              ? const Value.absent()
+              : Value(land_area),
+    );
+  }
+
+  factory BarangayInfoData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BarangayInfoData(
+      brgy_info_id: serializer.fromJson<int>(json['brgy_info_id']),
+      brgy_name: serializer.fromJson<String>(json['brgy_name']),
+      brgy_code: serializer.fromJson<String?>(json['brgy_code']),
+      population: serializer.fromJson<int?>(json['population']),
+      land_area: serializer.fromJson<double?>(json['land_area']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'brgy_info_id': serializer.toJson<int>(brgy_info_id),
+      'brgy_name': serializer.toJson<String>(brgy_name),
+      'brgy_code': serializer.toJson<String?>(brgy_code),
+      'population': serializer.toJson<int?>(population),
+      'land_area': serializer.toJson<double?>(land_area),
+    };
+  }
+
+  BarangayInfoData copyWith({
+    int? brgy_info_id,
+    String? brgy_name,
+    Value<String?> brgy_code = const Value.absent(),
+    Value<int?> population = const Value.absent(),
+    Value<double?> land_area = const Value.absent(),
+  }) => BarangayInfoData(
+    brgy_info_id: brgy_info_id ?? this.brgy_info_id,
+    brgy_name: brgy_name ?? this.brgy_name,
+    brgy_code: brgy_code.present ? brgy_code.value : this.brgy_code,
+    population: population.present ? population.value : this.population,
+    land_area: land_area.present ? land_area.value : this.land_area,
+  );
+  BarangayInfoData copyWithCompanion(BarangayInfosCompanion data) {
+    return BarangayInfoData(
+      brgy_info_id:
+          data.brgy_info_id.present
+              ? data.brgy_info_id.value
+              : this.brgy_info_id,
+      brgy_name: data.brgy_name.present ? data.brgy_name.value : this.brgy_name,
+      brgy_code: data.brgy_code.present ? data.brgy_code.value : this.brgy_code,
+      population:
+          data.population.present ? data.population.value : this.population,
+      land_area: data.land_area.present ? data.land_area.value : this.land_area,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BarangayInfoData(')
+          ..write('brgy_info_id: $brgy_info_id, ')
+          ..write('brgy_name: $brgy_name, ')
+          ..write('brgy_code: $brgy_code, ')
+          ..write('population: $population, ')
+          ..write('land_area: $land_area')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(brgy_info_id, brgy_name, brgy_code, population, land_area);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BarangayInfoData &&
+          other.brgy_info_id == this.brgy_info_id &&
+          other.brgy_name == this.brgy_name &&
+          other.brgy_code == this.brgy_code &&
+          other.population == this.population &&
+          other.land_area == this.land_area);
+}
+
+class BarangayInfosCompanion extends UpdateCompanion<BarangayInfoData> {
+  final Value<int> brgy_info_id;
+  final Value<String> brgy_name;
+  final Value<String?> brgy_code;
+  final Value<int?> population;
+  final Value<double?> land_area;
+  const BarangayInfosCompanion({
+    this.brgy_info_id = const Value.absent(),
+    this.brgy_name = const Value.absent(),
+    this.brgy_code = const Value.absent(),
+    this.population = const Value.absent(),
+    this.land_area = const Value.absent(),
+  });
+  BarangayInfosCompanion.insert({
+    this.brgy_info_id = const Value.absent(),
+    required String brgy_name,
+    this.brgy_code = const Value.absent(),
+    this.population = const Value.absent(),
+    this.land_area = const Value.absent(),
+  }) : brgy_name = Value(brgy_name);
+  static Insertable<BarangayInfoData> custom({
+    Expression<int>? brgy_info_id,
+    Expression<String>? brgy_name,
+    Expression<String>? brgy_code,
+    Expression<int>? population,
+    Expression<double>? land_area,
+  }) {
+    return RawValuesInsertable({
+      if (brgy_info_id != null) 'brgy_info_id': brgy_info_id,
+      if (brgy_name != null) 'brgy_name': brgy_name,
+      if (brgy_code != null) 'brgy_code': brgy_code,
+      if (population != null) 'population': population,
+      if (land_area != null) 'land_area': land_area,
+    });
+  }
+
+  BarangayInfosCompanion copyWith({
+    Value<int>? brgy_info_id,
+    Value<String>? brgy_name,
+    Value<String?>? brgy_code,
+    Value<int?>? population,
+    Value<double?>? land_area,
+  }) {
+    return BarangayInfosCompanion(
+      brgy_info_id: brgy_info_id ?? this.brgy_info_id,
+      brgy_name: brgy_name ?? this.brgy_name,
+      brgy_code: brgy_code ?? this.brgy_code,
+      population: population ?? this.population,
+      land_area: land_area ?? this.land_area,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (brgy_info_id.present) {
+      map['brgy_info_id'] = Variable<int>(brgy_info_id.value);
+    }
+    if (brgy_name.present) {
+      map['brgy_name'] = Variable<String>(brgy_name.value);
+    }
+    if (brgy_code.present) {
+      map['brgy_code'] = Variable<String>(brgy_code.value);
+    }
+    if (population.present) {
+      map['population'] = Variable<int>(population.value);
+    }
+    if (land_area.present) {
+      map['land_area'] = Variable<double>(land_area.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BarangayInfosCompanion(')
+          ..write('brgy_info_id: $brgy_info_id, ')
+          ..write('brgy_name: $brgy_name, ')
+          ..write('brgy_code: $brgy_code, ')
+          ..write('population: $population, ')
+          ..write('land_area: $land_area')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BarangayOfficialsTable extends BarangayOfficials
+    with TableInfo<$BarangayOfficialsTable, BarangayOfficialData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BarangayOfficialsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _brgy_official_idMeta = const VerificationMeta(
+    'brgy_official_id',
+  );
+  @override
+  late final GeneratedColumn<int> brgy_official_id = GeneratedColumn<int>(
+    'brgy_official_id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _person_idMeta = const VerificationMeta(
+    'person_id',
+  );
+  @override
+  late final GeneratedColumn<int> person_id = GeneratedColumn<int>(
+    'person_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES persons (person_id) ON DELETE CASCADE',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<BarangayPositions, String>
+  brgy_position = GeneratedColumn<String>(
+    'brgy_position',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<BarangayPositions>(
+    $BarangayOfficialsTable.$converterbrgy_position,
+  );
+  static const VerificationMeta _start_dateMeta = const VerificationMeta(
+    'start_date',
+  );
+  @override
+  late final GeneratedColumn<DateTime> start_date = GeneratedColumn<DateTime>(
+    'start_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _end_dateMeta = const VerificationMeta(
+    'end_date',
+  );
+  @override
+  late final GeneratedColumn<DateTime> end_date = GeneratedColumn<DateTime>(
+    'end_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _is_currentMeta = const VerificationMeta(
+    'is_current',
+  );
+  @override
+  late final GeneratedColumn<bool> is_current = GeneratedColumn<bool>(
+    'is_current',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_current" IN (0, 1))',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    brgy_official_id,
+    person_id,
+    brgy_position,
+    start_date,
+    end_date,
+    is_current,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'barangay_officials';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BarangayOfficialData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('brgy_official_id')) {
+      context.handle(
+        _brgy_official_idMeta,
+        brgy_official_id.isAcceptableOrUnknown(
+          data['brgy_official_id']!,
+          _brgy_official_idMeta,
+        ),
+      );
+    }
+    if (data.containsKey('person_id')) {
+      context.handle(
+        _person_idMeta,
+        person_id.isAcceptableOrUnknown(data['person_id']!, _person_idMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_person_idMeta);
+    }
+    if (data.containsKey('start_date')) {
+      context.handle(
+        _start_dateMeta,
+        start_date.isAcceptableOrUnknown(data['start_date']!, _start_dateMeta),
+      );
+    }
+    if (data.containsKey('end_date')) {
+      context.handle(
+        _end_dateMeta,
+        end_date.isAcceptableOrUnknown(data['end_date']!, _end_dateMeta),
+      );
+    }
+    if (data.containsKey('is_current')) {
+      context.handle(
+        _is_currentMeta,
+        is_current.isAcceptableOrUnknown(data['is_current']!, _is_currentMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {brgy_official_id};
+  @override
+  BarangayOfficialData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BarangayOfficialData(
+      brgy_official_id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}brgy_official_id'],
+          )!,
+      person_id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}person_id'],
+          )!,
+      brgy_position: $BarangayOfficialsTable.$converterbrgy_position.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}brgy_position'],
+        )!,
+      ),
+      start_date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}start_date'],
+      ),
+      end_date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}end_date'],
+      ),
+      is_current: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_current'],
+      ),
+    );
+  }
+
+  @override
+  $BarangayOfficialsTable createAlias(String alias) {
+    return $BarangayOfficialsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<BarangayPositions, String, String>
+  $converterbrgy_position = const EnumNameConverter<BarangayPositions>(
+    BarangayPositions.values,
+  );
+}
+
+class BarangayOfficialData extends DataClass
+    implements Insertable<BarangayOfficialData> {
+  final int brgy_official_id;
+  final int person_id;
+  final BarangayPositions brgy_position;
+  final DateTime? start_date;
+  final DateTime? end_date;
+  final bool? is_current;
+  const BarangayOfficialData({
+    required this.brgy_official_id,
+    required this.person_id,
+    required this.brgy_position,
+    this.start_date,
+    this.end_date,
+    this.is_current,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['brgy_official_id'] = Variable<int>(brgy_official_id);
+    map['person_id'] = Variable<int>(person_id);
+    {
+      map['brgy_position'] = Variable<String>(
+        $BarangayOfficialsTable.$converterbrgy_position.toSql(brgy_position),
+      );
+    }
+    if (!nullToAbsent || start_date != null) {
+      map['start_date'] = Variable<DateTime>(start_date);
+    }
+    if (!nullToAbsent || end_date != null) {
+      map['end_date'] = Variable<DateTime>(end_date);
+    }
+    if (!nullToAbsent || is_current != null) {
+      map['is_current'] = Variable<bool>(is_current);
+    }
+    return map;
+  }
+
+  BarangayOfficialsCompanion toCompanion(bool nullToAbsent) {
+    return BarangayOfficialsCompanion(
+      brgy_official_id: Value(brgy_official_id),
+      person_id: Value(person_id),
+      brgy_position: Value(brgy_position),
+      start_date:
+          start_date == null && nullToAbsent
+              ? const Value.absent()
+              : Value(start_date),
+      end_date:
+          end_date == null && nullToAbsent
+              ? const Value.absent()
+              : Value(end_date),
+      is_current:
+          is_current == null && nullToAbsent
+              ? const Value.absent()
+              : Value(is_current),
+    );
+  }
+
+  factory BarangayOfficialData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BarangayOfficialData(
+      brgy_official_id: serializer.fromJson<int>(json['brgy_official_id']),
+      person_id: serializer.fromJson<int>(json['person_id']),
+      brgy_position: $BarangayOfficialsTable.$converterbrgy_position.fromJson(
+        serializer.fromJson<String>(json['brgy_position']),
+      ),
+      start_date: serializer.fromJson<DateTime?>(json['start_date']),
+      end_date: serializer.fromJson<DateTime?>(json['end_date']),
+      is_current: serializer.fromJson<bool?>(json['is_current']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'brgy_official_id': serializer.toJson<int>(brgy_official_id),
+      'person_id': serializer.toJson<int>(person_id),
+      'brgy_position': serializer.toJson<String>(
+        $BarangayOfficialsTable.$converterbrgy_position.toJson(brgy_position),
+      ),
+      'start_date': serializer.toJson<DateTime?>(start_date),
+      'end_date': serializer.toJson<DateTime?>(end_date),
+      'is_current': serializer.toJson<bool?>(is_current),
+    };
+  }
+
+  BarangayOfficialData copyWith({
+    int? brgy_official_id,
+    int? person_id,
+    BarangayPositions? brgy_position,
+    Value<DateTime?> start_date = const Value.absent(),
+    Value<DateTime?> end_date = const Value.absent(),
+    Value<bool?> is_current = const Value.absent(),
+  }) => BarangayOfficialData(
+    brgy_official_id: brgy_official_id ?? this.brgy_official_id,
+    person_id: person_id ?? this.person_id,
+    brgy_position: brgy_position ?? this.brgy_position,
+    start_date: start_date.present ? start_date.value : this.start_date,
+    end_date: end_date.present ? end_date.value : this.end_date,
+    is_current: is_current.present ? is_current.value : this.is_current,
+  );
+  BarangayOfficialData copyWithCompanion(BarangayOfficialsCompanion data) {
+    return BarangayOfficialData(
+      brgy_official_id:
+          data.brgy_official_id.present
+              ? data.brgy_official_id.value
+              : this.brgy_official_id,
+      person_id: data.person_id.present ? data.person_id.value : this.person_id,
+      brgy_position:
+          data.brgy_position.present
+              ? data.brgy_position.value
+              : this.brgy_position,
+      start_date:
+          data.start_date.present ? data.start_date.value : this.start_date,
+      end_date: data.end_date.present ? data.end_date.value : this.end_date,
+      is_current:
+          data.is_current.present ? data.is_current.value : this.is_current,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BarangayOfficialData(')
+          ..write('brgy_official_id: $brgy_official_id, ')
+          ..write('person_id: $person_id, ')
+          ..write('brgy_position: $brgy_position, ')
+          ..write('start_date: $start_date, ')
+          ..write('end_date: $end_date, ')
+          ..write('is_current: $is_current')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    brgy_official_id,
+    person_id,
+    brgy_position,
+    start_date,
+    end_date,
+    is_current,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BarangayOfficialData &&
+          other.brgy_official_id == this.brgy_official_id &&
+          other.person_id == this.person_id &&
+          other.brgy_position == this.brgy_position &&
+          other.start_date == this.start_date &&
+          other.end_date == this.end_date &&
+          other.is_current == this.is_current);
+}
+
+class BarangayOfficialsCompanion extends UpdateCompanion<BarangayOfficialData> {
+  final Value<int> brgy_official_id;
+  final Value<int> person_id;
+  final Value<BarangayPositions> brgy_position;
+  final Value<DateTime?> start_date;
+  final Value<DateTime?> end_date;
+  final Value<bool?> is_current;
+  const BarangayOfficialsCompanion({
+    this.brgy_official_id = const Value.absent(),
+    this.person_id = const Value.absent(),
+    this.brgy_position = const Value.absent(),
+    this.start_date = const Value.absent(),
+    this.end_date = const Value.absent(),
+    this.is_current = const Value.absent(),
+  });
+  BarangayOfficialsCompanion.insert({
+    this.brgy_official_id = const Value.absent(),
+    required int person_id,
+    required BarangayPositions brgy_position,
+    this.start_date = const Value.absent(),
+    this.end_date = const Value.absent(),
+    this.is_current = const Value.absent(),
+  }) : person_id = Value(person_id),
+       brgy_position = Value(brgy_position);
+  static Insertable<BarangayOfficialData> custom({
+    Expression<int>? brgy_official_id,
+    Expression<int>? person_id,
+    Expression<String>? brgy_position,
+    Expression<DateTime>? start_date,
+    Expression<DateTime>? end_date,
+    Expression<bool>? is_current,
+  }) {
+    return RawValuesInsertable({
+      if (brgy_official_id != null) 'brgy_official_id': brgy_official_id,
+      if (person_id != null) 'person_id': person_id,
+      if (brgy_position != null) 'brgy_position': brgy_position,
+      if (start_date != null) 'start_date': start_date,
+      if (end_date != null) 'end_date': end_date,
+      if (is_current != null) 'is_current': is_current,
+    });
+  }
+
+  BarangayOfficialsCompanion copyWith({
+    Value<int>? brgy_official_id,
+    Value<int>? person_id,
+    Value<BarangayPositions>? brgy_position,
+    Value<DateTime?>? start_date,
+    Value<DateTime?>? end_date,
+    Value<bool?>? is_current,
+  }) {
+    return BarangayOfficialsCompanion(
+      brgy_official_id: brgy_official_id ?? this.brgy_official_id,
+      person_id: person_id ?? this.person_id,
+      brgy_position: brgy_position ?? this.brgy_position,
+      start_date: start_date ?? this.start_date,
+      end_date: end_date ?? this.end_date,
+      is_current: is_current ?? this.is_current,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (brgy_official_id.present) {
+      map['brgy_official_id'] = Variable<int>(brgy_official_id.value);
+    }
+    if (person_id.present) {
+      map['person_id'] = Variable<int>(person_id.value);
+    }
+    if (brgy_position.present) {
+      map['brgy_position'] = Variable<String>(
+        $BarangayOfficialsTable.$converterbrgy_position.toSql(
+          brgy_position.value,
+        ),
+      );
+    }
+    if (start_date.present) {
+      map['start_date'] = Variable<DateTime>(start_date.value);
+    }
+    if (end_date.present) {
+      map['end_date'] = Variable<DateTime>(end_date.value);
+    }
+    if (is_current.present) {
+      map['is_current'] = Variable<bool>(is_current.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BarangayOfficialsCompanion(')
+          ..write('brgy_official_id: $brgy_official_id, ')
+          ..write('person_id: $person_id, ')
+          ..write('brgy_position: $brgy_position, ')
+          ..write('start_date: $start_date, ')
+          ..write('end_date: $end_date, ')
+          ..write('is_current: $is_current')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LoginCredentialsTable extends LoginCredentials
+    with TableInfo<$LoginCredentialsTable, LoginCredentialData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LoginCredentialsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _login_idMeta = const VerificationMeta(
+    'login_id',
+  );
+  @override
+  late final GeneratedColumn<int> login_id = GeneratedColumn<int>(
+    'login_id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<UserType, String> user_type =
+      GeneratedColumn<String>(
+        'user_type',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<UserType>($LoginCredentialsTable.$converteruser_type);
+  static const VerificationMeta _usernameMeta = const VerificationMeta(
+    'username',
+  );
+  @override
+  late final GeneratedColumn<String> username = GeneratedColumn<String>(
+    'username',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _passwordMeta = const VerificationMeta(
+    'password',
+  );
+  @override
+  late final GeneratedColumn<String> password = GeneratedColumn<String>(
+    'password',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 8,
+      maxTextLength: 20,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    login_id,
+    user_type,
+    username,
+    password,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'login_credentials';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LoginCredentialData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('login_id')) {
+      context.handle(
+        _login_idMeta,
+        login_id.isAcceptableOrUnknown(data['login_id']!, _login_idMeta),
+      );
+    }
+    if (data.containsKey('username')) {
+      context.handle(
+        _usernameMeta,
+        username.isAcceptableOrUnknown(data['username']!, _usernameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_usernameMeta);
+    }
+    if (data.containsKey('password')) {
+      context.handle(
+        _passwordMeta,
+        password.isAcceptableOrUnknown(data['password']!, _passwordMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {login_id};
+  @override
+  LoginCredentialData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LoginCredentialData(
+      login_id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}login_id'],
+          )!,
+      user_type: $LoginCredentialsTable.$converteruser_type.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}user_type'],
+        )!,
+      ),
+      username:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}username'],
+          )!,
+      password: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}password'],
+      ),
+    );
+  }
+
+  @override
+  $LoginCredentialsTable createAlias(String alias) {
+    return $LoginCredentialsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<UserType, String, String> $converteruser_type =
+      const EnumNameConverter<UserType>(UserType.values);
+}
+
+class LoginCredentialData extends DataClass
+    implements Insertable<LoginCredentialData> {
+  final int login_id;
+  final UserType user_type;
+  final String username;
+  final String? password;
+  const LoginCredentialData({
+    required this.login_id,
+    required this.user_type,
+    required this.username,
+    this.password,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['login_id'] = Variable<int>(login_id);
+    {
+      map['user_type'] = Variable<String>(
+        $LoginCredentialsTable.$converteruser_type.toSql(user_type),
+      );
+    }
+    map['username'] = Variable<String>(username);
+    if (!nullToAbsent || password != null) {
+      map['password'] = Variable<String>(password);
+    }
+    return map;
+  }
+
+  LoginCredentialsCompanion toCompanion(bool nullToAbsent) {
+    return LoginCredentialsCompanion(
+      login_id: Value(login_id),
+      user_type: Value(user_type),
+      username: Value(username),
+      password:
+          password == null && nullToAbsent
+              ? const Value.absent()
+              : Value(password),
+    );
+  }
+
+  factory LoginCredentialData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LoginCredentialData(
+      login_id: serializer.fromJson<int>(json['login_id']),
+      user_type: $LoginCredentialsTable.$converteruser_type.fromJson(
+        serializer.fromJson<String>(json['user_type']),
+      ),
+      username: serializer.fromJson<String>(json['username']),
+      password: serializer.fromJson<String?>(json['password']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'login_id': serializer.toJson<int>(login_id),
+      'user_type': serializer.toJson<String>(
+        $LoginCredentialsTable.$converteruser_type.toJson(user_type),
+      ),
+      'username': serializer.toJson<String>(username),
+      'password': serializer.toJson<String?>(password),
+    };
+  }
+
+  LoginCredentialData copyWith({
+    int? login_id,
+    UserType? user_type,
+    String? username,
+    Value<String?> password = const Value.absent(),
+  }) => LoginCredentialData(
+    login_id: login_id ?? this.login_id,
+    user_type: user_type ?? this.user_type,
+    username: username ?? this.username,
+    password: password.present ? password.value : this.password,
+  );
+  LoginCredentialData copyWithCompanion(LoginCredentialsCompanion data) {
+    return LoginCredentialData(
+      login_id: data.login_id.present ? data.login_id.value : this.login_id,
+      user_type: data.user_type.present ? data.user_type.value : this.user_type,
+      username: data.username.present ? data.username.value : this.username,
+      password: data.password.present ? data.password.value : this.password,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LoginCredentialData(')
+          ..write('login_id: $login_id, ')
+          ..write('user_type: $user_type, ')
+          ..write('username: $username, ')
+          ..write('password: $password')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(login_id, user_type, username, password);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LoginCredentialData &&
+          other.login_id == this.login_id &&
+          other.user_type == this.user_type &&
+          other.username == this.username &&
+          other.password == this.password);
+}
+
+class LoginCredentialsCompanion extends UpdateCompanion<LoginCredentialData> {
+  final Value<int> login_id;
+  final Value<UserType> user_type;
+  final Value<String> username;
+  final Value<String?> password;
+  const LoginCredentialsCompanion({
+    this.login_id = const Value.absent(),
+    this.user_type = const Value.absent(),
+    this.username = const Value.absent(),
+    this.password = const Value.absent(),
+  });
+  LoginCredentialsCompanion.insert({
+    this.login_id = const Value.absent(),
+    required UserType user_type,
+    required String username,
+    this.password = const Value.absent(),
+  }) : user_type = Value(user_type),
+       username = Value(username);
+  static Insertable<LoginCredentialData> custom({
+    Expression<int>? login_id,
+    Expression<String>? user_type,
+    Expression<String>? username,
+    Expression<String>? password,
+  }) {
+    return RawValuesInsertable({
+      if (login_id != null) 'login_id': login_id,
+      if (user_type != null) 'user_type': user_type,
+      if (username != null) 'username': username,
+      if (password != null) 'password': password,
+    });
+  }
+
+  LoginCredentialsCompanion copyWith({
+    Value<int>? login_id,
+    Value<UserType>? user_type,
+    Value<String>? username,
+    Value<String?>? password,
+  }) {
+    return LoginCredentialsCompanion(
+      login_id: login_id ?? this.login_id,
+      user_type: user_type ?? this.user_type,
+      username: username ?? this.username,
+      password: password ?? this.password,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (login_id.present) {
+      map['login_id'] = Variable<int>(login_id.value);
+    }
+    if (user_type.present) {
+      map['user_type'] = Variable<String>(
+        $LoginCredentialsTable.$converteruser_type.toSql(user_type.value),
+      );
+    }
+    if (username.present) {
+      map['username'] = Variable<String>(username.value);
+    }
+    if (password.present) {
+      map['password'] = Variable<String>(password.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LoginCredentialsCompanion(')
+          ..write('login_id: $login_id, ')
+          ..write('user_type: $user_type, ')
+          ..write('username: $username, ')
+          ..write('password: $password')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $HouseholdVisitsTable extends HouseholdVisits
+    with TableInfo<$HouseholdVisitsTable, HouseholdVisitData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HouseholdVisitsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _household_visit_idMeta =
+      const VerificationMeta('household_visit_id');
+  @override
+  late final GeneratedColumn<int> household_visit_id = GeneratedColumn<int>(
+    'household_visit_id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _household_idMeta = const VerificationMeta(
+    'household_id',
+  );
+  @override
+  late final GeneratedColumn<int> household_id = GeneratedColumn<int>(
+    'household_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES households (household_id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _visit_numMeta = const VerificationMeta(
+    'visit_num',
+  );
+  @override
+  late final GeneratedColumn<int> visit_num = GeneratedColumn<int>(
+    'visit_num',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<BarangayPositions, String>
+  brgy_position = GeneratedColumn<String>(
+    'brgy_position',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<BarangayPositions>(
+    $HouseholdVisitsTable.$converterbrgy_position,
+  );
+  static const VerificationMeta _visit_dateMeta = const VerificationMeta(
+    'visit_date',
+  );
+  @override
+  late final GeneratedColumn<DateTime> visit_date = GeneratedColumn<DateTime>(
+    'visit_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    household_visit_id,
+    household_id,
+    visit_num,
+    brgy_position,
+    visit_date,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'household_visits';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<HouseholdVisitData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('household_visit_id')) {
+      context.handle(
+        _household_visit_idMeta,
+        household_visit_id.isAcceptableOrUnknown(
+          data['household_visit_id']!,
+          _household_visit_idMeta,
+        ),
+      );
+    }
+    if (data.containsKey('household_id')) {
+      context.handle(
+        _household_idMeta,
+        household_id.isAcceptableOrUnknown(
+          data['household_id']!,
+          _household_idMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_household_idMeta);
+    }
+    if (data.containsKey('visit_num')) {
+      context.handle(
+        _visit_numMeta,
+        visit_num.isAcceptableOrUnknown(data['visit_num']!, _visit_numMeta),
+      );
+    }
+    if (data.containsKey('visit_date')) {
+      context.handle(
+        _visit_dateMeta,
+        visit_date.isAcceptableOrUnknown(data['visit_date']!, _visit_dateMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {household_visit_id};
+  @override
+  HouseholdVisitData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HouseholdVisitData(
+      household_visit_id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}household_visit_id'],
+          )!,
+      household_id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}household_id'],
+          )!,
+      visit_num: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}visit_num'],
+      ),
+      brgy_position: $HouseholdVisitsTable.$converterbrgy_position.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}brgy_position'],
+        )!,
+      ),
+      visit_date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}visit_date'],
+      ),
+    );
+  }
+
+  @override
+  $HouseholdVisitsTable createAlias(String alias) {
+    return $HouseholdVisitsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<BarangayPositions, String, String>
+  $converterbrgy_position = const EnumNameConverter<BarangayPositions>(
+    BarangayPositions.values,
+  );
+}
+
+class HouseholdVisitData extends DataClass
+    implements Insertable<HouseholdVisitData> {
+  final int household_visit_id;
+  final int household_id;
+  final int? visit_num;
+  final BarangayPositions brgy_position;
+  final DateTime? visit_date;
+  const HouseholdVisitData({
+    required this.household_visit_id,
+    required this.household_id,
+    this.visit_num,
+    required this.brgy_position,
+    this.visit_date,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['household_visit_id'] = Variable<int>(household_visit_id);
+    map['household_id'] = Variable<int>(household_id);
+    if (!nullToAbsent || visit_num != null) {
+      map['visit_num'] = Variable<int>(visit_num);
+    }
+    {
+      map['brgy_position'] = Variable<String>(
+        $HouseholdVisitsTable.$converterbrgy_position.toSql(brgy_position),
+      );
+    }
+    if (!nullToAbsent || visit_date != null) {
+      map['visit_date'] = Variable<DateTime>(visit_date);
+    }
+    return map;
+  }
+
+  HouseholdVisitsCompanion toCompanion(bool nullToAbsent) {
+    return HouseholdVisitsCompanion(
+      household_visit_id: Value(household_visit_id),
+      household_id: Value(household_id),
+      visit_num:
+          visit_num == null && nullToAbsent
+              ? const Value.absent()
+              : Value(visit_num),
+      brgy_position: Value(brgy_position),
+      visit_date:
+          visit_date == null && nullToAbsent
+              ? const Value.absent()
+              : Value(visit_date),
+    );
+  }
+
+  factory HouseholdVisitData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HouseholdVisitData(
+      household_visit_id: serializer.fromJson<int>(json['household_visit_id']),
+      household_id: serializer.fromJson<int>(json['household_id']),
+      visit_num: serializer.fromJson<int?>(json['visit_num']),
+      brgy_position: $HouseholdVisitsTable.$converterbrgy_position.fromJson(
+        serializer.fromJson<String>(json['brgy_position']),
+      ),
+      visit_date: serializer.fromJson<DateTime?>(json['visit_date']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'household_visit_id': serializer.toJson<int>(household_visit_id),
+      'household_id': serializer.toJson<int>(household_id),
+      'visit_num': serializer.toJson<int?>(visit_num),
+      'brgy_position': serializer.toJson<String>(
+        $HouseholdVisitsTable.$converterbrgy_position.toJson(brgy_position),
+      ),
+      'visit_date': serializer.toJson<DateTime?>(visit_date),
+    };
+  }
+
+  HouseholdVisitData copyWith({
+    int? household_visit_id,
+    int? household_id,
+    Value<int?> visit_num = const Value.absent(),
+    BarangayPositions? brgy_position,
+    Value<DateTime?> visit_date = const Value.absent(),
+  }) => HouseholdVisitData(
+    household_visit_id: household_visit_id ?? this.household_visit_id,
+    household_id: household_id ?? this.household_id,
+    visit_num: visit_num.present ? visit_num.value : this.visit_num,
+    brgy_position: brgy_position ?? this.brgy_position,
+    visit_date: visit_date.present ? visit_date.value : this.visit_date,
+  );
+  HouseholdVisitData copyWithCompanion(HouseholdVisitsCompanion data) {
+    return HouseholdVisitData(
+      household_visit_id:
+          data.household_visit_id.present
+              ? data.household_visit_id.value
+              : this.household_visit_id,
+      household_id:
+          data.household_id.present
+              ? data.household_id.value
+              : this.household_id,
+      visit_num: data.visit_num.present ? data.visit_num.value : this.visit_num,
+      brgy_position:
+          data.brgy_position.present
+              ? data.brgy_position.value
+              : this.brgy_position,
+      visit_date:
+          data.visit_date.present ? data.visit_date.value : this.visit_date,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HouseholdVisitData(')
+          ..write('household_visit_id: $household_visit_id, ')
+          ..write('household_id: $household_id, ')
+          ..write('visit_num: $visit_num, ')
+          ..write('brgy_position: $brgy_position, ')
+          ..write('visit_date: $visit_date')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    household_visit_id,
+    household_id,
+    visit_num,
+    brgy_position,
+    visit_date,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HouseholdVisitData &&
+          other.household_visit_id == this.household_visit_id &&
+          other.household_id == this.household_id &&
+          other.visit_num == this.visit_num &&
+          other.brgy_position == this.brgy_position &&
+          other.visit_date == this.visit_date);
+}
+
+class HouseholdVisitsCompanion extends UpdateCompanion<HouseholdVisitData> {
+  final Value<int> household_visit_id;
+  final Value<int> household_id;
+  final Value<int?> visit_num;
+  final Value<BarangayPositions> brgy_position;
+  final Value<DateTime?> visit_date;
+  const HouseholdVisitsCompanion({
+    this.household_visit_id = const Value.absent(),
+    this.household_id = const Value.absent(),
+    this.visit_num = const Value.absent(),
+    this.brgy_position = const Value.absent(),
+    this.visit_date = const Value.absent(),
+  });
+  HouseholdVisitsCompanion.insert({
+    this.household_visit_id = const Value.absent(),
+    required int household_id,
+    this.visit_num = const Value.absent(),
+    required BarangayPositions brgy_position,
+    this.visit_date = const Value.absent(),
+  }) : household_id = Value(household_id),
+       brgy_position = Value(brgy_position);
+  static Insertable<HouseholdVisitData> custom({
+    Expression<int>? household_visit_id,
+    Expression<int>? household_id,
+    Expression<int>? visit_num,
+    Expression<String>? brgy_position,
+    Expression<DateTime>? visit_date,
+  }) {
+    return RawValuesInsertable({
+      if (household_visit_id != null) 'household_visit_id': household_visit_id,
+      if (household_id != null) 'household_id': household_id,
+      if (visit_num != null) 'visit_num': visit_num,
+      if (brgy_position != null) 'brgy_position': brgy_position,
+      if (visit_date != null) 'visit_date': visit_date,
+    });
+  }
+
+  HouseholdVisitsCompanion copyWith({
+    Value<int>? household_visit_id,
+    Value<int>? household_id,
+    Value<int?>? visit_num,
+    Value<BarangayPositions>? brgy_position,
+    Value<DateTime?>? visit_date,
+  }) {
+    return HouseholdVisitsCompanion(
+      household_visit_id: household_visit_id ?? this.household_visit_id,
+      household_id: household_id ?? this.household_id,
+      visit_num: visit_num ?? this.visit_num,
+      brgy_position: brgy_position ?? this.brgy_position,
+      visit_date: visit_date ?? this.visit_date,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (household_visit_id.present) {
+      map['household_visit_id'] = Variable<int>(household_visit_id.value);
+    }
+    if (household_id.present) {
+      map['household_id'] = Variable<int>(household_id.value);
+    }
+    if (visit_num.present) {
+      map['visit_num'] = Variable<int>(visit_num.value);
+    }
+    if (brgy_position.present) {
+      map['brgy_position'] = Variable<String>(
+        $HouseholdVisitsTable.$converterbrgy_position.toSql(
+          brgy_position.value,
+        ),
+      );
+    }
+    if (visit_date.present) {
+      map['visit_date'] = Variable<DateTime>(visit_date.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HouseholdVisitsCompanion(')
+          ..write('household_visit_id: $household_visit_id, ')
+          ..write('household_id: $household_id, ')
+          ..write('visit_num: $visit_num, ')
+          ..write('brgy_position: $brgy_position, ')
+          ..write('visit_date: $visit_date')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $HouseholdMembersTable extends HouseholdMembers
+    with TableInfo<$HouseholdMembersTable, HouseholdMemberData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HouseholdMembersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _household_member_idMeta =
+      const VerificationMeta('household_member_id');
+  @override
+  late final GeneratedColumn<int> household_member_id = GeneratedColumn<int>(
+    'household_member_id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _person_idMeta = const VerificationMeta(
+    'person_id',
+  );
+  @override
+  late final GeneratedColumn<int> person_id = GeneratedColumn<int>(
+    'person_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES persons (person_id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _household_idMeta = const VerificationMeta(
+    'household_id',
+  );
+  @override
+  late final GeneratedColumn<int> household_id = GeneratedColumn<int>(
+    'household_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES households (household_id) ON DELETE CASCADE',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    household_member_id,
+    person_id,
+    household_id,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'household_members';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<HouseholdMemberData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('household_member_id')) {
+      context.handle(
+        _household_member_idMeta,
+        household_member_id.isAcceptableOrUnknown(
+          data['household_member_id']!,
+          _household_member_idMeta,
+        ),
+      );
+    }
+    if (data.containsKey('person_id')) {
+      context.handle(
+        _person_idMeta,
+        person_id.isAcceptableOrUnknown(data['person_id']!, _person_idMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_person_idMeta);
+    }
+    if (data.containsKey('household_id')) {
+      context.handle(
+        _household_idMeta,
+        household_id.isAcceptableOrUnknown(
+          data['household_id']!,
+          _household_idMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_household_idMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {household_member_id};
+  @override
+  HouseholdMemberData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HouseholdMemberData(
+      household_member_id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}household_member_id'],
+          )!,
+      person_id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}person_id'],
+          )!,
+      household_id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}household_id'],
+          )!,
+    );
+  }
+
+  @override
+  $HouseholdMembersTable createAlias(String alias) {
+    return $HouseholdMembersTable(attachedDatabase, alias);
+  }
+}
+
+class HouseholdMemberData extends DataClass
+    implements Insertable<HouseholdMemberData> {
+  final int household_member_id;
+  final int person_id;
+  final int household_id;
+  const HouseholdMemberData({
+    required this.household_member_id,
+    required this.person_id,
+    required this.household_id,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['household_member_id'] = Variable<int>(household_member_id);
+    map['person_id'] = Variable<int>(person_id);
+    map['household_id'] = Variable<int>(household_id);
+    return map;
+  }
+
+  HouseholdMembersCompanion toCompanion(bool nullToAbsent) {
+    return HouseholdMembersCompanion(
+      household_member_id: Value(household_member_id),
+      person_id: Value(person_id),
+      household_id: Value(household_id),
+    );
+  }
+
+  factory HouseholdMemberData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HouseholdMemberData(
+      household_member_id: serializer.fromJson<int>(
+        json['household_member_id'],
+      ),
+      person_id: serializer.fromJson<int>(json['person_id']),
+      household_id: serializer.fromJson<int>(json['household_id']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'household_member_id': serializer.toJson<int>(household_member_id),
+      'person_id': serializer.toJson<int>(person_id),
+      'household_id': serializer.toJson<int>(household_id),
+    };
+  }
+
+  HouseholdMemberData copyWith({
+    int? household_member_id,
+    int? person_id,
+    int? household_id,
+  }) => HouseholdMemberData(
+    household_member_id: household_member_id ?? this.household_member_id,
+    person_id: person_id ?? this.person_id,
+    household_id: household_id ?? this.household_id,
+  );
+  HouseholdMemberData copyWithCompanion(HouseholdMembersCompanion data) {
+    return HouseholdMemberData(
+      household_member_id:
+          data.household_member_id.present
+              ? data.household_member_id.value
+              : this.household_member_id,
+      person_id: data.person_id.present ? data.person_id.value : this.person_id,
+      household_id:
+          data.household_id.present
+              ? data.household_id.value
+              : this.household_id,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HouseholdMemberData(')
+          ..write('household_member_id: $household_member_id, ')
+          ..write('person_id: $person_id, ')
+          ..write('household_id: $household_id')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(household_member_id, person_id, household_id);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HouseholdMemberData &&
+          other.household_member_id == this.household_member_id &&
+          other.person_id == this.person_id &&
+          other.household_id == this.household_id);
+}
+
+class HouseholdMembersCompanion extends UpdateCompanion<HouseholdMemberData> {
+  final Value<int> household_member_id;
+  final Value<int> person_id;
+  final Value<int> household_id;
+  const HouseholdMembersCompanion({
+    this.household_member_id = const Value.absent(),
+    this.person_id = const Value.absent(),
+    this.household_id = const Value.absent(),
+  });
+  HouseholdMembersCompanion.insert({
+    this.household_member_id = const Value.absent(),
+    required int person_id,
+    required int household_id,
+  }) : person_id = Value(person_id),
+       household_id = Value(household_id);
+  static Insertable<HouseholdMemberData> custom({
+    Expression<int>? household_member_id,
+    Expression<int>? person_id,
+    Expression<int>? household_id,
+  }) {
+    return RawValuesInsertable({
+      if (household_member_id != null)
+        'household_member_id': household_member_id,
+      if (person_id != null) 'person_id': person_id,
+      if (household_id != null) 'household_id': household_id,
+    });
+  }
+
+  HouseholdMembersCompanion copyWith({
+    Value<int>? household_member_id,
+    Value<int>? person_id,
+    Value<int>? household_id,
+  }) {
+    return HouseholdMembersCompanion(
+      household_member_id: household_member_id ?? this.household_member_id,
+      person_id: person_id ?? this.person_id,
+      household_id: household_id ?? this.household_id,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (household_member_id.present) {
+      map['household_member_id'] = Variable<int>(household_member_id.value);
+    }
+    if (person_id.present) {
+      map['person_id'] = Variable<int>(person_id.value);
+    }
+    if (household_id.present) {
+      map['household_id'] = Variable<int>(household_id.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HouseholdMembersCompanion(')
+          ..write('household_member_id: $household_member_id, ')
+          ..write('person_id: $person_id, ')
+          ..write('household_id: $household_id')
           ..write(')'))
         .toString();
   }
@@ -17060,18 +18554,16 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $EthnicitiesTable ethnicities = $EthnicitiesTable(this);
   late final $BloodTypesTable bloodTypes = $BloodTypesTable(this);
   late final $AddressesTable addresses = $AddressesTable(this);
-  late final $BuildingTypesTable buildingTypes = $BuildingTypesTable(this);
-  late final $HouseholdsTable households = $HouseholdsTable(this);
   late final $MonthlyIncomesTable monthlyIncomes = $MonthlyIncomesTable(this);
   late final $DailyIncomesTable dailyIncomes = $DailyIncomesTable(this);
   late final $EducationTable education = $EducationTable(this);
   late final $PersonsTable persons = $PersonsTable(this);
+  late final $BuildingTypesTable buildingTypes = $BuildingTypesTable(this);
+  late final $HouseholdsTable households = $HouseholdsTable(this);
   late final $OccupationsTable occupations = $OccupationsTable(this);
   late final $EmailsTable emails = $EmailsTable(this);
   late final $PhoneNumbersTable phoneNumbers = $PhoneNumbersTable(this);
   late final $GadgetsTable gadgets = $GadgetsTable(this);
-  late final $GovermentProgramsTable govermentPrograms =
-      $GovermentProgramsTable(this);
   late final $VoterRegistriesTable voterRegistries = $VoterRegistriesTable(
     this,
   );
@@ -17118,14 +18610,28 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $HouseholdResponsesTable householdResponses =
       $HouseholdResponsesTable(this);
-  late final $FamilyPlansTable familyPlans = $FamilyPlansTable(this);
-  late final $MaternalInfosTable maternalInfos = $MaternalInfosTable(this);
+  late final $FamilyPlanningTable familyPlanning = $FamilyPlanningTable(this);
+  late final $MaternalInformationTable maternalInformation =
+      $MaternalInformationTable(this);
   late final $VisitedFacilitiesTable visitedFacilities =
       $VisitedFacilitiesTable(this);
   late final $HealthInsurancesTable healthInsurances = $HealthInsurancesTable(
     this,
   );
-  late final $NewbornInfosTable newbornInfos = $NewbornInfosTable(this);
+  late final $NewbornInformationTable newbornInformation =
+      $NewbornInformationTable(this);
+  late final $BarangayInfosTable barangayInfos = $BarangayInfosTable(this);
+  late final $BarangayOfficialsTable barangayOfficials =
+      $BarangayOfficialsTable(this);
+  late final $LoginCredentialsTable loginCredentials = $LoginCredentialsTable(
+    this,
+  );
+  late final $HouseholdVisitsTable householdVisits = $HouseholdVisitsTable(
+    this,
+  );
+  late final $HouseholdMembersTable householdMembers = $HouseholdMembersTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -17136,17 +18642,16 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     ethnicities,
     bloodTypes,
     addresses,
-    buildingTypes,
-    households,
     monthlyIncomes,
     dailyIncomes,
     education,
     persons,
+    buildingTypes,
+    households,
     occupations,
     emails,
     phoneNumbers,
     gadgets,
-    govermentPrograms,
     voterRegistries,
     registeredSeniors,
     disabilities,
@@ -17175,11 +18680,16 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     questions,
     questionChoices,
     householdResponses,
-    familyPlans,
-    maternalInfos,
+    familyPlanning,
+    maternalInformation,
     visitedFacilities,
     healthInsurances,
-    newbornInfos,
+    newbornInformation,
+    barangayInfos,
+    barangayOfficials,
+    loginCredentials,
+    householdVisits,
+    householdMembers,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -17210,13 +18720,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('gadgets', kind: UpdateKind.delete)],
-    ),
-    WritePropagation(
-      on: TableUpdateQuery.onTableName(
-        'persons',
-        limitUpdateKind: UpdateKind.delete,
-      ),
-      result: [TableUpdate('goverment_programs', kind: UpdateKind.delete)],
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
@@ -17349,14 +18852,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         'persons',
         limitUpdateKind: UpdateKind.delete,
       ),
-      result: [TableUpdate('family_plans', kind: UpdateKind.delete)],
+      result: [TableUpdate('family_planning', kind: UpdateKind.delete)],
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
         'persons',
         limitUpdateKind: UpdateKind.delete,
       ),
-      result: [TableUpdate('maternal_infos', kind: UpdateKind.delete)],
+      result: [TableUpdate('maternal_information', kind: UpdateKind.delete)],
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
@@ -17377,7 +18880,35 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         'persons',
         limitUpdateKind: UpdateKind.delete,
       ),
-      result: [TableUpdate('newborn_infos', kind: UpdateKind.delete)],
+      result: [TableUpdate('newborn_information', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'persons',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('barangay_officials', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'households',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('household_visits', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'persons',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('household_members', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'households',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('household_members', kind: UpdateKind.delete)],
     ),
   ]);
 }
@@ -18400,27 +19931,6 @@ final class $$AddressesTableReferences
     extends BaseReferences<_$AppDatabase, $AddressesTable, AddressData> {
   $$AddressesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$HouseholdsTable, List<HouseholdData>>
-  _householdsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.households,
-    aliasName: $_aliasNameGenerator(
-      db.addresses.address_id,
-      db.households.address_id,
-    ),
-  );
-
-  $$HouseholdsTableProcessedTableManager get householdsRefs {
-    final manager = $$HouseholdsTableTableManager($_db, $_db.households).filter(
-      (f) =>
-          f.address_id.address_id.sqlEquals($_itemColumn<int>('address_id')!),
-    );
-
-    final cache = $_typedResult.readTableOrNull(_householdsRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
   static MultiTypedResultKey<$PersonsTable, List<PersonData>> _personsRefsTable(
     _$AppDatabase db,
   ) => MultiTypedResultKey.fromTable(
@@ -18438,6 +19948,27 @@ final class $$AddressesTableReferences
     );
 
     final cache = $_typedResult.readTableOrNull(_personsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$HouseholdsTable, List<HouseholdData>>
+  _householdsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.households,
+    aliasName: $_aliasNameGenerator(
+      db.addresses.address_id,
+      db.households.address_id,
+    ),
+  );
+
+  $$HouseholdsTableProcessedTableManager get householdsRefs {
+    final manager = $$HouseholdsTableTableManager($_db, $_db.households).filter(
+      (f) =>
+          f.address_id.address_id.sqlEquals($_itemColumn<int>('address_id')!),
+    );
+
+    final cache = $_typedResult.readTableOrNull(_householdsRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -18478,31 +20009,6 @@ class $$AddressesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  Expression<bool> householdsRefs(
-    Expression<bool> Function($$HouseholdsTableFilterComposer f) f,
-  ) {
-    final $$HouseholdsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.address_id,
-      referencedTable: $db.households,
-      getReferencedColumn: (t) => t.address_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$HouseholdsTableFilterComposer(
-            $db: $db,
-            $table: $db.households,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
   Expression<bool> personsRefs(
     Expression<bool> Function($$PersonsTableFilterComposer f) f,
   ) {
@@ -18519,6 +20025,31 @@ class $$AddressesTableFilterComposer
           }) => $$PersonsTableFilterComposer(
             $db: $db,
             $table: $db.persons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> householdsRefs(
+    Expression<bool> Function($$HouseholdsTableFilterComposer f) f,
+  ) {
+    final $$HouseholdsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.address_id,
+      referencedTable: $db.households,
+      getReferencedColumn: (t) => t.address_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HouseholdsTableFilterComposer(
+            $db: $db,
+            $table: $db.households,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -18590,31 +20121,6 @@ class $$AddressesTableAnnotationComposer
   GeneratedColumn<String> get lot =>
       $composableBuilder(column: $table.lot, builder: (column) => column);
 
-  Expression<T> householdsRefs<T extends Object>(
-    Expression<T> Function($$HouseholdsTableAnnotationComposer a) f,
-  ) {
-    final $$HouseholdsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.address_id,
-      referencedTable: $db.households,
-      getReferencedColumn: (t) => t.address_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$HouseholdsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.households,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
   Expression<T> personsRefs<T extends Object>(
     Expression<T> Function($$PersonsTableAnnotationComposer a) f,
   ) {
@@ -18639,6 +20145,31 @@ class $$AddressesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> householdsRefs<T extends Object>(
+    Expression<T> Function($$HouseholdsTableAnnotationComposer a) f,
+  ) {
+    final $$HouseholdsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.address_id,
+      referencedTable: $db.households,
+      getReferencedColumn: (t) => t.address_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HouseholdsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.households,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$AddressesTableTableManager
@@ -18654,7 +20185,7 @@ class $$AddressesTableTableManager
           $$AddressesTableUpdateCompanionBuilder,
           (AddressData, $$AddressesTableReferences),
           AddressData,
-          PrefetchHooks Function({bool householdsRefs, bool personsRefs})
+          PrefetchHooks Function({bool personsRefs, bool householdsRefs})
         > {
   $$AddressesTableTableManager(_$AppDatabase db, $AddressesTable table)
     : super(
@@ -18706,40 +20237,18 @@ class $$AddressesTableTableManager
                       )
                       .toList(),
           prefetchHooksCallback: ({
-            householdsRefs = false,
             personsRefs = false,
+            householdsRefs = false,
           }) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (householdsRefs) db.households,
                 if (personsRefs) db.persons,
+                if (householdsRefs) db.households,
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (householdsRefs)
-                    await $_getPrefetchedData<
-                      AddressData,
-                      $AddressesTable,
-                      HouseholdData
-                    >(
-                      currentTable: table,
-                      referencedTable: $$AddressesTableReferences
-                          ._householdsRefsTable(db),
-                      managerFromTypedResult:
-                          (p0) =>
-                              $$AddressesTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).householdsRefs,
-                      referencedItemsForCurrentItem:
-                          (item, referencedItems) => referencedItems.where(
-                            (e) => e.address_id == item.address_id,
-                          ),
-                      typedResults: items,
-                    ),
                   if (personsRefs)
                     await $_getPrefetchedData<
                       AddressData,
@@ -18756,6 +20265,28 @@ class $$AddressesTableTableManager
                                 table,
                                 p0,
                               ).personsRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.address_id == item.address_id,
+                          ),
+                      typedResults: items,
+                    ),
+                  if (householdsRefs)
+                    await $_getPrefetchedData<
+                      AddressData,
+                      $AddressesTable,
+                      HouseholdData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$AddressesTableReferences
+                          ._householdsRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$AddressesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).householdsRefs,
                       referencedItemsForCurrentItem:
                           (item, referencedItems) => referencedItems.where(
                             (e) => e.address_id == item.address_id,
@@ -18782,1541 +20313,7 @@ typedef $$AddressesTableProcessedTableManager =
       $$AddressesTableUpdateCompanionBuilder,
       (AddressData, $$AddressesTableReferences),
       AddressData,
-      PrefetchHooks Function({bool householdsRefs, bool personsRefs})
-    >;
-typedef $$BuildingTypesTableCreateCompanionBuilder =
-    BuildingTypesCompanion Function({
-      Value<int> building_type_id,
-      required String type,
-    });
-typedef $$BuildingTypesTableUpdateCompanionBuilder =
-    BuildingTypesCompanion Function({
-      Value<int> building_type_id,
-      Value<String> type,
-    });
-
-final class $$BuildingTypesTableReferences
-    extends
-        BaseReferences<_$AppDatabase, $BuildingTypesTable, BuildingTypeData> {
-  $$BuildingTypesTableReferences(
-    super.$_db,
-    super.$_table,
-    super.$_typedResult,
-  );
-
-  static MultiTypedResultKey<$HouseholdsTable, List<HouseholdData>>
-  _householdsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.households,
-    aliasName: $_aliasNameGenerator(
-      db.buildingTypes.building_type_id,
-      db.households.building_type_id,
-    ),
-  );
-
-  $$HouseholdsTableProcessedTableManager get householdsRefs {
-    final manager = $$HouseholdsTableTableManager($_db, $_db.households).filter(
-      (f) => f.building_type_id.building_type_id.sqlEquals(
-        $_itemColumn<int>('building_type_id')!,
-      ),
-    );
-
-    final cache = $_typedResult.readTableOrNull(_householdsRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-}
-
-class $$BuildingTypesTableFilterComposer
-    extends Composer<_$AppDatabase, $BuildingTypesTable> {
-  $$BuildingTypesTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get building_type_id => $composableBuilder(
-    column: $table.building_type_id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get type => $composableBuilder(
-    column: $table.type,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  Expression<bool> householdsRefs(
-    Expression<bool> Function($$HouseholdsTableFilterComposer f) f,
-  ) {
-    final $$HouseholdsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.building_type_id,
-      referencedTable: $db.households,
-      getReferencedColumn: (t) => t.building_type_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$HouseholdsTableFilterComposer(
-            $db: $db,
-            $table: $db.households,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$BuildingTypesTableOrderingComposer
-    extends Composer<_$AppDatabase, $BuildingTypesTable> {
-  $$BuildingTypesTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get building_type_id => $composableBuilder(
-    column: $table.building_type_id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get type => $composableBuilder(
-    column: $table.type,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$BuildingTypesTableAnnotationComposer
-    extends Composer<_$AppDatabase, $BuildingTypesTable> {
-  $$BuildingTypesTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get building_type_id => $composableBuilder(
-    column: $table.building_type_id,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get type =>
-      $composableBuilder(column: $table.type, builder: (column) => column);
-
-  Expression<T> householdsRefs<T extends Object>(
-    Expression<T> Function($$HouseholdsTableAnnotationComposer a) f,
-  ) {
-    final $$HouseholdsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.building_type_id,
-      referencedTable: $db.households,
-      getReferencedColumn: (t) => t.building_type_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$HouseholdsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.households,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$BuildingTypesTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $BuildingTypesTable,
-          BuildingTypeData,
-          $$BuildingTypesTableFilterComposer,
-          $$BuildingTypesTableOrderingComposer,
-          $$BuildingTypesTableAnnotationComposer,
-          $$BuildingTypesTableCreateCompanionBuilder,
-          $$BuildingTypesTableUpdateCompanionBuilder,
-          (BuildingTypeData, $$BuildingTypesTableReferences),
-          BuildingTypeData,
-          PrefetchHooks Function({bool householdsRefs})
-        > {
-  $$BuildingTypesTableTableManager(_$AppDatabase db, $BuildingTypesTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer:
-              () => $$BuildingTypesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer:
-              () =>
-                  $$BuildingTypesTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer:
-              () => $$BuildingTypesTableAnnotationComposer(
-                $db: db,
-                $table: table,
-              ),
-          updateCompanionCallback:
-              ({
-                Value<int> building_type_id = const Value.absent(),
-                Value<String> type = const Value.absent(),
-              }) => BuildingTypesCompanion(
-                building_type_id: building_type_id,
-                type: type,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> building_type_id = const Value.absent(),
-                required String type,
-              }) => BuildingTypesCompanion.insert(
-                building_type_id: building_type_id,
-                type: type,
-              ),
-          withReferenceMapper:
-              (p0) =>
-                  p0
-                      .map(
-                        (e) => (
-                          e.readTable(table),
-                          $$BuildingTypesTableReferences(db, table, e),
-                        ),
-                      )
-                      .toList(),
-          prefetchHooksCallback: ({householdsRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [if (householdsRefs) db.households],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (householdsRefs)
-                    await $_getPrefetchedData<
-                      BuildingTypeData,
-                      $BuildingTypesTable,
-                      HouseholdData
-                    >(
-                      currentTable: table,
-                      referencedTable: $$BuildingTypesTableReferences
-                          ._householdsRefsTable(db),
-                      managerFromTypedResult:
-                          (p0) =>
-                              $$BuildingTypesTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).householdsRefs,
-                      referencedItemsForCurrentItem:
-                          (item, referencedItems) => referencedItems.where(
-                            (e) => e.building_type_id == item.building_type_id,
-                          ),
-                      typedResults: items,
-                    ),
-                ];
-              },
-            );
-          },
-        ),
-      );
-}
-
-typedef $$BuildingTypesTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $BuildingTypesTable,
-      BuildingTypeData,
-      $$BuildingTypesTableFilterComposer,
-      $$BuildingTypesTableOrderingComposer,
-      $$BuildingTypesTableAnnotationComposer,
-      $$BuildingTypesTableCreateCompanionBuilder,
-      $$BuildingTypesTableUpdateCompanionBuilder,
-      (BuildingTypeData, $$BuildingTypesTableReferences),
-      BuildingTypeData,
-      PrefetchHooks Function({bool householdsRefs})
-    >;
-typedef $$HouseholdsTableCreateCompanionBuilder =
-    HouseholdsCompanion Function({
-      Value<int> household_id,
-      Value<String?> head,
-      Value<int?> address_id,
-      Value<HouseholdTypes?> household_type_id,
-      Value<int?> building_type_id,
-      Value<OwnershipTypes?> ownership_type_id,
-      Value<int?> household_members_num,
-      Value<bool?> female_mortality,
-      Value<bool?> child_mortality,
-      Value<DateTime?> registration_date,
-      required RegistrationStatus registration_status,
-    });
-typedef $$HouseholdsTableUpdateCompanionBuilder =
-    HouseholdsCompanion Function({
-      Value<int> household_id,
-      Value<String?> head,
-      Value<int?> address_id,
-      Value<HouseholdTypes?> household_type_id,
-      Value<int?> building_type_id,
-      Value<OwnershipTypes?> ownership_type_id,
-      Value<int?> household_members_num,
-      Value<bool?> female_mortality,
-      Value<bool?> child_mortality,
-      Value<DateTime?> registration_date,
-      Value<RegistrationStatus> registration_status,
-    });
-
-final class $$HouseholdsTableReferences
-    extends BaseReferences<_$AppDatabase, $HouseholdsTable, HouseholdData> {
-  $$HouseholdsTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static $AddressesTable _address_idTable(_$AppDatabase db) =>
-      db.addresses.createAlias(
-        $_aliasNameGenerator(db.households.address_id, db.addresses.address_id),
-      );
-
-  $$AddressesTableProcessedTableManager? get address_id {
-    final $_column = $_itemColumn<int>('address_id');
-    if ($_column == null) return null;
-    final manager = $$AddressesTableTableManager(
-      $_db,
-      $_db.addresses,
-    ).filter((f) => f.address_id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_address_idTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static $BuildingTypesTable _building_type_idTable(_$AppDatabase db) =>
-      db.buildingTypes.createAlias(
-        $_aliasNameGenerator(
-          db.households.building_type_id,
-          db.buildingTypes.building_type_id,
-        ),
-      );
-
-  $$BuildingTypesTableProcessedTableManager? get building_type_id {
-    final $_column = $_itemColumn<int>('building_type_id');
-    if ($_column == null) return null;
-    final manager = $$BuildingTypesTableTableManager(
-      $_db,
-      $_db.buildingTypes,
-    ).filter((f) => f.building_type_id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_building_type_idTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static MultiTypedResultKey<$PersonsTable, List<PersonData>> _personsRefsTable(
-    _$AppDatabase db,
-  ) => MultiTypedResultKey.fromTable(
-    db.persons,
-    aliasName: $_aliasNameGenerator(
-      db.households.household_id,
-      db.persons.household_id,
-    ),
-  );
-
-  $$PersonsTableProcessedTableManager get personsRefs {
-    final manager = $$PersonsTableTableManager($_db, $_db.persons).filter(
-      (f) => f.household_id.household_id.sqlEquals(
-        $_itemColumn<int>('household_id')!,
-      ),
-    );
-
-    final cache = $_typedResult.readTableOrNull(_personsRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<
-    $HouseholdRelationshipsTable,
-    List<HouseholdRelationship>
-  >
-  _householdRelationshipsRefsTable(_$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(
-        db.householdRelationships,
-        aliasName: $_aliasNameGenerator(
-          db.households.household_id,
-          db.householdRelationships.household_id,
-        ),
-      );
-
-  $$HouseholdRelationshipsTableProcessedTableManager
-  get householdRelationshipsRefs {
-    final manager = $$HouseholdRelationshipsTableTableManager(
-      $_db,
-      $_db.householdRelationships,
-    ).filter(
-      (f) => f.household_id.household_id.sqlEquals(
-        $_itemColumn<int>('household_id')!,
-      ),
-    );
-
-    final cache = $_typedResult.readTableOrNull(
-      _householdRelationshipsRefsTable($_db),
-    );
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<$ServicesTable, List<ServiceData>>
-  _servicesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.services,
-    aliasName: $_aliasNameGenerator(
-      db.households.household_id,
-      db.services.household_id,
-    ),
-  );
-
-  $$ServicesTableProcessedTableManager get servicesRefs {
-    final manager = $$ServicesTableTableManager($_db, $_db.services).filter(
-      (f) => f.household_id.household_id.sqlEquals(
-        $_itemColumn<int>('household_id')!,
-      ),
-    );
-
-    final cache = $_typedResult.readTableOrNull(_servicesRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<$PrimaryNeedsTable, List<PrimaryNeedData>>
-  _primaryNeedsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.primaryNeeds,
-    aliasName: $_aliasNameGenerator(
-      db.households.household_id,
-      db.primaryNeeds.household_id,
-    ),
-  );
-
-  $$PrimaryNeedsTableProcessedTableManager get primaryNeedsRefs {
-    final manager = $$PrimaryNeedsTableTableManager(
-      $_db,
-      $_db.primaryNeeds,
-    ).filter(
-      (f) => f.household_id.household_id.sqlEquals(
-        $_itemColumn<int>('household_id')!,
-      ),
-    );
-
-    final cache = $_typedResult.readTableOrNull(_primaryNeedsRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<$FemaleMortalitiesTable, List<FemaleMortalityData>>
-  _femaleMortalitiesRefsTable(_$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(
-        db.femaleMortalities,
-        aliasName: $_aliasNameGenerator(
-          db.households.household_id,
-          db.femaleMortalities.household_id,
-        ),
-      );
-
-  $$FemaleMortalitiesTableProcessedTableManager get femaleMortalitiesRefs {
-    final manager = $$FemaleMortalitiesTableTableManager(
-      $_db,
-      $_db.femaleMortalities,
-    ).filter(
-      (f) => f.household_id.household_id.sqlEquals(
-        $_itemColumn<int>('household_id')!,
-      ),
-    );
-
-    final cache = $_typedResult.readTableOrNull(
-      _femaleMortalitiesRefsTable($_db),
-    );
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<$ChildMortalitiesTable, List<ChildMortalityData>>
-  _childMortalitiesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.childMortalities,
-    aliasName: $_aliasNameGenerator(
-      db.households.household_id,
-      db.childMortalities.household_id,
-    ),
-  );
-
-  $$ChildMortalitiesTableProcessedTableManager get childMortalitiesRefs {
-    final manager = $$ChildMortalitiesTableTableManager(
-      $_db,
-      $_db.childMortalities,
-    ).filter(
-      (f) => f.household_id.household_id.sqlEquals(
-        $_itemColumn<int>('household_id')!,
-      ),
-    );
-
-    final cache = $_typedResult.readTableOrNull(
-      _childMortalitiesRefsTable($_db),
-    );
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<$FutureResidenciesTable, List<FutureResidency>>
-  _futureResidenciesRefsTable(_$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(
-        db.futureResidencies,
-        aliasName: $_aliasNameGenerator(
-          db.households.household_id,
-          db.futureResidencies.household_id,
-        ),
-      );
-
-  $$FutureResidenciesTableProcessedTableManager get futureResidenciesRefs {
-    final manager = $$FutureResidenciesTableTableManager(
-      $_db,
-      $_db.futureResidencies,
-    ).filter(
-      (f) => f.household_id.household_id.sqlEquals(
-        $_itemColumn<int>('household_id')!,
-      ),
-    );
-
-    final cache = $_typedResult.readTableOrNull(
-      _futureResidenciesRefsTable($_db),
-    );
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-}
-
-class $$HouseholdsTableFilterComposer
-    extends Composer<_$AppDatabase, $HouseholdsTable> {
-  $$HouseholdsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get household_id => $composableBuilder(
-    column: $table.household_id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get head => $composableBuilder(
-    column: $table.head,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnWithTypeConverterFilters<HouseholdTypes?, HouseholdTypes, String>
-  get household_type_id => $composableBuilder(
-    column: $table.household_type_id,
-    builder: (column) => ColumnWithTypeConverterFilters(column),
-  );
-
-  ColumnWithTypeConverterFilters<OwnershipTypes?, OwnershipTypes, String>
-  get ownership_type_id => $composableBuilder(
-    column: $table.ownership_type_id,
-    builder: (column) => ColumnWithTypeConverterFilters(column),
-  );
-
-  ColumnFilters<int> get household_members_num => $composableBuilder(
-    column: $table.household_members_num,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<bool> get female_mortality => $composableBuilder(
-    column: $table.female_mortality,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<bool> get child_mortality => $composableBuilder(
-    column: $table.child_mortality,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get registration_date => $composableBuilder(
-    column: $table.registration_date,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnWithTypeConverterFilters<RegistrationStatus, RegistrationStatus, String>
-  get registration_status => $composableBuilder(
-    column: $table.registration_status,
-    builder: (column) => ColumnWithTypeConverterFilters(column),
-  );
-
-  $$AddressesTableFilterComposer get address_id {
-    final $$AddressesTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.address_id,
-      referencedTable: $db.addresses,
-      getReferencedColumn: (t) => t.address_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$AddressesTableFilterComposer(
-            $db: $db,
-            $table: $db.addresses,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$BuildingTypesTableFilterComposer get building_type_id {
-    final $$BuildingTypesTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.building_type_id,
-      referencedTable: $db.buildingTypes,
-      getReferencedColumn: (t) => t.building_type_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BuildingTypesTableFilterComposer(
-            $db: $db,
-            $table: $db.buildingTypes,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  Expression<bool> personsRefs(
-    Expression<bool> Function($$PersonsTableFilterComposer f) f,
-  ) {
-    final $$PersonsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.household_id,
-      referencedTable: $db.persons,
-      getReferencedColumn: (t) => t.household_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PersonsTableFilterComposer(
-            $db: $db,
-            $table: $db.persons,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<bool> householdRelationshipsRefs(
-    Expression<bool> Function($$HouseholdRelationshipsTableFilterComposer f) f,
-  ) {
-    final $$HouseholdRelationshipsTableFilterComposer composer =
-        $composerBuilder(
-          composer: this,
-          getCurrentColumn: (t) => t.household_id,
-          referencedTable: $db.householdRelationships,
-          getReferencedColumn: (t) => t.household_id,
-          builder:
-              (
-                joinBuilder, {
-                $addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer,
-              }) => $$HouseholdRelationshipsTableFilterComposer(
-                $db: $db,
-                $table: $db.householdRelationships,
-                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                joinBuilder: joinBuilder,
-                $removeJoinBuilderFromRootComposer:
-                    $removeJoinBuilderFromRootComposer,
-              ),
-        );
-    return f(composer);
-  }
-
-  Expression<bool> servicesRefs(
-    Expression<bool> Function($$ServicesTableFilterComposer f) f,
-  ) {
-    final $$ServicesTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.household_id,
-      referencedTable: $db.services,
-      getReferencedColumn: (t) => t.household_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ServicesTableFilterComposer(
-            $db: $db,
-            $table: $db.services,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<bool> primaryNeedsRefs(
-    Expression<bool> Function($$PrimaryNeedsTableFilterComposer f) f,
-  ) {
-    final $$PrimaryNeedsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.household_id,
-      referencedTable: $db.primaryNeeds,
-      getReferencedColumn: (t) => t.household_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PrimaryNeedsTableFilterComposer(
-            $db: $db,
-            $table: $db.primaryNeeds,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<bool> femaleMortalitiesRefs(
-    Expression<bool> Function($$FemaleMortalitiesTableFilterComposer f) f,
-  ) {
-    final $$FemaleMortalitiesTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.household_id,
-      referencedTable: $db.femaleMortalities,
-      getReferencedColumn: (t) => t.household_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$FemaleMortalitiesTableFilterComposer(
-            $db: $db,
-            $table: $db.femaleMortalities,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<bool> childMortalitiesRefs(
-    Expression<bool> Function($$ChildMortalitiesTableFilterComposer f) f,
-  ) {
-    final $$ChildMortalitiesTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.household_id,
-      referencedTable: $db.childMortalities,
-      getReferencedColumn: (t) => t.household_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ChildMortalitiesTableFilterComposer(
-            $db: $db,
-            $table: $db.childMortalities,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<bool> futureResidenciesRefs(
-    Expression<bool> Function($$FutureResidenciesTableFilterComposer f) f,
-  ) {
-    final $$FutureResidenciesTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.household_id,
-      referencedTable: $db.futureResidencies,
-      getReferencedColumn: (t) => t.household_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$FutureResidenciesTableFilterComposer(
-            $db: $db,
-            $table: $db.futureResidencies,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$HouseholdsTableOrderingComposer
-    extends Composer<_$AppDatabase, $HouseholdsTable> {
-  $$HouseholdsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get household_id => $composableBuilder(
-    column: $table.household_id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get head => $composableBuilder(
-    column: $table.head,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get household_type_id => $composableBuilder(
-    column: $table.household_type_id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get ownership_type_id => $composableBuilder(
-    column: $table.ownership_type_id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get household_members_num => $composableBuilder(
-    column: $table.household_members_num,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<bool> get female_mortality => $composableBuilder(
-    column: $table.female_mortality,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<bool> get child_mortality => $composableBuilder(
-    column: $table.child_mortality,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get registration_date => $composableBuilder(
-    column: $table.registration_date,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get registration_status => $composableBuilder(
-    column: $table.registration_status,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  $$AddressesTableOrderingComposer get address_id {
-    final $$AddressesTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.address_id,
-      referencedTable: $db.addresses,
-      getReferencedColumn: (t) => t.address_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$AddressesTableOrderingComposer(
-            $db: $db,
-            $table: $db.addresses,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$BuildingTypesTableOrderingComposer get building_type_id {
-    final $$BuildingTypesTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.building_type_id,
-      referencedTable: $db.buildingTypes,
-      getReferencedColumn: (t) => t.building_type_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BuildingTypesTableOrderingComposer(
-            $db: $db,
-            $table: $db.buildingTypes,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$HouseholdsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $HouseholdsTable> {
-  $$HouseholdsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get household_id => $composableBuilder(
-    column: $table.household_id,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get head =>
-      $composableBuilder(column: $table.head, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<HouseholdTypes?, String>
-  get household_type_id => $composableBuilder(
-    column: $table.household_type_id,
-    builder: (column) => column,
-  );
-
-  GeneratedColumnWithTypeConverter<OwnershipTypes?, String>
-  get ownership_type_id => $composableBuilder(
-    column: $table.ownership_type_id,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get household_members_num => $composableBuilder(
-    column: $table.household_members_num,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<bool> get female_mortality => $composableBuilder(
-    column: $table.female_mortality,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<bool> get child_mortality => $composableBuilder(
-    column: $table.child_mortality,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<DateTime> get registration_date => $composableBuilder(
-    column: $table.registration_date,
-    builder: (column) => column,
-  );
-
-  GeneratedColumnWithTypeConverter<RegistrationStatus, String>
-  get registration_status => $composableBuilder(
-    column: $table.registration_status,
-    builder: (column) => column,
-  );
-
-  $$AddressesTableAnnotationComposer get address_id {
-    final $$AddressesTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.address_id,
-      referencedTable: $db.addresses,
-      getReferencedColumn: (t) => t.address_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$AddressesTableAnnotationComposer(
-            $db: $db,
-            $table: $db.addresses,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$BuildingTypesTableAnnotationComposer get building_type_id {
-    final $$BuildingTypesTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.building_type_id,
-      referencedTable: $db.buildingTypes,
-      getReferencedColumn: (t) => t.building_type_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BuildingTypesTableAnnotationComposer(
-            $db: $db,
-            $table: $db.buildingTypes,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  Expression<T> personsRefs<T extends Object>(
-    Expression<T> Function($$PersonsTableAnnotationComposer a) f,
-  ) {
-    final $$PersonsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.household_id,
-      referencedTable: $db.persons,
-      getReferencedColumn: (t) => t.household_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PersonsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.persons,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<T> householdRelationshipsRefs<T extends Object>(
-    Expression<T> Function($$HouseholdRelationshipsTableAnnotationComposer a) f,
-  ) {
-    final $$HouseholdRelationshipsTableAnnotationComposer composer =
-        $composerBuilder(
-          composer: this,
-          getCurrentColumn: (t) => t.household_id,
-          referencedTable: $db.householdRelationships,
-          getReferencedColumn: (t) => t.household_id,
-          builder:
-              (
-                joinBuilder, {
-                $addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer,
-              }) => $$HouseholdRelationshipsTableAnnotationComposer(
-                $db: $db,
-                $table: $db.householdRelationships,
-                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                joinBuilder: joinBuilder,
-                $removeJoinBuilderFromRootComposer:
-                    $removeJoinBuilderFromRootComposer,
-              ),
-        );
-    return f(composer);
-  }
-
-  Expression<T> servicesRefs<T extends Object>(
-    Expression<T> Function($$ServicesTableAnnotationComposer a) f,
-  ) {
-    final $$ServicesTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.household_id,
-      referencedTable: $db.services,
-      getReferencedColumn: (t) => t.household_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ServicesTableAnnotationComposer(
-            $db: $db,
-            $table: $db.services,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<T> primaryNeedsRefs<T extends Object>(
-    Expression<T> Function($$PrimaryNeedsTableAnnotationComposer a) f,
-  ) {
-    final $$PrimaryNeedsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.household_id,
-      referencedTable: $db.primaryNeeds,
-      getReferencedColumn: (t) => t.household_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PrimaryNeedsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.primaryNeeds,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<T> femaleMortalitiesRefs<T extends Object>(
-    Expression<T> Function($$FemaleMortalitiesTableAnnotationComposer a) f,
-  ) {
-    final $$FemaleMortalitiesTableAnnotationComposer composer =
-        $composerBuilder(
-          composer: this,
-          getCurrentColumn: (t) => t.household_id,
-          referencedTable: $db.femaleMortalities,
-          getReferencedColumn: (t) => t.household_id,
-          builder:
-              (
-                joinBuilder, {
-                $addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer,
-              }) => $$FemaleMortalitiesTableAnnotationComposer(
-                $db: $db,
-                $table: $db.femaleMortalities,
-                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                joinBuilder: joinBuilder,
-                $removeJoinBuilderFromRootComposer:
-                    $removeJoinBuilderFromRootComposer,
-              ),
-        );
-    return f(composer);
-  }
-
-  Expression<T> childMortalitiesRefs<T extends Object>(
-    Expression<T> Function($$ChildMortalitiesTableAnnotationComposer a) f,
-  ) {
-    final $$ChildMortalitiesTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.household_id,
-      referencedTable: $db.childMortalities,
-      getReferencedColumn: (t) => t.household_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ChildMortalitiesTableAnnotationComposer(
-            $db: $db,
-            $table: $db.childMortalities,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<T> futureResidenciesRefs<T extends Object>(
-    Expression<T> Function($$FutureResidenciesTableAnnotationComposer a) f,
-  ) {
-    final $$FutureResidenciesTableAnnotationComposer composer =
-        $composerBuilder(
-          composer: this,
-          getCurrentColumn: (t) => t.household_id,
-          referencedTable: $db.futureResidencies,
-          getReferencedColumn: (t) => t.household_id,
-          builder:
-              (
-                joinBuilder, {
-                $addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer,
-              }) => $$FutureResidenciesTableAnnotationComposer(
-                $db: $db,
-                $table: $db.futureResidencies,
-                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                joinBuilder: joinBuilder,
-                $removeJoinBuilderFromRootComposer:
-                    $removeJoinBuilderFromRootComposer,
-              ),
-        );
-    return f(composer);
-  }
-}
-
-class $$HouseholdsTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $HouseholdsTable,
-          HouseholdData,
-          $$HouseholdsTableFilterComposer,
-          $$HouseholdsTableOrderingComposer,
-          $$HouseholdsTableAnnotationComposer,
-          $$HouseholdsTableCreateCompanionBuilder,
-          $$HouseholdsTableUpdateCompanionBuilder,
-          (HouseholdData, $$HouseholdsTableReferences),
-          HouseholdData,
-          PrefetchHooks Function({
-            bool address_id,
-            bool building_type_id,
-            bool personsRefs,
-            bool householdRelationshipsRefs,
-            bool servicesRefs,
-            bool primaryNeedsRefs,
-            bool femaleMortalitiesRefs,
-            bool childMortalitiesRefs,
-            bool futureResidenciesRefs,
-          })
-        > {
-  $$HouseholdsTableTableManager(_$AppDatabase db, $HouseholdsTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer:
-              () => $$HouseholdsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer:
-              () => $$HouseholdsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer:
-              () => $$HouseholdsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> household_id = const Value.absent(),
-                Value<String?> head = const Value.absent(),
-                Value<int?> address_id = const Value.absent(),
-                Value<HouseholdTypes?> household_type_id = const Value.absent(),
-                Value<int?> building_type_id = const Value.absent(),
-                Value<OwnershipTypes?> ownership_type_id = const Value.absent(),
-                Value<int?> household_members_num = const Value.absent(),
-                Value<bool?> female_mortality = const Value.absent(),
-                Value<bool?> child_mortality = const Value.absent(),
-                Value<DateTime?> registration_date = const Value.absent(),
-                Value<RegistrationStatus> registration_status =
-                    const Value.absent(),
-              }) => HouseholdsCompanion(
-                household_id: household_id,
-                head: head,
-                address_id: address_id,
-                household_type_id: household_type_id,
-                building_type_id: building_type_id,
-                ownership_type_id: ownership_type_id,
-                household_members_num: household_members_num,
-                female_mortality: female_mortality,
-                child_mortality: child_mortality,
-                registration_date: registration_date,
-                registration_status: registration_status,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> household_id = const Value.absent(),
-                Value<String?> head = const Value.absent(),
-                Value<int?> address_id = const Value.absent(),
-                Value<HouseholdTypes?> household_type_id = const Value.absent(),
-                Value<int?> building_type_id = const Value.absent(),
-                Value<OwnershipTypes?> ownership_type_id = const Value.absent(),
-                Value<int?> household_members_num = const Value.absent(),
-                Value<bool?> female_mortality = const Value.absent(),
-                Value<bool?> child_mortality = const Value.absent(),
-                Value<DateTime?> registration_date = const Value.absent(),
-                required RegistrationStatus registration_status,
-              }) => HouseholdsCompanion.insert(
-                household_id: household_id,
-                head: head,
-                address_id: address_id,
-                household_type_id: household_type_id,
-                building_type_id: building_type_id,
-                ownership_type_id: ownership_type_id,
-                household_members_num: household_members_num,
-                female_mortality: female_mortality,
-                child_mortality: child_mortality,
-                registration_date: registration_date,
-                registration_status: registration_status,
-              ),
-          withReferenceMapper:
-              (p0) =>
-                  p0
-                      .map(
-                        (e) => (
-                          e.readTable(table),
-                          $$HouseholdsTableReferences(db, table, e),
-                        ),
-                      )
-                      .toList(),
-          prefetchHooksCallback: ({
-            address_id = false,
-            building_type_id = false,
-            personsRefs = false,
-            householdRelationshipsRefs = false,
-            servicesRefs = false,
-            primaryNeedsRefs = false,
-            femaleMortalitiesRefs = false,
-            childMortalitiesRefs = false,
-            futureResidenciesRefs = false,
-          }) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (personsRefs) db.persons,
-                if (householdRelationshipsRefs) db.householdRelationships,
-                if (servicesRefs) db.services,
-                if (primaryNeedsRefs) db.primaryNeeds,
-                if (femaleMortalitiesRefs) db.femaleMortalities,
-                if (childMortalitiesRefs) db.childMortalities,
-                if (futureResidenciesRefs) db.futureResidencies,
-              ],
-              addJoins: <
-                T extends TableManagerState<
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic
-                >
-              >(state) {
-                if (address_id) {
-                  state =
-                      state.withJoin(
-                            currentTable: table,
-                            currentColumn: table.address_id,
-                            referencedTable: $$HouseholdsTableReferences
-                                ._address_idTable(db),
-                            referencedColumn:
-                                $$HouseholdsTableReferences
-                                    ._address_idTable(db)
-                                    .address_id,
-                          )
-                          as T;
-                }
-                if (building_type_id) {
-                  state =
-                      state.withJoin(
-                            currentTable: table,
-                            currentColumn: table.building_type_id,
-                            referencedTable: $$HouseholdsTableReferences
-                                ._building_type_idTable(db),
-                            referencedColumn:
-                                $$HouseholdsTableReferences
-                                    ._building_type_idTable(db)
-                                    .building_type_id,
-                          )
-                          as T;
-                }
-
-                return state;
-              },
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (personsRefs)
-                    await $_getPrefetchedData<
-                      HouseholdData,
-                      $HouseholdsTable,
-                      PersonData
-                    >(
-                      currentTable: table,
-                      referencedTable: $$HouseholdsTableReferences
-                          ._personsRefsTable(db),
-                      managerFromTypedResult:
-                          (p0) =>
-                              $$HouseholdsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).personsRefs,
-                      referencedItemsForCurrentItem:
-                          (item, referencedItems) => referencedItems.where(
-                            (e) => e.household_id == item.household_id,
-                          ),
-                      typedResults: items,
-                    ),
-                  if (householdRelationshipsRefs)
-                    await $_getPrefetchedData<
-                      HouseholdData,
-                      $HouseholdsTable,
-                      HouseholdRelationship
-                    >(
-                      currentTable: table,
-                      referencedTable: $$HouseholdsTableReferences
-                          ._householdRelationshipsRefsTable(db),
-                      managerFromTypedResult:
-                          (p0) =>
-                              $$HouseholdsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).householdRelationshipsRefs,
-                      referencedItemsForCurrentItem:
-                          (item, referencedItems) => referencedItems.where(
-                            (e) => e.household_id == item.household_id,
-                          ),
-                      typedResults: items,
-                    ),
-                  if (servicesRefs)
-                    await $_getPrefetchedData<
-                      HouseholdData,
-                      $HouseholdsTable,
-                      ServiceData
-                    >(
-                      currentTable: table,
-                      referencedTable: $$HouseholdsTableReferences
-                          ._servicesRefsTable(db),
-                      managerFromTypedResult:
-                          (p0) =>
-                              $$HouseholdsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).servicesRefs,
-                      referencedItemsForCurrentItem:
-                          (item, referencedItems) => referencedItems.where(
-                            (e) => e.household_id == item.household_id,
-                          ),
-                      typedResults: items,
-                    ),
-                  if (primaryNeedsRefs)
-                    await $_getPrefetchedData<
-                      HouseholdData,
-                      $HouseholdsTable,
-                      PrimaryNeedData
-                    >(
-                      currentTable: table,
-                      referencedTable: $$HouseholdsTableReferences
-                          ._primaryNeedsRefsTable(db),
-                      managerFromTypedResult:
-                          (p0) =>
-                              $$HouseholdsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).primaryNeedsRefs,
-                      referencedItemsForCurrentItem:
-                          (item, referencedItems) => referencedItems.where(
-                            (e) => e.household_id == item.household_id,
-                          ),
-                      typedResults: items,
-                    ),
-                  if (femaleMortalitiesRefs)
-                    await $_getPrefetchedData<
-                      HouseholdData,
-                      $HouseholdsTable,
-                      FemaleMortalityData
-                    >(
-                      currentTable: table,
-                      referencedTable: $$HouseholdsTableReferences
-                          ._femaleMortalitiesRefsTable(db),
-                      managerFromTypedResult:
-                          (p0) =>
-                              $$HouseholdsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).femaleMortalitiesRefs,
-                      referencedItemsForCurrentItem:
-                          (item, referencedItems) => referencedItems.where(
-                            (e) => e.household_id == item.household_id,
-                          ),
-                      typedResults: items,
-                    ),
-                  if (childMortalitiesRefs)
-                    await $_getPrefetchedData<
-                      HouseholdData,
-                      $HouseholdsTable,
-                      ChildMortalityData
-                    >(
-                      currentTable: table,
-                      referencedTable: $$HouseholdsTableReferences
-                          ._childMortalitiesRefsTable(db),
-                      managerFromTypedResult:
-                          (p0) =>
-                              $$HouseholdsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).childMortalitiesRefs,
-                      referencedItemsForCurrentItem:
-                          (item, referencedItems) => referencedItems.where(
-                            (e) => e.household_id == item.household_id,
-                          ),
-                      typedResults: items,
-                    ),
-                  if (futureResidenciesRefs)
-                    await $_getPrefetchedData<
-                      HouseholdData,
-                      $HouseholdsTable,
-                      FutureResidency
-                    >(
-                      currentTable: table,
-                      referencedTable: $$HouseholdsTableReferences
-                          ._futureResidenciesRefsTable(db),
-                      managerFromTypedResult:
-                          (p0) =>
-                              $$HouseholdsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).futureResidenciesRefs,
-                      referencedItemsForCurrentItem:
-                          (item, referencedItems) => referencedItems.where(
-                            (e) => e.household_id == item.household_id,
-                          ),
-                      typedResults: items,
-                    ),
-                ];
-              },
-            );
-          },
-        ),
-      );
-}
-
-typedef $$HouseholdsTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $HouseholdsTable,
-      HouseholdData,
-      $$HouseholdsTableFilterComposer,
-      $$HouseholdsTableOrderingComposer,
-      $$HouseholdsTableAnnotationComposer,
-      $$HouseholdsTableCreateCompanionBuilder,
-      $$HouseholdsTableUpdateCompanionBuilder,
-      (HouseholdData, $$HouseholdsTableReferences),
-      HouseholdData,
-      PrefetchHooks Function({
-        bool address_id,
-        bool building_type_id,
-        bool personsRefs,
-        bool householdRelationshipsRefs,
-        bool servicesRefs,
-        bool primaryNeedsRefs,
-        bool femaleMortalitiesRefs,
-        bool childMortalitiesRefs,
-        bool futureResidenciesRefs,
-      })
+      PrefetchHooks Function({bool personsRefs, bool householdsRefs})
     >;
 typedef $$MonthlyIncomesTableCreateCompanionBuilder =
     MonthlyIncomesCompanion Function({
@@ -21189,7 +21186,6 @@ typedef $$PersonsTableCreateCompanionBuilder =
       Value<int?> nationality_id,
       Value<int?> ethnicity_id,
       Value<int?> blood_type_id,
-      Value<int?> household_id,
       Value<int?> address_id,
       Value<String?> registration_place,
       Value<Residency?> residency,
@@ -21206,7 +21202,7 @@ typedef $$PersonsTableCreateCompanionBuilder =
       Value<int?> education_id,
       Value<bool?> deceased,
       Value<DateTime?> death_date,
-      Value<DateTime?> registration_date,
+      Value<DateTime> registrationDate,
       required RegistrationStatus registration_status,
     });
 typedef $$PersonsTableUpdateCompanionBuilder =
@@ -21225,7 +21221,6 @@ typedef $$PersonsTableUpdateCompanionBuilder =
       Value<int?> nationality_id,
       Value<int?> ethnicity_id,
       Value<int?> blood_type_id,
-      Value<int?> household_id,
       Value<int?> address_id,
       Value<String?> registration_place,
       Value<Residency?> residency,
@@ -21242,7 +21237,7 @@ typedef $$PersonsTableUpdateCompanionBuilder =
       Value<int?> education_id,
       Value<bool?> deceased,
       Value<DateTime?> death_date,
-      Value<DateTime?> registration_date,
+      Value<DateTime> registrationDate,
       Value<RegistrationStatus> registration_status,
     });
 
@@ -21329,28 +21324,6 @@ final class $$PersonsTableReferences
       $_db.bloodTypes,
     ).filter((f) => f.blood_type_id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_blood_type_idTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static $HouseholdsTable _household_idTable(_$AppDatabase db) =>
-      db.households.createAlias(
-        $_aliasNameGenerator(
-          db.persons.household_id,
-          db.households.household_id,
-        ),
-      );
-
-  $$HouseholdsTableProcessedTableManager? get household_id {
-    final $_column = $_itemColumn<int>('household_id');
-    if ($_column == null) return null;
-    final manager = $$HouseholdsTableTableManager(
-      $_db,
-      $_db.households,
-    ).filter((f) => f.household_id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_household_idTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
@@ -21519,35 +21492,6 @@ final class $$PersonsTableReferences
     );
 
     final cache = $_typedResult.readTableOrNull(_gadgetsRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<
-    $GovermentProgramsTable,
-    List<GovernmentProgramData>
-  >
-  _govermentProgramsRefsTable(_$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(
-        db.govermentPrograms,
-        aliasName: $_aliasNameGenerator(
-          db.persons.person_id,
-          db.govermentPrograms.person_id,
-        ),
-      );
-
-  $$GovermentProgramsTableProcessedTableManager get govermentProgramsRefs {
-    final manager = $$GovermentProgramsTableTableManager(
-      $_db,
-      $_db.govermentPrograms,
-    ).filter(
-      (f) => f.person_id.person_id.sqlEquals($_itemColumn<int>('person_id')!),
-    );
-
-    final cache = $_typedResult.readTableOrNull(
-      _govermentProgramsRefsTable($_db),
-    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -21812,47 +21756,53 @@ final class $$PersonsTableReferences
     );
   }
 
-  static MultiTypedResultKey<$FamilyPlansTable, List<FamilyPlanData>>
-  _familyPlansRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.familyPlans,
+  static MultiTypedResultKey<$FamilyPlanningTable, List<FamilyPlanningData>>
+  _familyPlanningRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.familyPlanning,
     aliasName: $_aliasNameGenerator(
       db.persons.person_id,
-      db.familyPlans.person_id,
+      db.familyPlanning.person_id,
     ),
   );
 
-  $$FamilyPlansTableProcessedTableManager get familyPlansRefs {
-    final manager = $$FamilyPlansTableTableManager(
+  $$FamilyPlanningTableProcessedTableManager get familyPlanningRefs {
+    final manager = $$FamilyPlanningTableTableManager(
       $_db,
-      $_db.familyPlans,
+      $_db.familyPlanning,
     ).filter(
       (f) => f.person_id.person_id.sqlEquals($_itemColumn<int>('person_id')!),
     );
 
-    final cache = $_typedResult.readTableOrNull(_familyPlansRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_familyPlanningRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
 
-  static MultiTypedResultKey<$MaternalInfosTable, List<MaternalInfoData>>
-  _maternalInfosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.maternalInfos,
-    aliasName: $_aliasNameGenerator(
-      db.persons.person_id,
-      db.maternalInfos.person_id,
-    ),
-  );
+  static MultiTypedResultKey<
+    $MaternalInformationTable,
+    List<MaternalInformationData>
+  >
+  _maternalInformationRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.maternalInformation,
+        aliasName: $_aliasNameGenerator(
+          db.persons.person_id,
+          db.maternalInformation.person_id,
+        ),
+      );
 
-  $$MaternalInfosTableProcessedTableManager get maternalInfosRefs {
-    final manager = $$MaternalInfosTableTableManager(
+  $$MaternalInformationTableProcessedTableManager get maternalInformationRefs {
+    final manager = $$MaternalInformationTableTableManager(
       $_db,
-      $_db.maternalInfos,
+      $_db.maternalInformation,
     ).filter(
       (f) => f.person_id.person_id.sqlEquals($_itemColumn<int>('person_id')!),
     );
 
-    final cache = $_typedResult.readTableOrNull(_maternalInfosRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(
+      _maternalInformationRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -21909,24 +21859,84 @@ final class $$PersonsTableReferences
     );
   }
 
-  static MultiTypedResultKey<$NewbornInfosTable, List<NewbornInfoData>>
-  _newbornInfosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.newbornInfos,
-    aliasName: $_aliasNameGenerator(
-      db.persons.person_id,
-      db.newbornInfos.person_id,
-    ),
-  );
+  static MultiTypedResultKey<
+    $NewbornInformationTable,
+    List<NewbornInformationData>
+  >
+  _newbornInformationRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.newbornInformation,
+        aliasName: $_aliasNameGenerator(
+          db.persons.person_id,
+          db.newbornInformation.person_id,
+        ),
+      );
 
-  $$NewbornInfosTableProcessedTableManager get newbornInfosRefs {
-    final manager = $$NewbornInfosTableTableManager(
+  $$NewbornInformationTableProcessedTableManager get newbornInformationRefs {
+    final manager = $$NewbornInformationTableTableManager(
       $_db,
-      $_db.newbornInfos,
+      $_db.newbornInformation,
     ).filter(
       (f) => f.person_id.person_id.sqlEquals($_itemColumn<int>('person_id')!),
     );
 
-    final cache = $_typedResult.readTableOrNull(_newbornInfosRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(
+      _newbornInformationRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $BarangayOfficialsTable,
+    List<BarangayOfficialData>
+  >
+  _barangayOfficialsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.barangayOfficials,
+        aliasName: $_aliasNameGenerator(
+          db.persons.person_id,
+          db.barangayOfficials.person_id,
+        ),
+      );
+
+  $$BarangayOfficialsTableProcessedTableManager get barangayOfficialsRefs {
+    final manager = $$BarangayOfficialsTableTableManager(
+      $_db,
+      $_db.barangayOfficials,
+    ).filter(
+      (f) => f.person_id.person_id.sqlEquals($_itemColumn<int>('person_id')!),
+    );
+
+    final cache = $_typedResult.readTableOrNull(
+      _barangayOfficialsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$HouseholdMembersTable, List<HouseholdMemberData>>
+  _householdMembersRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.householdMembers,
+    aliasName: $_aliasNameGenerator(
+      db.persons.person_id,
+      db.householdMembers.person_id,
+    ),
+  );
+
+  $$HouseholdMembersTableProcessedTableManager get householdMembersRefs {
+    final manager = $$HouseholdMembersTableTableManager(
+      $_db,
+      $_db.householdMembers,
+    ).filter(
+      (f) => f.person_id.person_id.sqlEquals($_itemColumn<int>('person_id')!),
+    );
+
+    final cache = $_typedResult.readTableOrNull(
+      _householdMembersRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -22058,8 +22068,8 @@ class $$PersonsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get registration_date => $composableBuilder(
-    column: $table.registration_date,
+  ColumnFilters<DateTime> get registrationDate => $composableBuilder(
+    column: $table.registrationDate,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -22152,29 +22162,6 @@ class $$PersonsTableFilterComposer
           }) => $$BloodTypesTableFilterComposer(
             $db: $db,
             $table: $db.bloodTypes,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$HouseholdsTableFilterComposer get household_id {
-    final $$HouseholdsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.household_id,
-      referencedTable: $db.households,
-      getReferencedColumn: (t) => t.household_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$HouseholdsTableFilterComposer(
-            $db: $db,
-            $table: $db.households,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -22367,31 +22354,6 @@ class $$PersonsTableFilterComposer
           }) => $$GadgetsTableFilterComposer(
             $db: $db,
             $table: $db.gadgets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<bool> govermentProgramsRefs(
-    Expression<bool> Function($$GovermentProgramsTableFilterComposer f) f,
-  ) {
-    final $$GovermentProgramsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.person_id,
-      referencedTable: $db.govermentPrograms,
-      getReferencedColumn: (t) => t.person_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$GovermentProgramsTableFilterComposer(
-            $db: $db,
-            $table: $db.govermentPrograms,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -22677,22 +22639,22 @@ class $$PersonsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> familyPlansRefs(
-    Expression<bool> Function($$FamilyPlansTableFilterComposer f) f,
+  Expression<bool> familyPlanningRefs(
+    Expression<bool> Function($$FamilyPlanningTableFilterComposer f) f,
   ) {
-    final $$FamilyPlansTableFilterComposer composer = $composerBuilder(
+    final $$FamilyPlanningTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.person_id,
-      referencedTable: $db.familyPlans,
+      referencedTable: $db.familyPlanning,
       getReferencedColumn: (t) => t.person_id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$FamilyPlansTableFilterComposer(
+          }) => $$FamilyPlanningTableFilterComposer(
             $db: $db,
-            $table: $db.familyPlans,
+            $table: $db.familyPlanning,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -22702,22 +22664,22 @@ class $$PersonsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> maternalInfosRefs(
-    Expression<bool> Function($$MaternalInfosTableFilterComposer f) f,
+  Expression<bool> maternalInformationRefs(
+    Expression<bool> Function($$MaternalInformationTableFilterComposer f) f,
   ) {
-    final $$MaternalInfosTableFilterComposer composer = $composerBuilder(
+    final $$MaternalInformationTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.person_id,
-      referencedTable: $db.maternalInfos,
+      referencedTable: $db.maternalInformation,
       getReferencedColumn: (t) => t.person_id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$MaternalInfosTableFilterComposer(
+          }) => $$MaternalInformationTableFilterComposer(
             $db: $db,
-            $table: $db.maternalInfos,
+            $table: $db.maternalInformation,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -22777,22 +22739,72 @@ class $$PersonsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> newbornInfosRefs(
-    Expression<bool> Function($$NewbornInfosTableFilterComposer f) f,
+  Expression<bool> newbornInformationRefs(
+    Expression<bool> Function($$NewbornInformationTableFilterComposer f) f,
   ) {
-    final $$NewbornInfosTableFilterComposer composer = $composerBuilder(
+    final $$NewbornInformationTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.person_id,
-      referencedTable: $db.newbornInfos,
+      referencedTable: $db.newbornInformation,
       getReferencedColumn: (t) => t.person_id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$NewbornInfosTableFilterComposer(
+          }) => $$NewbornInformationTableFilterComposer(
             $db: $db,
-            $table: $db.newbornInfos,
+            $table: $db.newbornInformation,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> barangayOfficialsRefs(
+    Expression<bool> Function($$BarangayOfficialsTableFilterComposer f) f,
+  ) {
+    final $$BarangayOfficialsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.person_id,
+      referencedTable: $db.barangayOfficials,
+      getReferencedColumn: (t) => t.person_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BarangayOfficialsTableFilterComposer(
+            $db: $db,
+            $table: $db.barangayOfficials,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> householdMembersRefs(
+    Expression<bool> Function($$HouseholdMembersTableFilterComposer f) f,
+  ) {
+    final $$HouseholdMembersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.person_id,
+      referencedTable: $db.householdMembers,
+      getReferencedColumn: (t) => t.person_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HouseholdMembersTableFilterComposer(
+            $db: $db,
+            $table: $db.householdMembers,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -22922,8 +22934,8 @@ class $$PersonsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get registration_date => $composableBuilder(
-    column: $table.registration_date,
+  ColumnOrderings<DateTime> get registrationDate => $composableBuilder(
+    column: $table.registrationDate,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -23015,29 +23027,6 @@ class $$PersonsTableOrderingComposer
           }) => $$BloodTypesTableOrderingComposer(
             $db: $db,
             $table: $db.bloodTypes,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$HouseholdsTableOrderingComposer get household_id {
-    final $$HouseholdsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.household_id,
-      referencedTable: $db.households,
-      getReferencedColumn: (t) => t.household_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$HouseholdsTableOrderingComposer(
-            $db: $db,
-            $table: $db.households,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -23243,8 +23232,8 @@ class $$PersonsTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<DateTime> get registration_date => $composableBuilder(
-    column: $table.registration_date,
+  GeneratedColumn<DateTime> get registrationDate => $composableBuilder(
+    column: $table.registrationDate,
     builder: (column) => column,
   );
 
@@ -23337,29 +23326,6 @@ class $$PersonsTableAnnotationComposer
           }) => $$BloodTypesTableAnnotationComposer(
             $db: $db,
             $table: $db.bloodTypes,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$HouseholdsTableAnnotationComposer get household_id {
-    final $$HouseholdsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.household_id,
-      referencedTable: $db.households,
-      getReferencedColumn: (t) => t.household_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$HouseholdsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.households,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -23558,32 +23524,6 @@ class $$PersonsTableAnnotationComposer
                 $removeJoinBuilderFromRootComposer,
           ),
     );
-    return f(composer);
-  }
-
-  Expression<T> govermentProgramsRefs<T extends Object>(
-    Expression<T> Function($$GovermentProgramsTableAnnotationComposer a) f,
-  ) {
-    final $$GovermentProgramsTableAnnotationComposer composer =
-        $composerBuilder(
-          composer: this,
-          getCurrentColumn: (t) => t.person_id,
-          referencedTable: $db.govermentPrograms,
-          getReferencedColumn: (t) => t.person_id,
-          builder:
-              (
-                joinBuilder, {
-                $addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer,
-              }) => $$GovermentProgramsTableAnnotationComposer(
-                $db: $db,
-                $table: $db.govermentPrograms,
-                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                joinBuilder: joinBuilder,
-                $removeJoinBuilderFromRootComposer:
-                    $removeJoinBuilderFromRootComposer,
-              ),
-        );
     return f(composer);
   }
 
@@ -23865,22 +23805,22 @@ class $$PersonsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> familyPlansRefs<T extends Object>(
-    Expression<T> Function($$FamilyPlansTableAnnotationComposer a) f,
+  Expression<T> familyPlanningRefs<T extends Object>(
+    Expression<T> Function($$FamilyPlanningTableAnnotationComposer a) f,
   ) {
-    final $$FamilyPlansTableAnnotationComposer composer = $composerBuilder(
+    final $$FamilyPlanningTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.person_id,
-      referencedTable: $db.familyPlans,
+      referencedTable: $db.familyPlanning,
       getReferencedColumn: (t) => t.person_id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$FamilyPlansTableAnnotationComposer(
+          }) => $$FamilyPlanningTableAnnotationComposer(
             $db: $db,
-            $table: $db.familyPlans,
+            $table: $db.familyPlanning,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -23890,28 +23830,29 @@ class $$PersonsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> maternalInfosRefs<T extends Object>(
-    Expression<T> Function($$MaternalInfosTableAnnotationComposer a) f,
+  Expression<T> maternalInformationRefs<T extends Object>(
+    Expression<T> Function($$MaternalInformationTableAnnotationComposer a) f,
   ) {
-    final $$MaternalInfosTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.person_id,
-      referencedTable: $db.maternalInfos,
-      getReferencedColumn: (t) => t.person_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$MaternalInfosTableAnnotationComposer(
-            $db: $db,
-            $table: $db.maternalInfos,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
+    final $$MaternalInformationTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.person_id,
+          referencedTable: $db.maternalInformation,
+          getReferencedColumn: (t) => t.person_id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer,
-          ),
-    );
+              }) => $$MaternalInformationTableAnnotationComposer(
+                $db: $db,
+                $table: $db.maternalInformation,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 
@@ -23966,22 +23907,74 @@ class $$PersonsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> newbornInfosRefs<T extends Object>(
-    Expression<T> Function($$NewbornInfosTableAnnotationComposer a) f,
+  Expression<T> newbornInformationRefs<T extends Object>(
+    Expression<T> Function($$NewbornInformationTableAnnotationComposer a) f,
   ) {
-    final $$NewbornInfosTableAnnotationComposer composer = $composerBuilder(
+    final $$NewbornInformationTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.person_id,
+          referencedTable: $db.newbornInformation,
+          getReferencedColumn: (t) => t.person_id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$NewbornInformationTableAnnotationComposer(
+                $db: $db,
+                $table: $db.newbornInformation,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> barangayOfficialsRefs<T extends Object>(
+    Expression<T> Function($$BarangayOfficialsTableAnnotationComposer a) f,
+  ) {
+    final $$BarangayOfficialsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.person_id,
+          referencedTable: $db.barangayOfficials,
+          getReferencedColumn: (t) => t.person_id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$BarangayOfficialsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.barangayOfficials,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> householdMembersRefs<T extends Object>(
+    Expression<T> Function($$HouseholdMembersTableAnnotationComposer a) f,
+  ) {
+    final $$HouseholdMembersTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.person_id,
-      referencedTable: $db.newbornInfos,
+      referencedTable: $db.householdMembers,
       getReferencedColumn: (t) => t.person_id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$NewbornInfosTableAnnotationComposer(
+          }) => $$HouseholdMembersTableAnnotationComposer(
             $db: $db,
-            $table: $db.newbornInfos,
+            $table: $db.householdMembers,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -24010,7 +24003,6 @@ class $$PersonsTableTableManager
             bool nationality_id,
             bool ethnicity_id,
             bool blood_type_id,
-            bool household_id,
             bool address_id,
             bool monthly_income_id,
             bool daily_income_id,
@@ -24019,7 +24011,6 @@ class $$PersonsTableTableManager
             bool emailsRefs,
             bool phoneNumbersRefs,
             bool gadgetsRefs,
-            bool govermentProgramsRefs,
             bool voterRegistriesRefs,
             bool registeredSeniorsRefs,
             bool disabilitiesRefs,
@@ -24031,11 +24022,13 @@ class $$PersonsTableTableManager
             bool fishingRefs,
             bool agricultureRefs,
             bool livestockRefs,
-            bool familyPlansRefs,
-            bool maternalInfosRefs,
+            bool familyPlanningRefs,
+            bool maternalInformationRefs,
             bool visitedFacilitiesRefs,
             bool healthInsurancesRefs,
-            bool newbornInfosRefs,
+            bool newbornInformationRefs,
+            bool barangayOfficialsRefs,
+            bool householdMembersRefs,
           })
         > {
   $$PersonsTableTableManager(_$AppDatabase db, $PersonsTable table)
@@ -24065,7 +24058,6 @@ class $$PersonsTableTableManager
                 Value<int?> nationality_id = const Value.absent(),
                 Value<int?> ethnicity_id = const Value.absent(),
                 Value<int?> blood_type_id = const Value.absent(),
-                Value<int?> household_id = const Value.absent(),
                 Value<int?> address_id = const Value.absent(),
                 Value<String?> registration_place = const Value.absent(),
                 Value<Residency?> residency = const Value.absent(),
@@ -24083,7 +24075,7 @@ class $$PersonsTableTableManager
                 Value<int?> education_id = const Value.absent(),
                 Value<bool?> deceased = const Value.absent(),
                 Value<DateTime?> death_date = const Value.absent(),
-                Value<DateTime?> registration_date = const Value.absent(),
+                Value<DateTime> registrationDate = const Value.absent(),
                 Value<RegistrationStatus> registration_status =
                     const Value.absent(),
               }) => PersonsCompanion(
@@ -24101,7 +24093,6 @@ class $$PersonsTableTableManager
                 nationality_id: nationality_id,
                 ethnicity_id: ethnicity_id,
                 blood_type_id: blood_type_id,
-                household_id: household_id,
                 address_id: address_id,
                 registration_place: registration_place,
                 residency: residency,
@@ -24118,7 +24109,7 @@ class $$PersonsTableTableManager
                 education_id: education_id,
                 deceased: deceased,
                 death_date: death_date,
-                registration_date: registration_date,
+                registrationDate: registrationDate,
                 registration_status: registration_status,
               ),
           createCompanionCallback:
@@ -24137,7 +24128,6 @@ class $$PersonsTableTableManager
                 Value<int?> nationality_id = const Value.absent(),
                 Value<int?> ethnicity_id = const Value.absent(),
                 Value<int?> blood_type_id = const Value.absent(),
-                Value<int?> household_id = const Value.absent(),
                 Value<int?> address_id = const Value.absent(),
                 Value<String?> registration_place = const Value.absent(),
                 Value<Residency?> residency = const Value.absent(),
@@ -24155,7 +24145,7 @@ class $$PersonsTableTableManager
                 Value<int?> education_id = const Value.absent(),
                 Value<bool?> deceased = const Value.absent(),
                 Value<DateTime?> death_date = const Value.absent(),
-                Value<DateTime?> registration_date = const Value.absent(),
+                Value<DateTime> registrationDate = const Value.absent(),
                 required RegistrationStatus registration_status,
               }) => PersonsCompanion.insert(
                 person_id: person_id,
@@ -24172,7 +24162,6 @@ class $$PersonsTableTableManager
                 nationality_id: nationality_id,
                 ethnicity_id: ethnicity_id,
                 blood_type_id: blood_type_id,
-                household_id: household_id,
                 address_id: address_id,
                 registration_place: registration_place,
                 residency: residency,
@@ -24189,7 +24178,7 @@ class $$PersonsTableTableManager
                 education_id: education_id,
                 deceased: deceased,
                 death_date: death_date,
-                registration_date: registration_date,
+                registrationDate: registrationDate,
                 registration_status: registration_status,
               ),
           withReferenceMapper:
@@ -24207,7 +24196,6 @@ class $$PersonsTableTableManager
             nationality_id = false,
             ethnicity_id = false,
             blood_type_id = false,
-            household_id = false,
             address_id = false,
             monthly_income_id = false,
             daily_income_id = false,
@@ -24216,7 +24204,6 @@ class $$PersonsTableTableManager
             emailsRefs = false,
             phoneNumbersRefs = false,
             gadgetsRefs = false,
-            govermentProgramsRefs = false,
             voterRegistriesRefs = false,
             registeredSeniorsRefs = false,
             disabilitiesRefs = false,
@@ -24228,11 +24215,13 @@ class $$PersonsTableTableManager
             fishingRefs = false,
             agricultureRefs = false,
             livestockRefs = false,
-            familyPlansRefs = false,
-            maternalInfosRefs = false,
+            familyPlanningRefs = false,
+            maternalInformationRefs = false,
             visitedFacilitiesRefs = false,
             healthInsurancesRefs = false,
-            newbornInfosRefs = false,
+            newbornInformationRefs = false,
+            barangayOfficialsRefs = false,
+            householdMembersRefs = false,
           }) {
             return PrefetchHooks(
               db: db,
@@ -24241,7 +24230,6 @@ class $$PersonsTableTableManager
                 if (emailsRefs) db.emails,
                 if (phoneNumbersRefs) db.phoneNumbers,
                 if (gadgetsRefs) db.gadgets,
-                if (govermentProgramsRefs) db.govermentPrograms,
                 if (voterRegistriesRefs) db.voterRegistries,
                 if (registeredSeniorsRefs) db.registeredSeniors,
                 if (disabilitiesRefs) db.disabilities,
@@ -24253,11 +24241,13 @@ class $$PersonsTableTableManager
                 if (fishingRefs) db.fishing,
                 if (agricultureRefs) db.agriculture,
                 if (livestockRefs) db.livestock,
-                if (familyPlansRefs) db.familyPlans,
-                if (maternalInfosRefs) db.maternalInfos,
+                if (familyPlanningRefs) db.familyPlanning,
+                if (maternalInformationRefs) db.maternalInformation,
                 if (visitedFacilitiesRefs) db.visitedFacilities,
                 if (healthInsurancesRefs) db.healthInsurances,
-                if (newbornInfosRefs) db.newbornInfos,
+                if (newbornInformationRefs) db.newbornInformation,
+                if (barangayOfficialsRefs) db.barangayOfficials,
+                if (householdMembersRefs) db.householdMembers,
               ],
               addJoins: <
                 T extends TableManagerState<
@@ -24327,20 +24317,6 @@ class $$PersonsTableTableManager
                                 $$PersonsTableReferences
                                     ._blood_type_idTable(db)
                                     .blood_type_id,
-                          )
-                          as T;
-                }
-                if (household_id) {
-                  state =
-                      state.withJoin(
-                            currentTable: table,
-                            currentColumn: table.household_id,
-                            referencedTable: $$PersonsTableReferences
-                                ._household_idTable(db),
-                            referencedColumn:
-                                $$PersonsTableReferences
-                                    ._household_idTable(db)
-                                    .household_id,
                           )
                           as T;
                 }
@@ -24487,28 +24463,6 @@ class $$PersonsTableTableManager
                                 table,
                                 p0,
                               ).gadgetsRefs,
-                      referencedItemsForCurrentItem:
-                          (item, referencedItems) => referencedItems.where(
-                            (e) => e.person_id == item.person_id,
-                          ),
-                      typedResults: items,
-                    ),
-                  if (govermentProgramsRefs)
-                    await $_getPrefetchedData<
-                      PersonData,
-                      $PersonsTable,
-                      GovernmentProgramData
-                    >(
-                      currentTable: table,
-                      referencedTable: $$PersonsTableReferences
-                          ._govermentProgramsRefsTable(db),
-                      managerFromTypedResult:
-                          (p0) =>
-                              $$PersonsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).govermentProgramsRefs,
                       referencedItemsForCurrentItem:
                           (item, referencedItems) => referencedItems.where(
                             (e) => e.person_id == item.person_id,
@@ -24757,44 +24711,44 @@ class $$PersonsTableTableManager
                           ),
                       typedResults: items,
                     ),
-                  if (familyPlansRefs)
+                  if (familyPlanningRefs)
                     await $_getPrefetchedData<
                       PersonData,
                       $PersonsTable,
-                      FamilyPlanData
+                      FamilyPlanningData
                     >(
                       currentTable: table,
                       referencedTable: $$PersonsTableReferences
-                          ._familyPlansRefsTable(db),
+                          ._familyPlanningRefsTable(db),
                       managerFromTypedResult:
                           (p0) =>
                               $$PersonsTableReferences(
                                 db,
                                 table,
                                 p0,
-                              ).familyPlansRefs,
+                              ).familyPlanningRefs,
                       referencedItemsForCurrentItem:
                           (item, referencedItems) => referencedItems.where(
                             (e) => e.person_id == item.person_id,
                           ),
                       typedResults: items,
                     ),
-                  if (maternalInfosRefs)
+                  if (maternalInformationRefs)
                     await $_getPrefetchedData<
                       PersonData,
                       $PersonsTable,
-                      MaternalInfoData
+                      MaternalInformationData
                     >(
                       currentTable: table,
                       referencedTable: $$PersonsTableReferences
-                          ._maternalInfosRefsTable(db),
+                          ._maternalInformationRefsTable(db),
                       managerFromTypedResult:
                           (p0) =>
                               $$PersonsTableReferences(
                                 db,
                                 table,
                                 p0,
-                              ).maternalInfosRefs,
+                              ).maternalInformationRefs,
                       referencedItemsForCurrentItem:
                           (item, referencedItems) => referencedItems.where(
                             (e) => e.person_id == item.person_id,
@@ -24845,22 +24799,66 @@ class $$PersonsTableTableManager
                           ),
                       typedResults: items,
                     ),
-                  if (newbornInfosRefs)
+                  if (newbornInformationRefs)
                     await $_getPrefetchedData<
                       PersonData,
                       $PersonsTable,
-                      NewbornInfoData
+                      NewbornInformationData
                     >(
                       currentTable: table,
                       referencedTable: $$PersonsTableReferences
-                          ._newbornInfosRefsTable(db),
+                          ._newbornInformationRefsTable(db),
                       managerFromTypedResult:
                           (p0) =>
                               $$PersonsTableReferences(
                                 db,
                                 table,
                                 p0,
-                              ).newbornInfosRefs,
+                              ).newbornInformationRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.person_id == item.person_id,
+                          ),
+                      typedResults: items,
+                    ),
+                  if (barangayOfficialsRefs)
+                    await $_getPrefetchedData<
+                      PersonData,
+                      $PersonsTable,
+                      BarangayOfficialData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$PersonsTableReferences
+                          ._barangayOfficialsRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$PersonsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).barangayOfficialsRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.person_id == item.person_id,
+                          ),
+                      typedResults: items,
+                    ),
+                  if (householdMembersRefs)
+                    await $_getPrefetchedData<
+                      PersonData,
+                      $PersonsTable,
+                      HouseholdMemberData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$PersonsTableReferences
+                          ._householdMembersRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$PersonsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).householdMembersRefs,
                       referencedItemsForCurrentItem:
                           (item, referencedItems) => referencedItems.where(
                             (e) => e.person_id == item.person_id,
@@ -24892,7 +24890,6 @@ typedef $$PersonsTableProcessedTableManager =
         bool nationality_id,
         bool ethnicity_id,
         bool blood_type_id,
-        bool household_id,
         bool address_id,
         bool monthly_income_id,
         bool daily_income_id,
@@ -24901,7 +24898,6 @@ typedef $$PersonsTableProcessedTableManager =
         bool emailsRefs,
         bool phoneNumbersRefs,
         bool gadgetsRefs,
-        bool govermentProgramsRefs,
         bool voterRegistriesRefs,
         bool registeredSeniorsRefs,
         bool disabilitiesRefs,
@@ -24913,11 +24909,1654 @@ typedef $$PersonsTableProcessedTableManager =
         bool fishingRefs,
         bool agricultureRefs,
         bool livestockRefs,
-        bool familyPlansRefs,
-        bool maternalInfosRefs,
+        bool familyPlanningRefs,
+        bool maternalInformationRefs,
         bool visitedFacilitiesRefs,
         bool healthInsurancesRefs,
-        bool newbornInfosRefs,
+        bool newbornInformationRefs,
+        bool barangayOfficialsRefs,
+        bool householdMembersRefs,
+      })
+    >;
+typedef $$BuildingTypesTableCreateCompanionBuilder =
+    BuildingTypesCompanion Function({
+      Value<int> building_type_id,
+      required String type,
+    });
+typedef $$BuildingTypesTableUpdateCompanionBuilder =
+    BuildingTypesCompanion Function({
+      Value<int> building_type_id,
+      Value<String> type,
+    });
+
+final class $$BuildingTypesTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $BuildingTypesTable, BuildingTypeData> {
+  $$BuildingTypesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$HouseholdsTable, List<HouseholdData>>
+  _householdsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.households,
+    aliasName: $_aliasNameGenerator(
+      db.buildingTypes.building_type_id,
+      db.households.building_type_id,
+    ),
+  );
+
+  $$HouseholdsTableProcessedTableManager get householdsRefs {
+    final manager = $$HouseholdsTableTableManager($_db, $_db.households).filter(
+      (f) => f.building_type_id.building_type_id.sqlEquals(
+        $_itemColumn<int>('building_type_id')!,
+      ),
+    );
+
+    final cache = $_typedResult.readTableOrNull(_householdsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$BuildingTypesTableFilterComposer
+    extends Composer<_$AppDatabase, $BuildingTypesTable> {
+  $$BuildingTypesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get building_type_id => $composableBuilder(
+    column: $table.building_type_id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> householdsRefs(
+    Expression<bool> Function($$HouseholdsTableFilterComposer f) f,
+  ) {
+    final $$HouseholdsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.building_type_id,
+      referencedTable: $db.households,
+      getReferencedColumn: (t) => t.building_type_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HouseholdsTableFilterComposer(
+            $db: $db,
+            $table: $db.households,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$BuildingTypesTableOrderingComposer
+    extends Composer<_$AppDatabase, $BuildingTypesTable> {
+  $$BuildingTypesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get building_type_id => $composableBuilder(
+    column: $table.building_type_id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BuildingTypesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BuildingTypesTable> {
+  $$BuildingTypesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get building_type_id => $composableBuilder(
+    column: $table.building_type_id,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  Expression<T> householdsRefs<T extends Object>(
+    Expression<T> Function($$HouseholdsTableAnnotationComposer a) f,
+  ) {
+    final $$HouseholdsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.building_type_id,
+      referencedTable: $db.households,
+      getReferencedColumn: (t) => t.building_type_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HouseholdsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.households,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$BuildingTypesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BuildingTypesTable,
+          BuildingTypeData,
+          $$BuildingTypesTableFilterComposer,
+          $$BuildingTypesTableOrderingComposer,
+          $$BuildingTypesTableAnnotationComposer,
+          $$BuildingTypesTableCreateCompanionBuilder,
+          $$BuildingTypesTableUpdateCompanionBuilder,
+          (BuildingTypeData, $$BuildingTypesTableReferences),
+          BuildingTypeData,
+          PrefetchHooks Function({bool householdsRefs})
+        > {
+  $$BuildingTypesTableTableManager(_$AppDatabase db, $BuildingTypesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer:
+              () => $$BuildingTypesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () =>
+                  $$BuildingTypesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () => $$BuildingTypesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> building_type_id = const Value.absent(),
+                Value<String> type = const Value.absent(),
+              }) => BuildingTypesCompanion(
+                building_type_id: building_type_id,
+                type: type,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> building_type_id = const Value.absent(),
+                required String type,
+              }) => BuildingTypesCompanion.insert(
+                building_type_id: building_type_id,
+                type: type,
+              ),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$BuildingTypesTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
+          prefetchHooksCallback: ({householdsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (householdsRefs) db.households],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (householdsRefs)
+                    await $_getPrefetchedData<
+                      BuildingTypeData,
+                      $BuildingTypesTable,
+                      HouseholdData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$BuildingTypesTableReferences
+                          ._householdsRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$BuildingTypesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).householdsRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.building_type_id == item.building_type_id,
+                          ),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$BuildingTypesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BuildingTypesTable,
+      BuildingTypeData,
+      $$BuildingTypesTableFilterComposer,
+      $$BuildingTypesTableOrderingComposer,
+      $$BuildingTypesTableAnnotationComposer,
+      $$BuildingTypesTableCreateCompanionBuilder,
+      $$BuildingTypesTableUpdateCompanionBuilder,
+      (BuildingTypeData, $$BuildingTypesTableReferences),
+      BuildingTypeData,
+      PrefetchHooks Function({bool householdsRefs})
+    >;
+typedef $$HouseholdsTableCreateCompanionBuilder =
+    HouseholdsCompanion Function({
+      Value<int> household_id,
+      Value<String?> head,
+      Value<int?> address_id,
+      Value<HouseholdTypes?> household_type_id,
+      Value<int?> building_type_id,
+      Value<OwnershipTypes?> ownership_type_id,
+      Value<int?> household_members_num,
+      Value<bool?> female_mortality,
+      Value<bool?> child_mortality,
+      Value<DateTime?> registration_date,
+      required RegistrationStatus registration_status,
+    });
+typedef $$HouseholdsTableUpdateCompanionBuilder =
+    HouseholdsCompanion Function({
+      Value<int> household_id,
+      Value<String?> head,
+      Value<int?> address_id,
+      Value<HouseholdTypes?> household_type_id,
+      Value<int?> building_type_id,
+      Value<OwnershipTypes?> ownership_type_id,
+      Value<int?> household_members_num,
+      Value<bool?> female_mortality,
+      Value<bool?> child_mortality,
+      Value<DateTime?> registration_date,
+      Value<RegistrationStatus> registration_status,
+    });
+
+final class $$HouseholdsTableReferences
+    extends BaseReferences<_$AppDatabase, $HouseholdsTable, HouseholdData> {
+  $$HouseholdsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $AddressesTable _address_idTable(_$AppDatabase db) =>
+      db.addresses.createAlias(
+        $_aliasNameGenerator(db.households.address_id, db.addresses.address_id),
+      );
+
+  $$AddressesTableProcessedTableManager? get address_id {
+    final $_column = $_itemColumn<int>('address_id');
+    if ($_column == null) return null;
+    final manager = $$AddressesTableTableManager(
+      $_db,
+      $_db.addresses,
+    ).filter((f) => f.address_id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_address_idTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $BuildingTypesTable _building_type_idTable(_$AppDatabase db) =>
+      db.buildingTypes.createAlias(
+        $_aliasNameGenerator(
+          db.households.building_type_id,
+          db.buildingTypes.building_type_id,
+        ),
+      );
+
+  $$BuildingTypesTableProcessedTableManager? get building_type_id {
+    final $_column = $_itemColumn<int>('building_type_id');
+    if ($_column == null) return null;
+    final manager = $$BuildingTypesTableTableManager(
+      $_db,
+      $_db.buildingTypes,
+    ).filter((f) => f.building_type_id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_building_type_idTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $HouseholdRelationshipsTable,
+    List<HouseholdRelationship>
+  >
+  _householdRelationshipsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.householdRelationships,
+        aliasName: $_aliasNameGenerator(
+          db.households.household_id,
+          db.householdRelationships.household_id,
+        ),
+      );
+
+  $$HouseholdRelationshipsTableProcessedTableManager
+  get householdRelationshipsRefs {
+    final manager = $$HouseholdRelationshipsTableTableManager(
+      $_db,
+      $_db.householdRelationships,
+    ).filter(
+      (f) => f.household_id.household_id.sqlEquals(
+        $_itemColumn<int>('household_id')!,
+      ),
+    );
+
+    final cache = $_typedResult.readTableOrNull(
+      _householdRelationshipsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ServicesTable, List<ServiceData>>
+  _servicesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.services,
+    aliasName: $_aliasNameGenerator(
+      db.households.household_id,
+      db.services.household_id,
+    ),
+  );
+
+  $$ServicesTableProcessedTableManager get servicesRefs {
+    final manager = $$ServicesTableTableManager($_db, $_db.services).filter(
+      (f) => f.household_id.household_id.sqlEquals(
+        $_itemColumn<int>('household_id')!,
+      ),
+    );
+
+    final cache = $_typedResult.readTableOrNull(_servicesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$PrimaryNeedsTable, List<PrimaryNeedData>>
+  _primaryNeedsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.primaryNeeds,
+    aliasName: $_aliasNameGenerator(
+      db.households.household_id,
+      db.primaryNeeds.household_id,
+    ),
+  );
+
+  $$PrimaryNeedsTableProcessedTableManager get primaryNeedsRefs {
+    final manager = $$PrimaryNeedsTableTableManager(
+      $_db,
+      $_db.primaryNeeds,
+    ).filter(
+      (f) => f.household_id.household_id.sqlEquals(
+        $_itemColumn<int>('household_id')!,
+      ),
+    );
+
+    final cache = $_typedResult.readTableOrNull(_primaryNeedsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$FemaleMortalitiesTable, List<FemaleMortalityData>>
+  _femaleMortalitiesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.femaleMortalities,
+        aliasName: $_aliasNameGenerator(
+          db.households.household_id,
+          db.femaleMortalities.household_id,
+        ),
+      );
+
+  $$FemaleMortalitiesTableProcessedTableManager get femaleMortalitiesRefs {
+    final manager = $$FemaleMortalitiesTableTableManager(
+      $_db,
+      $_db.femaleMortalities,
+    ).filter(
+      (f) => f.household_id.household_id.sqlEquals(
+        $_itemColumn<int>('household_id')!,
+      ),
+    );
+
+    final cache = $_typedResult.readTableOrNull(
+      _femaleMortalitiesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ChildMortalitiesTable, List<ChildMortalityData>>
+  _childMortalitiesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.childMortalities,
+    aliasName: $_aliasNameGenerator(
+      db.households.household_id,
+      db.childMortalities.household_id,
+    ),
+  );
+
+  $$ChildMortalitiesTableProcessedTableManager get childMortalitiesRefs {
+    final manager = $$ChildMortalitiesTableTableManager(
+      $_db,
+      $_db.childMortalities,
+    ).filter(
+      (f) => f.household_id.household_id.sqlEquals(
+        $_itemColumn<int>('household_id')!,
+      ),
+    );
+
+    final cache = $_typedResult.readTableOrNull(
+      _childMortalitiesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$FutureResidenciesTable, List<FutureResidency>>
+  _futureResidenciesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.futureResidencies,
+        aliasName: $_aliasNameGenerator(
+          db.households.household_id,
+          db.futureResidencies.household_id,
+        ),
+      );
+
+  $$FutureResidenciesTableProcessedTableManager get futureResidenciesRefs {
+    final manager = $$FutureResidenciesTableTableManager(
+      $_db,
+      $_db.futureResidencies,
+    ).filter(
+      (f) => f.household_id.household_id.sqlEquals(
+        $_itemColumn<int>('household_id')!,
+      ),
+    );
+
+    final cache = $_typedResult.readTableOrNull(
+      _futureResidenciesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$HouseholdVisitsTable, List<HouseholdVisitData>>
+  _householdVisitsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.householdVisits,
+    aliasName: $_aliasNameGenerator(
+      db.households.household_id,
+      db.householdVisits.household_id,
+    ),
+  );
+
+  $$HouseholdVisitsTableProcessedTableManager get householdVisitsRefs {
+    final manager = $$HouseholdVisitsTableTableManager(
+      $_db,
+      $_db.householdVisits,
+    ).filter(
+      (f) => f.household_id.household_id.sqlEquals(
+        $_itemColumn<int>('household_id')!,
+      ),
+    );
+
+    final cache = $_typedResult.readTableOrNull(
+      _householdVisitsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$HouseholdMembersTable, List<HouseholdMemberData>>
+  _householdMembersRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.householdMembers,
+    aliasName: $_aliasNameGenerator(
+      db.households.household_id,
+      db.householdMembers.household_id,
+    ),
+  );
+
+  $$HouseholdMembersTableProcessedTableManager get householdMembersRefs {
+    final manager = $$HouseholdMembersTableTableManager(
+      $_db,
+      $_db.householdMembers,
+    ).filter(
+      (f) => f.household_id.household_id.sqlEquals(
+        $_itemColumn<int>('household_id')!,
+      ),
+    );
+
+    final cache = $_typedResult.readTableOrNull(
+      _householdMembersRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$HouseholdsTableFilterComposer
+    extends Composer<_$AppDatabase, $HouseholdsTable> {
+  $$HouseholdsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get household_id => $composableBuilder(
+    column: $table.household_id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get head => $composableBuilder(
+    column: $table.head,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<HouseholdTypes?, HouseholdTypes, String>
+  get household_type_id => $composableBuilder(
+    column: $table.household_type_id,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<OwnershipTypes?, OwnershipTypes, String>
+  get ownership_type_id => $composableBuilder(
+    column: $table.ownership_type_id,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<int> get household_members_num => $composableBuilder(
+    column: $table.household_members_num,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get female_mortality => $composableBuilder(
+    column: $table.female_mortality,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get child_mortality => $composableBuilder(
+    column: $table.child_mortality,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get registration_date => $composableBuilder(
+    column: $table.registration_date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<RegistrationStatus, RegistrationStatus, String>
+  get registration_status => $composableBuilder(
+    column: $table.registration_status,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  $$AddressesTableFilterComposer get address_id {
+    final $$AddressesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.address_id,
+      referencedTable: $db.addresses,
+      getReferencedColumn: (t) => t.address_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AddressesTableFilterComposer(
+            $db: $db,
+            $table: $db.addresses,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$BuildingTypesTableFilterComposer get building_type_id {
+    final $$BuildingTypesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.building_type_id,
+      referencedTable: $db.buildingTypes,
+      getReferencedColumn: (t) => t.building_type_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BuildingTypesTableFilterComposer(
+            $db: $db,
+            $table: $db.buildingTypes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> householdRelationshipsRefs(
+    Expression<bool> Function($$HouseholdRelationshipsTableFilterComposer f) f,
+  ) {
+    final $$HouseholdRelationshipsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.household_id,
+          referencedTable: $db.householdRelationships,
+          getReferencedColumn: (t) => t.household_id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$HouseholdRelationshipsTableFilterComposer(
+                $db: $db,
+                $table: $db.householdRelationships,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> servicesRefs(
+    Expression<bool> Function($$ServicesTableFilterComposer f) f,
+  ) {
+    final $$ServicesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.services,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ServicesTableFilterComposer(
+            $db: $db,
+            $table: $db.services,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> primaryNeedsRefs(
+    Expression<bool> Function($$PrimaryNeedsTableFilterComposer f) f,
+  ) {
+    final $$PrimaryNeedsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.primaryNeeds,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PrimaryNeedsTableFilterComposer(
+            $db: $db,
+            $table: $db.primaryNeeds,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> femaleMortalitiesRefs(
+    Expression<bool> Function($$FemaleMortalitiesTableFilterComposer f) f,
+  ) {
+    final $$FemaleMortalitiesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.femaleMortalities,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FemaleMortalitiesTableFilterComposer(
+            $db: $db,
+            $table: $db.femaleMortalities,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> childMortalitiesRefs(
+    Expression<bool> Function($$ChildMortalitiesTableFilterComposer f) f,
+  ) {
+    final $$ChildMortalitiesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.childMortalities,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ChildMortalitiesTableFilterComposer(
+            $db: $db,
+            $table: $db.childMortalities,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> futureResidenciesRefs(
+    Expression<bool> Function($$FutureResidenciesTableFilterComposer f) f,
+  ) {
+    final $$FutureResidenciesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.futureResidencies,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FutureResidenciesTableFilterComposer(
+            $db: $db,
+            $table: $db.futureResidencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> householdVisitsRefs(
+    Expression<bool> Function($$HouseholdVisitsTableFilterComposer f) f,
+  ) {
+    final $$HouseholdVisitsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.householdVisits,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HouseholdVisitsTableFilterComposer(
+            $db: $db,
+            $table: $db.householdVisits,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> householdMembersRefs(
+    Expression<bool> Function($$HouseholdMembersTableFilterComposer f) f,
+  ) {
+    final $$HouseholdMembersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.householdMembers,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HouseholdMembersTableFilterComposer(
+            $db: $db,
+            $table: $db.householdMembers,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$HouseholdsTableOrderingComposer
+    extends Composer<_$AppDatabase, $HouseholdsTable> {
+  $$HouseholdsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get household_id => $composableBuilder(
+    column: $table.household_id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get head => $composableBuilder(
+    column: $table.head,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get household_type_id => $composableBuilder(
+    column: $table.household_type_id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ownership_type_id => $composableBuilder(
+    column: $table.ownership_type_id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get household_members_num => $composableBuilder(
+    column: $table.household_members_num,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get female_mortality => $composableBuilder(
+    column: $table.female_mortality,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get child_mortality => $composableBuilder(
+    column: $table.child_mortality,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get registration_date => $composableBuilder(
+    column: $table.registration_date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get registration_status => $composableBuilder(
+    column: $table.registration_status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$AddressesTableOrderingComposer get address_id {
+    final $$AddressesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.address_id,
+      referencedTable: $db.addresses,
+      getReferencedColumn: (t) => t.address_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AddressesTableOrderingComposer(
+            $db: $db,
+            $table: $db.addresses,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$BuildingTypesTableOrderingComposer get building_type_id {
+    final $$BuildingTypesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.building_type_id,
+      referencedTable: $db.buildingTypes,
+      getReferencedColumn: (t) => t.building_type_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BuildingTypesTableOrderingComposer(
+            $db: $db,
+            $table: $db.buildingTypes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$HouseholdsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HouseholdsTable> {
+  $$HouseholdsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get household_id => $composableBuilder(
+    column: $table.household_id,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get head =>
+      $composableBuilder(column: $table.head, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<HouseholdTypes?, String>
+  get household_type_id => $composableBuilder(
+    column: $table.household_type_id,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<OwnershipTypes?, String>
+  get ownership_type_id => $composableBuilder(
+    column: $table.ownership_type_id,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get household_members_num => $composableBuilder(
+    column: $table.household_members_num,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get female_mortality => $composableBuilder(
+    column: $table.female_mortality,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get child_mortality => $composableBuilder(
+    column: $table.child_mortality,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get registration_date => $composableBuilder(
+    column: $table.registration_date,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<RegistrationStatus, String>
+  get registration_status => $composableBuilder(
+    column: $table.registration_status,
+    builder: (column) => column,
+  );
+
+  $$AddressesTableAnnotationComposer get address_id {
+    final $$AddressesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.address_id,
+      referencedTable: $db.addresses,
+      getReferencedColumn: (t) => t.address_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AddressesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.addresses,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$BuildingTypesTableAnnotationComposer get building_type_id {
+    final $$BuildingTypesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.building_type_id,
+      referencedTable: $db.buildingTypes,
+      getReferencedColumn: (t) => t.building_type_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BuildingTypesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.buildingTypes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> householdRelationshipsRefs<T extends Object>(
+    Expression<T> Function($$HouseholdRelationshipsTableAnnotationComposer a) f,
+  ) {
+    final $$HouseholdRelationshipsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.household_id,
+          referencedTable: $db.householdRelationships,
+          getReferencedColumn: (t) => t.household_id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$HouseholdRelationshipsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.householdRelationships,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> servicesRefs<T extends Object>(
+    Expression<T> Function($$ServicesTableAnnotationComposer a) f,
+  ) {
+    final $$ServicesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.services,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ServicesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.services,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> primaryNeedsRefs<T extends Object>(
+    Expression<T> Function($$PrimaryNeedsTableAnnotationComposer a) f,
+  ) {
+    final $$PrimaryNeedsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.primaryNeeds,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PrimaryNeedsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.primaryNeeds,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> femaleMortalitiesRefs<T extends Object>(
+    Expression<T> Function($$FemaleMortalitiesTableAnnotationComposer a) f,
+  ) {
+    final $$FemaleMortalitiesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.household_id,
+          referencedTable: $db.femaleMortalities,
+          getReferencedColumn: (t) => t.household_id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FemaleMortalitiesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.femaleMortalities,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> childMortalitiesRefs<T extends Object>(
+    Expression<T> Function($$ChildMortalitiesTableAnnotationComposer a) f,
+  ) {
+    final $$ChildMortalitiesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.childMortalities,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ChildMortalitiesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.childMortalities,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> futureResidenciesRefs<T extends Object>(
+    Expression<T> Function($$FutureResidenciesTableAnnotationComposer a) f,
+  ) {
+    final $$FutureResidenciesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.household_id,
+          referencedTable: $db.futureResidencies,
+          getReferencedColumn: (t) => t.household_id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FutureResidenciesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.futureResidencies,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> householdVisitsRefs<T extends Object>(
+    Expression<T> Function($$HouseholdVisitsTableAnnotationComposer a) f,
+  ) {
+    final $$HouseholdVisitsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.householdVisits,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HouseholdVisitsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.householdVisits,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> householdMembersRefs<T extends Object>(
+    Expression<T> Function($$HouseholdMembersTableAnnotationComposer a) f,
+  ) {
+    final $$HouseholdMembersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.householdMembers,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HouseholdMembersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.householdMembers,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$HouseholdsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $HouseholdsTable,
+          HouseholdData,
+          $$HouseholdsTableFilterComposer,
+          $$HouseholdsTableOrderingComposer,
+          $$HouseholdsTableAnnotationComposer,
+          $$HouseholdsTableCreateCompanionBuilder,
+          $$HouseholdsTableUpdateCompanionBuilder,
+          (HouseholdData, $$HouseholdsTableReferences),
+          HouseholdData,
+          PrefetchHooks Function({
+            bool address_id,
+            bool building_type_id,
+            bool householdRelationshipsRefs,
+            bool servicesRefs,
+            bool primaryNeedsRefs,
+            bool femaleMortalitiesRefs,
+            bool childMortalitiesRefs,
+            bool futureResidenciesRefs,
+            bool householdVisitsRefs,
+            bool householdMembersRefs,
+          })
+        > {
+  $$HouseholdsTableTableManager(_$AppDatabase db, $HouseholdsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer:
+              () => $$HouseholdsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$HouseholdsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () => $$HouseholdsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> household_id = const Value.absent(),
+                Value<String?> head = const Value.absent(),
+                Value<int?> address_id = const Value.absent(),
+                Value<HouseholdTypes?> household_type_id = const Value.absent(),
+                Value<int?> building_type_id = const Value.absent(),
+                Value<OwnershipTypes?> ownership_type_id = const Value.absent(),
+                Value<int?> household_members_num = const Value.absent(),
+                Value<bool?> female_mortality = const Value.absent(),
+                Value<bool?> child_mortality = const Value.absent(),
+                Value<DateTime?> registration_date = const Value.absent(),
+                Value<RegistrationStatus> registration_status =
+                    const Value.absent(),
+              }) => HouseholdsCompanion(
+                household_id: household_id,
+                head: head,
+                address_id: address_id,
+                household_type_id: household_type_id,
+                building_type_id: building_type_id,
+                ownership_type_id: ownership_type_id,
+                household_members_num: household_members_num,
+                female_mortality: female_mortality,
+                child_mortality: child_mortality,
+                registration_date: registration_date,
+                registration_status: registration_status,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> household_id = const Value.absent(),
+                Value<String?> head = const Value.absent(),
+                Value<int?> address_id = const Value.absent(),
+                Value<HouseholdTypes?> household_type_id = const Value.absent(),
+                Value<int?> building_type_id = const Value.absent(),
+                Value<OwnershipTypes?> ownership_type_id = const Value.absent(),
+                Value<int?> household_members_num = const Value.absent(),
+                Value<bool?> female_mortality = const Value.absent(),
+                Value<bool?> child_mortality = const Value.absent(),
+                Value<DateTime?> registration_date = const Value.absent(),
+                required RegistrationStatus registration_status,
+              }) => HouseholdsCompanion.insert(
+                household_id: household_id,
+                head: head,
+                address_id: address_id,
+                household_type_id: household_type_id,
+                building_type_id: building_type_id,
+                ownership_type_id: ownership_type_id,
+                household_members_num: household_members_num,
+                female_mortality: female_mortality,
+                child_mortality: child_mortality,
+                registration_date: registration_date,
+                registration_status: registration_status,
+              ),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$HouseholdsTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
+          prefetchHooksCallback: ({
+            address_id = false,
+            building_type_id = false,
+            householdRelationshipsRefs = false,
+            servicesRefs = false,
+            primaryNeedsRefs = false,
+            femaleMortalitiesRefs = false,
+            childMortalitiesRefs = false,
+            futureResidenciesRefs = false,
+            householdVisitsRefs = false,
+            householdMembersRefs = false,
+          }) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (householdRelationshipsRefs) db.householdRelationships,
+                if (servicesRefs) db.services,
+                if (primaryNeedsRefs) db.primaryNeeds,
+                if (femaleMortalitiesRefs) db.femaleMortalities,
+                if (childMortalitiesRefs) db.childMortalities,
+                if (futureResidenciesRefs) db.futureResidencies,
+                if (householdVisitsRefs) db.householdVisits,
+                if (householdMembersRefs) db.householdMembers,
+              ],
+              addJoins: <
+                T extends TableManagerState<
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic
+                >
+              >(state) {
+                if (address_id) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.address_id,
+                            referencedTable: $$HouseholdsTableReferences
+                                ._address_idTable(db),
+                            referencedColumn:
+                                $$HouseholdsTableReferences
+                                    ._address_idTable(db)
+                                    .address_id,
+                          )
+                          as T;
+                }
+                if (building_type_id) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.building_type_id,
+                            referencedTable: $$HouseholdsTableReferences
+                                ._building_type_idTable(db),
+                            referencedColumn:
+                                $$HouseholdsTableReferences
+                                    ._building_type_idTable(db)
+                                    .building_type_id,
+                          )
+                          as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (householdRelationshipsRefs)
+                    await $_getPrefetchedData<
+                      HouseholdData,
+                      $HouseholdsTable,
+                      HouseholdRelationship
+                    >(
+                      currentTable: table,
+                      referencedTable: $$HouseholdsTableReferences
+                          ._householdRelationshipsRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$HouseholdsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).householdRelationshipsRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.household_id == item.household_id,
+                          ),
+                      typedResults: items,
+                    ),
+                  if (servicesRefs)
+                    await $_getPrefetchedData<
+                      HouseholdData,
+                      $HouseholdsTable,
+                      ServiceData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$HouseholdsTableReferences
+                          ._servicesRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$HouseholdsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).servicesRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.household_id == item.household_id,
+                          ),
+                      typedResults: items,
+                    ),
+                  if (primaryNeedsRefs)
+                    await $_getPrefetchedData<
+                      HouseholdData,
+                      $HouseholdsTable,
+                      PrimaryNeedData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$HouseholdsTableReferences
+                          ._primaryNeedsRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$HouseholdsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).primaryNeedsRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.household_id == item.household_id,
+                          ),
+                      typedResults: items,
+                    ),
+                  if (femaleMortalitiesRefs)
+                    await $_getPrefetchedData<
+                      HouseholdData,
+                      $HouseholdsTable,
+                      FemaleMortalityData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$HouseholdsTableReferences
+                          ._femaleMortalitiesRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$HouseholdsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).femaleMortalitiesRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.household_id == item.household_id,
+                          ),
+                      typedResults: items,
+                    ),
+                  if (childMortalitiesRefs)
+                    await $_getPrefetchedData<
+                      HouseholdData,
+                      $HouseholdsTable,
+                      ChildMortalityData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$HouseholdsTableReferences
+                          ._childMortalitiesRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$HouseholdsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).childMortalitiesRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.household_id == item.household_id,
+                          ),
+                      typedResults: items,
+                    ),
+                  if (futureResidenciesRefs)
+                    await $_getPrefetchedData<
+                      HouseholdData,
+                      $HouseholdsTable,
+                      FutureResidency
+                    >(
+                      currentTable: table,
+                      referencedTable: $$HouseholdsTableReferences
+                          ._futureResidenciesRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$HouseholdsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).futureResidenciesRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.household_id == item.household_id,
+                          ),
+                      typedResults: items,
+                    ),
+                  if (householdVisitsRefs)
+                    await $_getPrefetchedData<
+                      HouseholdData,
+                      $HouseholdsTable,
+                      HouseholdVisitData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$HouseholdsTableReferences
+                          ._householdVisitsRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$HouseholdsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).householdVisitsRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.household_id == item.household_id,
+                          ),
+                      typedResults: items,
+                    ),
+                  if (householdMembersRefs)
+                    await $_getPrefetchedData<
+                      HouseholdData,
+                      $HouseholdsTable,
+                      HouseholdMemberData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$HouseholdsTableReferences
+                          ._householdMembersRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$HouseholdsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).householdMembersRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.household_id == item.household_id,
+                          ),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$HouseholdsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $HouseholdsTable,
+      HouseholdData,
+      $$HouseholdsTableFilterComposer,
+      $$HouseholdsTableOrderingComposer,
+      $$HouseholdsTableAnnotationComposer,
+      $$HouseholdsTableCreateCompanionBuilder,
+      $$HouseholdsTableUpdateCompanionBuilder,
+      (HouseholdData, $$HouseholdsTableReferences),
+      HouseholdData,
+      PrefetchHooks Function({
+        bool address_id,
+        bool building_type_id,
+        bool householdRelationshipsRefs,
+        bool servicesRefs,
+        bool primaryNeedsRefs,
+        bool femaleMortalitiesRefs,
+        bool childMortalitiesRefs,
+        bool futureResidenciesRefs,
+        bool householdVisitsRefs,
+        bool householdMembersRefs,
       })
     >;
 typedef $$OccupationsTableCreateCompanionBuilder =
@@ -26104,308 +27743,6 @@ typedef $$GadgetsTableProcessedTableManager =
       $$GadgetsTableUpdateCompanionBuilder,
       (GadgetData, $$GadgetsTableReferences),
       GadgetData,
-      PrefetchHooks Function({bool person_id})
-    >;
-typedef $$GovermentProgramsTableCreateCompanionBuilder =
-    GovermentProgramsCompanion Function({
-      Value<int> government_program_id,
-      required int person_id,
-      required String name,
-    });
-typedef $$GovermentProgramsTableUpdateCompanionBuilder =
-    GovermentProgramsCompanion Function({
-      Value<int> government_program_id,
-      Value<int> person_id,
-      Value<String> name,
-    });
-
-final class $$GovermentProgramsTableReferences
-    extends
-        BaseReferences<
-          _$AppDatabase,
-          $GovermentProgramsTable,
-          GovernmentProgramData
-        > {
-  $$GovermentProgramsTableReferences(
-    super.$_db,
-    super.$_table,
-    super.$_typedResult,
-  );
-
-  static $PersonsTable _person_idTable(_$AppDatabase db) =>
-      db.persons.createAlias(
-        $_aliasNameGenerator(
-          db.govermentPrograms.person_id,
-          db.persons.person_id,
-        ),
-      );
-
-  $$PersonsTableProcessedTableManager get person_id {
-    final $_column = $_itemColumn<int>('person_id')!;
-
-    final manager = $$PersonsTableTableManager(
-      $_db,
-      $_db.persons,
-    ).filter((f) => f.person_id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_person_idTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-}
-
-class $$GovermentProgramsTableFilterComposer
-    extends Composer<_$AppDatabase, $GovermentProgramsTable> {
-  $$GovermentProgramsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get government_program_id => $composableBuilder(
-    column: $table.government_program_id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  $$PersonsTableFilterComposer get person_id {
-    final $$PersonsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.person_id,
-      referencedTable: $db.persons,
-      getReferencedColumn: (t) => t.person_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PersonsTableFilterComposer(
-            $db: $db,
-            $table: $db.persons,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$GovermentProgramsTableOrderingComposer
-    extends Composer<_$AppDatabase, $GovermentProgramsTable> {
-  $$GovermentProgramsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get government_program_id => $composableBuilder(
-    column: $table.government_program_id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  $$PersonsTableOrderingComposer get person_id {
-    final $$PersonsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.person_id,
-      referencedTable: $db.persons,
-      getReferencedColumn: (t) => t.person_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PersonsTableOrderingComposer(
-            $db: $db,
-            $table: $db.persons,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$GovermentProgramsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $GovermentProgramsTable> {
-  $$GovermentProgramsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get government_program_id => $composableBuilder(
-    column: $table.government_program_id,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  $$PersonsTableAnnotationComposer get person_id {
-    final $$PersonsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.person_id,
-      referencedTable: $db.persons,
-      getReferencedColumn: (t) => t.person_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PersonsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.persons,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$GovermentProgramsTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $GovermentProgramsTable,
-          GovernmentProgramData,
-          $$GovermentProgramsTableFilterComposer,
-          $$GovermentProgramsTableOrderingComposer,
-          $$GovermentProgramsTableAnnotationComposer,
-          $$GovermentProgramsTableCreateCompanionBuilder,
-          $$GovermentProgramsTableUpdateCompanionBuilder,
-          (GovernmentProgramData, $$GovermentProgramsTableReferences),
-          GovernmentProgramData,
-          PrefetchHooks Function({bool person_id})
-        > {
-  $$GovermentProgramsTableTableManager(
-    _$AppDatabase db,
-    $GovermentProgramsTable table,
-  ) : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer:
-              () => $$GovermentProgramsTableFilterComposer(
-                $db: db,
-                $table: table,
-              ),
-          createOrderingComposer:
-              () => $$GovermentProgramsTableOrderingComposer(
-                $db: db,
-                $table: table,
-              ),
-          createComputedFieldComposer:
-              () => $$GovermentProgramsTableAnnotationComposer(
-                $db: db,
-                $table: table,
-              ),
-          updateCompanionCallback:
-              ({
-                Value<int> government_program_id = const Value.absent(),
-                Value<int> person_id = const Value.absent(),
-                Value<String> name = const Value.absent(),
-              }) => GovermentProgramsCompanion(
-                government_program_id: government_program_id,
-                person_id: person_id,
-                name: name,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> government_program_id = const Value.absent(),
-                required int person_id,
-                required String name,
-              }) => GovermentProgramsCompanion.insert(
-                government_program_id: government_program_id,
-                person_id: person_id,
-                name: name,
-              ),
-          withReferenceMapper:
-              (p0) =>
-                  p0
-                      .map(
-                        (e) => (
-                          e.readTable(table),
-                          $$GovermentProgramsTableReferences(db, table, e),
-                        ),
-                      )
-                      .toList(),
-          prefetchHooksCallback: ({person_id = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins: <
-                T extends TableManagerState<
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic
-                >
-              >(state) {
-                if (person_id) {
-                  state =
-                      state.withJoin(
-                            currentTable: table,
-                            currentColumn: table.person_id,
-                            referencedTable: $$GovermentProgramsTableReferences
-                                ._person_idTable(db),
-                            referencedColumn:
-                                $$GovermentProgramsTableReferences
-                                    ._person_idTable(db)
-                                    .person_id,
-                          )
-                          as T;
-                }
-
-                return state;
-              },
-              getPrefetchedDataCallback: (items) async {
-                return [];
-              },
-            );
-          },
-        ),
-      );
-}
-
-typedef $$GovermentProgramsTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $GovermentProgramsTable,
-      GovernmentProgramData,
-      $$GovermentProgramsTableFilterComposer,
-      $$GovermentProgramsTableOrderingComposer,
-      $$GovermentProgramsTableAnnotationComposer,
-      $$GovermentProgramsTableCreateCompanionBuilder,
-      $$GovermentProgramsTableUpdateCompanionBuilder,
-      (GovernmentProgramData, $$GovermentProgramsTableReferences),
-      GovernmentProgramData,
       PrefetchHooks Function({bool person_id})
     >;
 typedef $$VoterRegistriesTableCreateCompanionBuilder =
@@ -31157,26 +32494,32 @@ final class $$DeliveryPlacesTableReferences
     super.$_typedResult,
   );
 
-  static MultiTypedResultKey<$NewbornInfosTable, List<NewbornInfoData>>
-  _newbornInfosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.newbornInfos,
-    aliasName: $_aliasNameGenerator(
-      db.deliveryPlaces.delivery_place_id,
-      db.newbornInfos.delivery_place_id,
-    ),
-  );
+  static MultiTypedResultKey<
+    $NewbornInformationTable,
+    List<NewbornInformationData>
+  >
+  _newbornInformationRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.newbornInformation,
+        aliasName: $_aliasNameGenerator(
+          db.deliveryPlaces.delivery_place_id,
+          db.newbornInformation.delivery_place_id,
+        ),
+      );
 
-  $$NewbornInfosTableProcessedTableManager get newbornInfosRefs {
-    final manager = $$NewbornInfosTableTableManager(
+  $$NewbornInformationTableProcessedTableManager get newbornInformationRefs {
+    final manager = $$NewbornInformationTableTableManager(
       $_db,
-      $_db.newbornInfos,
+      $_db.newbornInformation,
     ).filter(
       (f) => f.delivery_place_id.delivery_place_id.sqlEquals(
         $_itemColumn<int>('delivery_place_id')!,
       ),
     );
 
-    final cache = $_typedResult.readTableOrNull(_newbornInfosRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(
+      _newbornInformationRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -31202,22 +32545,22 @@ class $$DeliveryPlacesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  Expression<bool> newbornInfosRefs(
-    Expression<bool> Function($$NewbornInfosTableFilterComposer f) f,
+  Expression<bool> newbornInformationRefs(
+    Expression<bool> Function($$NewbornInformationTableFilterComposer f) f,
   ) {
-    final $$NewbornInfosTableFilterComposer composer = $composerBuilder(
+    final $$NewbornInformationTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.delivery_place_id,
-      referencedTable: $db.newbornInfos,
+      referencedTable: $db.newbornInformation,
       getReferencedColumn: (t) => t.delivery_place_id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$NewbornInfosTableFilterComposer(
+          }) => $$NewbornInformationTableFilterComposer(
             $db: $db,
-            $table: $db.newbornInfos,
+            $table: $db.newbornInformation,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -31265,28 +32608,29 @@ class $$DeliveryPlacesTableAnnotationComposer
   GeneratedColumn<String> get place =>
       $composableBuilder(column: $table.place, builder: (column) => column);
 
-  Expression<T> newbornInfosRefs<T extends Object>(
-    Expression<T> Function($$NewbornInfosTableAnnotationComposer a) f,
+  Expression<T> newbornInformationRefs<T extends Object>(
+    Expression<T> Function($$NewbornInformationTableAnnotationComposer a) f,
   ) {
-    final $$NewbornInfosTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.delivery_place_id,
-      referencedTable: $db.newbornInfos,
-      getReferencedColumn: (t) => t.delivery_place_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$NewbornInfosTableAnnotationComposer(
-            $db: $db,
-            $table: $db.newbornInfos,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
+    final $$NewbornInformationTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.delivery_place_id,
+          referencedTable: $db.newbornInformation,
+          getReferencedColumn: (t) => t.delivery_place_id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer,
-          ),
-    );
+              }) => $$NewbornInformationTableAnnotationComposer(
+                $db: $db,
+                $table: $db.newbornInformation,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -31304,7 +32648,7 @@ class $$DeliveryPlacesTableTableManager
           $$DeliveryPlacesTableUpdateCompanionBuilder,
           (DeliveryPlaceData, $$DeliveryPlacesTableReferences),
           DeliveryPlaceData,
-          PrefetchHooks Function({bool newbornInfosRefs})
+          PrefetchHooks Function({bool newbornInformationRefs})
         > {
   $$DeliveryPlacesTableTableManager(
     _$AppDatabase db,
@@ -31349,29 +32693,31 @@ class $$DeliveryPlacesTableTableManager
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: ({newbornInfosRefs = false}) {
+          prefetchHooksCallback: ({newbornInformationRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (newbornInfosRefs) db.newbornInfos],
+              explicitlyWatchedTables: [
+                if (newbornInformationRefs) db.newbornInformation,
+              ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (newbornInfosRefs)
+                  if (newbornInformationRefs)
                     await $_getPrefetchedData<
                       DeliveryPlaceData,
                       $DeliveryPlacesTable,
-                      NewbornInfoData
+                      NewbornInformationData
                     >(
                       currentTable: table,
                       referencedTable: $$DeliveryPlacesTableReferences
-                          ._newbornInfosRefsTable(db),
+                          ._newbornInformationRefsTable(db),
                       managerFromTypedResult:
                           (p0) =>
                               $$DeliveryPlacesTableReferences(
                                 db,
                                 table,
                                 p0,
-                              ).newbornInfosRefs,
+                              ).newbornInformationRefs,
                       referencedItemsForCurrentItem:
                           (item, referencedItems) => referencedItems.where(
                             (e) =>
@@ -31399,7 +32745,7 @@ typedef $$DeliveryPlacesTableProcessedTableManager =
       $$DeliveryPlacesTableUpdateCompanionBuilder,
       (DeliveryPlaceData, $$DeliveryPlacesTableReferences),
       DeliveryPlaceData,
-      PrefetchHooks Function({bool newbornInfosRefs})
+      PrefetchHooks Function({bool newbornInformationRefs})
     >;
 typedef $$AssistedPersonsTableCreateCompanionBuilder =
     AssistedPersonsCompanion Function({
@@ -31425,26 +32771,32 @@ final class $$AssistedPersonsTableReferences
     super.$_typedResult,
   );
 
-  static MultiTypedResultKey<$NewbornInfosTable, List<NewbornInfoData>>
-  _newbornInfosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.newbornInfos,
-    aliasName: $_aliasNameGenerator(
-      db.assistedPersons.assisted_person_id,
-      db.newbornInfos.assisted_person_id,
-    ),
-  );
+  static MultiTypedResultKey<
+    $NewbornInformationTable,
+    List<NewbornInformationData>
+  >
+  _newbornInformationRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.newbornInformation,
+        aliasName: $_aliasNameGenerator(
+          db.assistedPersons.assisted_person_id,
+          db.newbornInformation.assisted_person_id,
+        ),
+      );
 
-  $$NewbornInfosTableProcessedTableManager get newbornInfosRefs {
-    final manager = $$NewbornInfosTableTableManager(
+  $$NewbornInformationTableProcessedTableManager get newbornInformationRefs {
+    final manager = $$NewbornInformationTableTableManager(
       $_db,
-      $_db.newbornInfos,
+      $_db.newbornInformation,
     ).filter(
       (f) => f.assisted_person_id.assisted_person_id.sqlEquals(
         $_itemColumn<int>('assisted_person_id')!,
       ),
     );
 
-    final cache = $_typedResult.readTableOrNull(_newbornInfosRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(
+      _newbornInformationRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -31470,22 +32822,22 @@ class $$AssistedPersonsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  Expression<bool> newbornInfosRefs(
-    Expression<bool> Function($$NewbornInfosTableFilterComposer f) f,
+  Expression<bool> newbornInformationRefs(
+    Expression<bool> Function($$NewbornInformationTableFilterComposer f) f,
   ) {
-    final $$NewbornInfosTableFilterComposer composer = $composerBuilder(
+    final $$NewbornInformationTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.assisted_person_id,
-      referencedTable: $db.newbornInfos,
+      referencedTable: $db.newbornInformation,
       getReferencedColumn: (t) => t.assisted_person_id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$NewbornInfosTableFilterComposer(
+          }) => $$NewbornInformationTableFilterComposer(
             $db: $db,
-            $table: $db.newbornInfos,
+            $table: $db.newbornInformation,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -31533,28 +32885,29 @@ class $$AssistedPersonsTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  Expression<T> newbornInfosRefs<T extends Object>(
-    Expression<T> Function($$NewbornInfosTableAnnotationComposer a) f,
+  Expression<T> newbornInformationRefs<T extends Object>(
+    Expression<T> Function($$NewbornInformationTableAnnotationComposer a) f,
   ) {
-    final $$NewbornInfosTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.assisted_person_id,
-      referencedTable: $db.newbornInfos,
-      getReferencedColumn: (t) => t.assisted_person_id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$NewbornInfosTableAnnotationComposer(
-            $db: $db,
-            $table: $db.newbornInfos,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
+    final $$NewbornInformationTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.assisted_person_id,
+          referencedTable: $db.newbornInformation,
+          getReferencedColumn: (t) => t.assisted_person_id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer,
-          ),
-    );
+              }) => $$NewbornInformationTableAnnotationComposer(
+                $db: $db,
+                $table: $db.newbornInformation,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -31572,7 +32925,7 @@ class $$AssistedPersonsTableTableManager
           $$AssistedPersonsTableUpdateCompanionBuilder,
           (AssistedPersonData, $$AssistedPersonsTableReferences),
           AssistedPersonData,
-          PrefetchHooks Function({bool newbornInfosRefs})
+          PrefetchHooks Function({bool newbornInformationRefs})
         > {
   $$AssistedPersonsTableTableManager(
     _$AppDatabase db,
@@ -31620,29 +32973,31 @@ class $$AssistedPersonsTableTableManager
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: ({newbornInfosRefs = false}) {
+          prefetchHooksCallback: ({newbornInformationRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (newbornInfosRefs) db.newbornInfos],
+              explicitlyWatchedTables: [
+                if (newbornInformationRefs) db.newbornInformation,
+              ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (newbornInfosRefs)
+                  if (newbornInformationRefs)
                     await $_getPrefetchedData<
                       AssistedPersonData,
                       $AssistedPersonsTable,
-                      NewbornInfoData
+                      NewbornInformationData
                     >(
                       currentTable: table,
                       referencedTable: $$AssistedPersonsTableReferences
-                          ._newbornInfosRefsTable(db),
+                          ._newbornInformationRefsTable(db),
                       managerFromTypedResult:
                           (p0) =>
                               $$AssistedPersonsTableReferences(
                                 db,
                                 table,
                                 p0,
-                              ).newbornInfosRefs,
+                              ).newbornInformationRefs,
                       referencedItemsForCurrentItem:
                           (item, referencedItems) => referencedItems.where(
                             (e) =>
@@ -31670,7 +33025,7 @@ typedef $$AssistedPersonsTableProcessedTableManager =
       $$AssistedPersonsTableUpdateCompanionBuilder,
       (AssistedPersonData, $$AssistedPersonsTableReferences),
       AssistedPersonData,
-      PrefetchHooks Function({bool newbornInfosRefs})
+      PrefetchHooks Function({bool newbornInformationRefs})
     >;
 typedef $$VisitReasonsTableCreateCompanionBuilder =
     VisitReasonsCompanion Function({
@@ -31946,26 +33301,26 @@ final class $$FpSourcesTableReferences
     extends BaseReferences<_$AppDatabase, $FpSourcesTable, FpSourceData> {
   $$FpSourcesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$FamilyPlansTable, List<FamilyPlanData>>
-  _familyPlansRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.familyPlans,
+  static MultiTypedResultKey<$FamilyPlanningTable, List<FamilyPlanningData>>
+  _familyPlanningRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.familyPlanning,
     aliasName: $_aliasNameGenerator(
       db.fpSources.fp_source_id,
-      db.familyPlans.fp_source_id,
+      db.familyPlanning.fp_source_id,
     ),
   );
 
-  $$FamilyPlansTableProcessedTableManager get familyPlansRefs {
-    final manager = $$FamilyPlansTableTableManager(
+  $$FamilyPlanningTableProcessedTableManager get familyPlanningRefs {
+    final manager = $$FamilyPlanningTableTableManager(
       $_db,
-      $_db.familyPlans,
+      $_db.familyPlanning,
     ).filter(
       (f) => f.fp_source_id.fp_source_id.sqlEquals(
         $_itemColumn<int>('fp_source_id')!,
       ),
     );
 
-    final cache = $_typedResult.readTableOrNull(_familyPlansRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_familyPlanningRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -31991,22 +33346,22 @@ class $$FpSourcesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  Expression<bool> familyPlansRefs(
-    Expression<bool> Function($$FamilyPlansTableFilterComposer f) f,
+  Expression<bool> familyPlanningRefs(
+    Expression<bool> Function($$FamilyPlanningTableFilterComposer f) f,
   ) {
-    final $$FamilyPlansTableFilterComposer composer = $composerBuilder(
+    final $$FamilyPlanningTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.fp_source_id,
-      referencedTable: $db.familyPlans,
+      referencedTable: $db.familyPlanning,
       getReferencedColumn: (t) => t.fp_source_id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$FamilyPlansTableFilterComposer(
+          }) => $$FamilyPlanningTableFilterComposer(
             $db: $db,
-            $table: $db.familyPlans,
+            $table: $db.familyPlanning,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -32054,22 +33409,22 @@ class $$FpSourcesTableAnnotationComposer
   GeneratedColumn<String> get source =>
       $composableBuilder(column: $table.source, builder: (column) => column);
 
-  Expression<T> familyPlansRefs<T extends Object>(
-    Expression<T> Function($$FamilyPlansTableAnnotationComposer a) f,
+  Expression<T> familyPlanningRefs<T extends Object>(
+    Expression<T> Function($$FamilyPlanningTableAnnotationComposer a) f,
   ) {
-    final $$FamilyPlansTableAnnotationComposer composer = $composerBuilder(
+    final $$FamilyPlanningTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.fp_source_id,
-      referencedTable: $db.familyPlans,
+      referencedTable: $db.familyPlanning,
       getReferencedColumn: (t) => t.fp_source_id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$FamilyPlansTableAnnotationComposer(
+          }) => $$FamilyPlanningTableAnnotationComposer(
             $db: $db,
-            $table: $db.familyPlans,
+            $table: $db.familyPlanning,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -32093,7 +33448,7 @@ class $$FpSourcesTableTableManager
           $$FpSourcesTableUpdateCompanionBuilder,
           (FpSourceData, $$FpSourcesTableReferences),
           FpSourceData,
-          PrefetchHooks Function({bool familyPlansRefs})
+          PrefetchHooks Function({bool familyPlanningRefs})
         > {
   $$FpSourcesTableTableManager(_$AppDatabase db, $FpSourcesTable table)
     : super(
@@ -32132,29 +33487,31 @@ class $$FpSourcesTableTableManager
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: ({familyPlansRefs = false}) {
+          prefetchHooksCallback: ({familyPlanningRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (familyPlansRefs) db.familyPlans],
+              explicitlyWatchedTables: [
+                if (familyPlanningRefs) db.familyPlanning,
+              ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (familyPlansRefs)
+                  if (familyPlanningRefs)
                     await $_getPrefetchedData<
                       FpSourceData,
                       $FpSourcesTable,
-                      FamilyPlanData
+                      FamilyPlanningData
                     >(
                       currentTable: table,
                       referencedTable: $$FpSourcesTableReferences
-                          ._familyPlansRefsTable(db),
+                          ._familyPlanningRefsTable(db),
                       managerFromTypedResult:
                           (p0) =>
                               $$FpSourcesTableReferences(
                                 db,
                                 table,
                                 p0,
-                              ).familyPlansRefs,
+                              ).familyPlanningRefs,
                       referencedItemsForCurrentItem:
                           (item, referencedItems) => referencedItems.where(
                             (e) => e.fp_source_id == item.fp_source_id,
@@ -32181,7 +33538,7 @@ typedef $$FpSourcesTableProcessedTableManager =
       $$FpSourcesTableUpdateCompanionBuilder,
       (FpSourceData, $$FpSourcesTableReferences),
       FpSourceData,
-      PrefetchHooks Function({bool familyPlansRefs})
+      PrefetchHooks Function({bool familyPlanningRefs})
     >;
 typedef $$FpMethodsTableCreateCompanionBuilder =
     FpMethodsCompanion Function({
@@ -32198,26 +33555,26 @@ final class $$FpMethodsTableReferences
     extends BaseReferences<_$AppDatabase, $FpMethodsTable, FpMethodData> {
   $$FpMethodsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$FamilyPlansTable, List<FamilyPlanData>>
-  _familyPlansRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.familyPlans,
+  static MultiTypedResultKey<$FamilyPlanningTable, List<FamilyPlanningData>>
+  _familyPlanningRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.familyPlanning,
     aliasName: $_aliasNameGenerator(
       db.fpMethods.fp_method_id,
-      db.familyPlans.fp_method_id,
+      db.familyPlanning.fp_method_id,
     ),
   );
 
-  $$FamilyPlansTableProcessedTableManager get familyPlansRefs {
-    final manager = $$FamilyPlansTableTableManager(
+  $$FamilyPlanningTableProcessedTableManager get familyPlanningRefs {
+    final manager = $$FamilyPlanningTableTableManager(
       $_db,
-      $_db.familyPlans,
+      $_db.familyPlanning,
     ).filter(
       (f) => f.fp_method_id.fp_method_id.sqlEquals(
         $_itemColumn<int>('fp_method_id')!,
       ),
     );
 
-    final cache = $_typedResult.readTableOrNull(_familyPlansRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_familyPlanningRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -32243,22 +33600,22 @@ class $$FpMethodsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  Expression<bool> familyPlansRefs(
-    Expression<bool> Function($$FamilyPlansTableFilterComposer f) f,
+  Expression<bool> familyPlanningRefs(
+    Expression<bool> Function($$FamilyPlanningTableFilterComposer f) f,
   ) {
-    final $$FamilyPlansTableFilterComposer composer = $composerBuilder(
+    final $$FamilyPlanningTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.fp_method_id,
-      referencedTable: $db.familyPlans,
+      referencedTable: $db.familyPlanning,
       getReferencedColumn: (t) => t.fp_method_id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$FamilyPlansTableFilterComposer(
+          }) => $$FamilyPlanningTableFilterComposer(
             $db: $db,
-            $table: $db.familyPlans,
+            $table: $db.familyPlanning,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -32306,22 +33663,22 @@ class $$FpMethodsTableAnnotationComposer
   GeneratedColumn<String> get method =>
       $composableBuilder(column: $table.method, builder: (column) => column);
 
-  Expression<T> familyPlansRefs<T extends Object>(
-    Expression<T> Function($$FamilyPlansTableAnnotationComposer a) f,
+  Expression<T> familyPlanningRefs<T extends Object>(
+    Expression<T> Function($$FamilyPlanningTableAnnotationComposer a) f,
   ) {
-    final $$FamilyPlansTableAnnotationComposer composer = $composerBuilder(
+    final $$FamilyPlanningTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.fp_method_id,
-      referencedTable: $db.familyPlans,
+      referencedTable: $db.familyPlanning,
       getReferencedColumn: (t) => t.fp_method_id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$FamilyPlansTableAnnotationComposer(
+          }) => $$FamilyPlanningTableAnnotationComposer(
             $db: $db,
-            $table: $db.familyPlans,
+            $table: $db.familyPlanning,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -32345,7 +33702,7 @@ class $$FpMethodsTableTableManager
           $$FpMethodsTableUpdateCompanionBuilder,
           (FpMethodData, $$FpMethodsTableReferences),
           FpMethodData,
-          PrefetchHooks Function({bool familyPlansRefs})
+          PrefetchHooks Function({bool familyPlanningRefs})
         > {
   $$FpMethodsTableTableManager(_$AppDatabase db, $FpMethodsTable table)
     : super(
@@ -32384,29 +33741,31 @@ class $$FpMethodsTableTableManager
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: ({familyPlansRefs = false}) {
+          prefetchHooksCallback: ({familyPlanningRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (familyPlansRefs) db.familyPlans],
+              explicitlyWatchedTables: [
+                if (familyPlanningRefs) db.familyPlanning,
+              ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (familyPlansRefs)
+                  if (familyPlanningRefs)
                     await $_getPrefetchedData<
                       FpMethodData,
                       $FpMethodsTable,
-                      FamilyPlanData
+                      FamilyPlanningData
                     >(
                       currentTable: table,
                       referencedTable: $$FpMethodsTableReferences
-                          ._familyPlansRefsTable(db),
+                          ._familyPlanningRefsTable(db),
                       managerFromTypedResult:
                           (p0) =>
                               $$FpMethodsTableReferences(
                                 db,
                                 table,
                                 p0,
-                              ).familyPlansRefs,
+                              ).familyPlanningRefs,
                       referencedItemsForCurrentItem:
                           (item, referencedItems) => referencedItems.where(
                             (e) => e.fp_method_id == item.fp_method_id,
@@ -32433,7 +33792,7 @@ typedef $$FpMethodsTableProcessedTableManager =
       $$FpMethodsTableUpdateCompanionBuilder,
       (FpMethodData, $$FpMethodsTableReferences),
       FpMethodData,
-      PrefetchHooks Function({bool familyPlansRefs})
+      PrefetchHooks Function({bool familyPlanningRefs})
     >;
 typedef $$FishingProductsTableCreateCompanionBuilder =
     FishingProductsCompanion Function({
@@ -34608,7 +35967,7 @@ final class $$QuestionsTableReferences
     extends BaseReferences<_$AppDatabase, $QuestionsTable, QuestionData> {
   $$QuestionsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$QuestionChoicesTable, List<QustionChoiceData>>
+  static MultiTypedResultKey<$QuestionChoicesTable, List<QuestionChoiceData>>
   _questionChoicesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.questionChoices,
     aliasName: $_aliasNameGenerator(
@@ -34898,7 +36257,7 @@ class $$QuestionsTableTableManager
                     await $_getPrefetchedData<
                       QuestionData,
                       $QuestionsTable,
-                      QustionChoiceData
+                      QuestionChoiceData
                     >(
                       currentTable: table,
                       referencedTable: $$QuestionsTableReferences
@@ -34981,7 +36340,7 @@ final class $$QuestionChoicesTableReferences
         BaseReferences<
           _$AppDatabase,
           $QuestionChoicesTable,
-          QustionChoiceData
+          QuestionChoiceData
         > {
   $$QuestionChoicesTableReferences(
     super.$_db,
@@ -35222,14 +36581,14 @@ class $$QuestionChoicesTableTableManager
         RootTableManager<
           _$AppDatabase,
           $QuestionChoicesTable,
-          QustionChoiceData,
+          QuestionChoiceData,
           $$QuestionChoicesTableFilterComposer,
           $$QuestionChoicesTableOrderingComposer,
           $$QuestionChoicesTableAnnotationComposer,
           $$QuestionChoicesTableCreateCompanionBuilder,
           $$QuestionChoicesTableUpdateCompanionBuilder,
-          (QustionChoiceData, $$QuestionChoicesTableReferences),
-          QustionChoiceData,
+          (QuestionChoiceData, $$QuestionChoicesTableReferences),
+          QuestionChoiceData,
           PrefetchHooks Function({
             bool question_id,
             bool householdResponsesRefs,
@@ -35330,7 +36689,7 @@ class $$QuestionChoicesTableTableManager
                 return [
                   if (householdResponsesRefs)
                     await $_getPrefetchedData<
-                      QustionChoiceData,
+                      QuestionChoiceData,
                       $QuestionChoicesTable,
                       HouseholdResponseData
                     >(
@@ -35362,14 +36721,14 @@ typedef $$QuestionChoicesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $QuestionChoicesTable,
-      QustionChoiceData,
+      QuestionChoiceData,
       $$QuestionChoicesTableFilterComposer,
       $$QuestionChoicesTableOrderingComposer,
       $$QuestionChoicesTableAnnotationComposer,
       $$QuestionChoicesTableCreateCompanionBuilder,
       $$QuestionChoicesTableUpdateCompanionBuilder,
-      (QustionChoiceData, $$QuestionChoicesTableReferences),
-      QustionChoiceData,
+      (QuestionChoiceData, $$QuestionChoicesTableReferences),
+      QuestionChoiceData,
       PrefetchHooks Function({bool question_id, bool householdResponsesRefs})
     >;
 typedef $$HouseholdResponsesTableCreateCompanionBuilder =
@@ -35766,28 +37125,37 @@ typedef $$HouseholdResponsesTableProcessedTableManager =
       HouseholdResponseData,
       PrefetchHooks Function({bool choice_id, bool question_id})
     >;
-typedef $$FamilyPlansTableCreateCompanionBuilder =
-    FamilyPlansCompanion Function({
-      Value<int> family_plan_id,
+typedef $$FamilyPlanningTableCreateCompanionBuilder =
+    FamilyPlanningCompanion Function({
+      Value<int> family_planning_id,
       required int person_id,
       Value<int?> fp_method_id,
       Value<int?> fp_source_id,
     });
-typedef $$FamilyPlansTableUpdateCompanionBuilder =
-    FamilyPlansCompanion Function({
-      Value<int> family_plan_id,
+typedef $$FamilyPlanningTableUpdateCompanionBuilder =
+    FamilyPlanningCompanion Function({
+      Value<int> family_planning_id,
       Value<int> person_id,
       Value<int?> fp_method_id,
       Value<int?> fp_source_id,
     });
 
-final class $$FamilyPlansTableReferences
-    extends BaseReferences<_$AppDatabase, $FamilyPlansTable, FamilyPlanData> {
-  $$FamilyPlansTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$FamilyPlanningTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $FamilyPlanningTable,
+          FamilyPlanningData
+        > {
+  $$FamilyPlanningTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
 
   static $PersonsTable _person_idTable(_$AppDatabase db) =>
       db.persons.createAlias(
-        $_aliasNameGenerator(db.familyPlans.person_id, db.persons.person_id),
+        $_aliasNameGenerator(db.familyPlanning.person_id, db.persons.person_id),
       );
 
   $$PersonsTableProcessedTableManager get person_id {
@@ -35807,7 +37175,7 @@ final class $$FamilyPlansTableReferences
   static $FpMethodsTable _fp_method_idTable(_$AppDatabase db) =>
       db.fpMethods.createAlias(
         $_aliasNameGenerator(
-          db.familyPlans.fp_method_id,
+          db.familyPlanning.fp_method_id,
           db.fpMethods.fp_method_id,
         ),
       );
@@ -35829,7 +37197,7 @@ final class $$FamilyPlansTableReferences
   static $FpSourcesTable _fp_source_idTable(_$AppDatabase db) =>
       db.fpSources.createAlias(
         $_aliasNameGenerator(
-          db.familyPlans.fp_source_id,
+          db.familyPlanning.fp_source_id,
           db.fpSources.fp_source_id,
         ),
       );
@@ -35849,17 +37217,17 @@ final class $$FamilyPlansTableReferences
   }
 }
 
-class $$FamilyPlansTableFilterComposer
-    extends Composer<_$AppDatabase, $FamilyPlansTable> {
-  $$FamilyPlansTableFilterComposer({
+class $$FamilyPlanningTableFilterComposer
+    extends Composer<_$AppDatabase, $FamilyPlanningTable> {
+  $$FamilyPlanningTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<int> get family_plan_id => $composableBuilder(
-    column: $table.family_plan_id,
+  ColumnFilters<int> get family_planning_id => $composableBuilder(
+    column: $table.family_planning_id,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -35933,17 +37301,17 @@ class $$FamilyPlansTableFilterComposer
   }
 }
 
-class $$FamilyPlansTableOrderingComposer
-    extends Composer<_$AppDatabase, $FamilyPlansTable> {
-  $$FamilyPlansTableOrderingComposer({
+class $$FamilyPlanningTableOrderingComposer
+    extends Composer<_$AppDatabase, $FamilyPlanningTable> {
+  $$FamilyPlanningTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get family_plan_id => $composableBuilder(
-    column: $table.family_plan_id,
+  ColumnOrderings<int> get family_planning_id => $composableBuilder(
+    column: $table.family_planning_id,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -36017,17 +37385,17 @@ class $$FamilyPlansTableOrderingComposer
   }
 }
 
-class $$FamilyPlansTableAnnotationComposer
-    extends Composer<_$AppDatabase, $FamilyPlansTable> {
-  $$FamilyPlansTableAnnotationComposer({
+class $$FamilyPlanningTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FamilyPlanningTable> {
+  $$FamilyPlanningTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get family_plan_id => $composableBuilder(
-    column: $table.family_plan_id,
+  GeneratedColumn<int> get family_planning_id => $composableBuilder(
+    column: $table.family_planning_id,
     builder: (column) => column,
   );
 
@@ -36101,57 +37469,62 @@ class $$FamilyPlansTableAnnotationComposer
   }
 }
 
-class $$FamilyPlansTableTableManager
+class $$FamilyPlanningTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $FamilyPlansTable,
-          FamilyPlanData,
-          $$FamilyPlansTableFilterComposer,
-          $$FamilyPlansTableOrderingComposer,
-          $$FamilyPlansTableAnnotationComposer,
-          $$FamilyPlansTableCreateCompanionBuilder,
-          $$FamilyPlansTableUpdateCompanionBuilder,
-          (FamilyPlanData, $$FamilyPlansTableReferences),
-          FamilyPlanData,
+          $FamilyPlanningTable,
+          FamilyPlanningData,
+          $$FamilyPlanningTableFilterComposer,
+          $$FamilyPlanningTableOrderingComposer,
+          $$FamilyPlanningTableAnnotationComposer,
+          $$FamilyPlanningTableCreateCompanionBuilder,
+          $$FamilyPlanningTableUpdateCompanionBuilder,
+          (FamilyPlanningData, $$FamilyPlanningTableReferences),
+          FamilyPlanningData,
           PrefetchHooks Function({
             bool person_id,
             bool fp_method_id,
             bool fp_source_id,
           })
         > {
-  $$FamilyPlansTableTableManager(_$AppDatabase db, $FamilyPlansTable table)
-    : super(
+  $$FamilyPlanningTableTableManager(
+    _$AppDatabase db,
+    $FamilyPlanningTable table,
+  ) : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer:
-              () => $$FamilyPlansTableFilterComposer($db: db, $table: table),
+              () => $$FamilyPlanningTableFilterComposer($db: db, $table: table),
           createOrderingComposer:
-              () => $$FamilyPlansTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer:
               () =>
-                  $$FamilyPlansTableAnnotationComposer($db: db, $table: table),
+                  $$FamilyPlanningTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () => $$FamilyPlanningTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
           updateCompanionCallback:
               ({
-                Value<int> family_plan_id = const Value.absent(),
+                Value<int> family_planning_id = const Value.absent(),
                 Value<int> person_id = const Value.absent(),
                 Value<int?> fp_method_id = const Value.absent(),
                 Value<int?> fp_source_id = const Value.absent(),
-              }) => FamilyPlansCompanion(
-                family_plan_id: family_plan_id,
+              }) => FamilyPlanningCompanion(
+                family_planning_id: family_planning_id,
                 person_id: person_id,
                 fp_method_id: fp_method_id,
                 fp_source_id: fp_source_id,
               ),
           createCompanionCallback:
               ({
-                Value<int> family_plan_id = const Value.absent(),
+                Value<int> family_planning_id = const Value.absent(),
                 required int person_id,
                 Value<int?> fp_method_id = const Value.absent(),
                 Value<int?> fp_source_id = const Value.absent(),
-              }) => FamilyPlansCompanion.insert(
-                family_plan_id: family_plan_id,
+              }) => FamilyPlanningCompanion.insert(
+                family_planning_id: family_planning_id,
                 person_id: person_id,
                 fp_method_id: fp_method_id,
                 fp_source_id: fp_source_id,
@@ -36162,7 +37535,7 @@ class $$FamilyPlansTableTableManager
                       .map(
                         (e) => (
                           e.readTable(table),
-                          $$FamilyPlansTableReferences(db, table, e),
+                          $$FamilyPlanningTableReferences(db, table, e),
                         ),
                       )
                       .toList(),
@@ -36194,10 +37567,10 @@ class $$FamilyPlansTableTableManager
                       state.withJoin(
                             currentTable: table,
                             currentColumn: table.person_id,
-                            referencedTable: $$FamilyPlansTableReferences
+                            referencedTable: $$FamilyPlanningTableReferences
                                 ._person_idTable(db),
                             referencedColumn:
-                                $$FamilyPlansTableReferences
+                                $$FamilyPlanningTableReferences
                                     ._person_idTable(db)
                                     .person_id,
                           )
@@ -36208,10 +37581,10 @@ class $$FamilyPlansTableTableManager
                       state.withJoin(
                             currentTable: table,
                             currentColumn: table.fp_method_id,
-                            referencedTable: $$FamilyPlansTableReferences
+                            referencedTable: $$FamilyPlanningTableReferences
                                 ._fp_method_idTable(db),
                             referencedColumn:
-                                $$FamilyPlansTableReferences
+                                $$FamilyPlanningTableReferences
                                     ._fp_method_idTable(db)
                                     .fp_method_id,
                           )
@@ -36222,10 +37595,10 @@ class $$FamilyPlansTableTableManager
                       state.withJoin(
                             currentTable: table,
                             currentColumn: table.fp_source_id,
-                            referencedTable: $$FamilyPlansTableReferences
+                            referencedTable: $$FamilyPlanningTableReferences
                                 ._fp_source_idTable(db),
                             referencedColumn:
-                                $$FamilyPlansTableReferences
+                                $$FamilyPlanningTableReferences
                                     ._fp_source_idTable(db)
                                     .fp_source_id,
                           )
@@ -36243,26 +37616,26 @@ class $$FamilyPlansTableTableManager
       );
 }
 
-typedef $$FamilyPlansTableProcessedTableManager =
+typedef $$FamilyPlanningTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $FamilyPlansTable,
-      FamilyPlanData,
-      $$FamilyPlansTableFilterComposer,
-      $$FamilyPlansTableOrderingComposer,
-      $$FamilyPlansTableAnnotationComposer,
-      $$FamilyPlansTableCreateCompanionBuilder,
-      $$FamilyPlansTableUpdateCompanionBuilder,
-      (FamilyPlanData, $$FamilyPlansTableReferences),
-      FamilyPlanData,
+      $FamilyPlanningTable,
+      FamilyPlanningData,
+      $$FamilyPlanningTableFilterComposer,
+      $$FamilyPlanningTableOrderingComposer,
+      $$FamilyPlanningTableAnnotationComposer,
+      $$FamilyPlanningTableCreateCompanionBuilder,
+      $$FamilyPlanningTableUpdateCompanionBuilder,
+      (FamilyPlanningData, $$FamilyPlanningTableReferences),
+      FamilyPlanningData,
       PrefetchHooks Function({
         bool person_id,
         bool fp_method_id,
         bool fp_source_id,
       })
     >;
-typedef $$MaternalInfosTableCreateCompanionBuilder =
-    MaternalInfosCompanion Function({
+typedef $$MaternalInformationTableCreateCompanionBuilder =
+    MaternalInformationCompanion Function({
       Value<int> maternal_info_id,
       required int person_id,
       Value<bool?> pregnant,
@@ -36270,8 +37643,8 @@ typedef $$MaternalInfosTableCreateCompanionBuilder =
       Value<int?> living_children_num,
       Value<bool?> fp_intention,
     });
-typedef $$MaternalInfosTableUpdateCompanionBuilder =
-    MaternalInfosCompanion Function({
+typedef $$MaternalInformationTableUpdateCompanionBuilder =
+    MaternalInformationCompanion Function({
       Value<int> maternal_info_id,
       Value<int> person_id,
       Value<bool?> pregnant,
@@ -36280,10 +37653,14 @@ typedef $$MaternalInfosTableUpdateCompanionBuilder =
       Value<bool?> fp_intention,
     });
 
-final class $$MaternalInfosTableReferences
+final class $$MaternalInformationTableReferences
     extends
-        BaseReferences<_$AppDatabase, $MaternalInfosTable, MaternalInfoData> {
-  $$MaternalInfosTableReferences(
+        BaseReferences<
+          _$AppDatabase,
+          $MaternalInformationTable,
+          MaternalInformationData
+        > {
+  $$MaternalInformationTableReferences(
     super.$_db,
     super.$_table,
     super.$_typedResult,
@@ -36291,7 +37668,10 @@ final class $$MaternalInfosTableReferences
 
   static $PersonsTable _person_idTable(_$AppDatabase db) =>
       db.persons.createAlias(
-        $_aliasNameGenerator(db.maternalInfos.person_id, db.persons.person_id),
+        $_aliasNameGenerator(
+          db.maternalInformation.person_id,
+          db.persons.person_id,
+        ),
       );
 
   $$PersonsTableProcessedTableManager get person_id {
@@ -36309,9 +37689,9 @@ final class $$MaternalInfosTableReferences
   }
 }
 
-class $$MaternalInfosTableFilterComposer
-    extends Composer<_$AppDatabase, $MaternalInfosTable> {
-  $$MaternalInfosTableFilterComposer({
+class $$MaternalInformationTableFilterComposer
+    extends Composer<_$AppDatabase, $MaternalInformationTable> {
+  $$MaternalInformationTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -36367,9 +37747,9 @@ class $$MaternalInfosTableFilterComposer
   }
 }
 
-class $$MaternalInfosTableOrderingComposer
-    extends Composer<_$AppDatabase, $MaternalInfosTable> {
-  $$MaternalInfosTableOrderingComposer({
+class $$MaternalInformationTableOrderingComposer
+    extends Composer<_$AppDatabase, $MaternalInformationTable> {
+  $$MaternalInformationTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -36425,9 +37805,9 @@ class $$MaternalInfosTableOrderingComposer
   }
 }
 
-class $$MaternalInfosTableAnnotationComposer
-    extends Composer<_$AppDatabase, $MaternalInfosTable> {
-  $$MaternalInfosTableAnnotationComposer({
+class $$MaternalInformationTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MaternalInformationTable> {
+  $$MaternalInformationTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -36479,33 +37859,40 @@ class $$MaternalInfosTableAnnotationComposer
   }
 }
 
-class $$MaternalInfosTableTableManager
+class $$MaternalInformationTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $MaternalInfosTable,
-          MaternalInfoData,
-          $$MaternalInfosTableFilterComposer,
-          $$MaternalInfosTableOrderingComposer,
-          $$MaternalInfosTableAnnotationComposer,
-          $$MaternalInfosTableCreateCompanionBuilder,
-          $$MaternalInfosTableUpdateCompanionBuilder,
-          (MaternalInfoData, $$MaternalInfosTableReferences),
-          MaternalInfoData,
+          $MaternalInformationTable,
+          MaternalInformationData,
+          $$MaternalInformationTableFilterComposer,
+          $$MaternalInformationTableOrderingComposer,
+          $$MaternalInformationTableAnnotationComposer,
+          $$MaternalInformationTableCreateCompanionBuilder,
+          $$MaternalInformationTableUpdateCompanionBuilder,
+          (MaternalInformationData, $$MaternalInformationTableReferences),
+          MaternalInformationData,
           PrefetchHooks Function({bool person_id})
         > {
-  $$MaternalInfosTableTableManager(_$AppDatabase db, $MaternalInfosTable table)
-    : super(
+  $$MaternalInformationTableTableManager(
+    _$AppDatabase db,
+    $MaternalInformationTable table,
+  ) : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer:
-              () => $$MaternalInfosTableFilterComposer($db: db, $table: table),
+              () => $$MaternalInformationTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
           createOrderingComposer:
-              () =>
-                  $$MaternalInfosTableOrderingComposer($db: db, $table: table),
+              () => $$MaternalInformationTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
           createComputedFieldComposer:
-              () => $$MaternalInfosTableAnnotationComposer(
+              () => $$MaternalInformationTableAnnotationComposer(
                 $db: db,
                 $table: table,
               ),
@@ -36517,7 +37904,7 @@ class $$MaternalInfosTableTableManager
                 Value<bool?> lactating = const Value.absent(),
                 Value<int?> living_children_num = const Value.absent(),
                 Value<bool?> fp_intention = const Value.absent(),
-              }) => MaternalInfosCompanion(
+              }) => MaternalInformationCompanion(
                 maternal_info_id: maternal_info_id,
                 person_id: person_id,
                 pregnant: pregnant,
@@ -36533,7 +37920,7 @@ class $$MaternalInfosTableTableManager
                 Value<bool?> lactating = const Value.absent(),
                 Value<int?> living_children_num = const Value.absent(),
                 Value<bool?> fp_intention = const Value.absent(),
-              }) => MaternalInfosCompanion.insert(
+              }) => MaternalInformationCompanion.insert(
                 maternal_info_id: maternal_info_id,
                 person_id: person_id,
                 pregnant: pregnant,
@@ -36547,7 +37934,7 @@ class $$MaternalInfosTableTableManager
                       .map(
                         (e) => (
                           e.readTable(table),
-                          $$MaternalInfosTableReferences(db, table, e),
+                          $$MaternalInformationTableReferences(db, table, e),
                         ),
                       )
                       .toList(),
@@ -36575,10 +37962,11 @@ class $$MaternalInfosTableTableManager
                       state.withJoin(
                             currentTable: table,
                             currentColumn: table.person_id,
-                            referencedTable: $$MaternalInfosTableReferences
-                                ._person_idTable(db),
+                            referencedTable:
+                                $$MaternalInformationTableReferences
+                                    ._person_idTable(db),
                             referencedColumn:
-                                $$MaternalInfosTableReferences
+                                $$MaternalInformationTableReferences
                                     ._person_idTable(db)
                                     .person_id,
                           )
@@ -36596,18 +37984,18 @@ class $$MaternalInfosTableTableManager
       );
 }
 
-typedef $$MaternalInfosTableProcessedTableManager =
+typedef $$MaternalInformationTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $MaternalInfosTable,
-      MaternalInfoData,
-      $$MaternalInfosTableFilterComposer,
-      $$MaternalInfosTableOrderingComposer,
-      $$MaternalInfosTableAnnotationComposer,
-      $$MaternalInfosTableCreateCompanionBuilder,
-      $$MaternalInfosTableUpdateCompanionBuilder,
-      (MaternalInfoData, $$MaternalInfosTableReferences),
-      MaternalInfoData,
+      $MaternalInformationTable,
+      MaternalInformationData,
+      $$MaternalInformationTableFilterComposer,
+      $$MaternalInformationTableOrderingComposer,
+      $$MaternalInformationTableAnnotationComposer,
+      $$MaternalInformationTableCreateCompanionBuilder,
+      $$MaternalInformationTableUpdateCompanionBuilder,
+      (MaternalInformationData, $$MaternalInformationTableReferences),
+      MaternalInformationData,
       PrefetchHooks Function({bool person_id})
     >;
 typedef $$VisitedFacilitiesTableCreateCompanionBuilder =
@@ -37345,16 +38733,16 @@ typedef $$HealthInsurancesTableProcessedTableManager =
       HealthInsuranceData,
       PrefetchHooks Function({bool person_id})
     >;
-typedef $$NewbornInfosTableCreateCompanionBuilder =
-    NewbornInfosCompanion Function({
+typedef $$NewbornInformationTableCreateCompanionBuilder =
+    NewbornInformationCompanion Function({
       Value<int> newborn_info_id,
       required int person_id,
       Value<bool?> immunization,
       Value<int?> delivery_place_id,
       Value<int?> assisted_person_id,
     });
-typedef $$NewbornInfosTableUpdateCompanionBuilder =
-    NewbornInfosCompanion Function({
+typedef $$NewbornInformationTableUpdateCompanionBuilder =
+    NewbornInformationCompanion Function({
       Value<int> newborn_info_id,
       Value<int> person_id,
       Value<bool?> immunization,
@@ -37362,13 +38750,25 @@ typedef $$NewbornInfosTableUpdateCompanionBuilder =
       Value<int?> assisted_person_id,
     });
 
-final class $$NewbornInfosTableReferences
-    extends BaseReferences<_$AppDatabase, $NewbornInfosTable, NewbornInfoData> {
-  $$NewbornInfosTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$NewbornInformationTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $NewbornInformationTable,
+          NewbornInformationData
+        > {
+  $$NewbornInformationTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
 
   static $PersonsTable _person_idTable(_$AppDatabase db) =>
       db.persons.createAlias(
-        $_aliasNameGenerator(db.newbornInfos.person_id, db.persons.person_id),
+        $_aliasNameGenerator(
+          db.newbornInformation.person_id,
+          db.persons.person_id,
+        ),
       );
 
   $$PersonsTableProcessedTableManager get person_id {
@@ -37388,7 +38788,7 @@ final class $$NewbornInfosTableReferences
   static $DeliveryPlacesTable _delivery_place_idTable(_$AppDatabase db) =>
       db.deliveryPlaces.createAlias(
         $_aliasNameGenerator(
-          db.newbornInfos.delivery_place_id,
+          db.newbornInformation.delivery_place_id,
           db.deliveryPlaces.delivery_place_id,
         ),
       );
@@ -37410,7 +38810,7 @@ final class $$NewbornInfosTableReferences
   static $AssistedPersonsTable _assisted_person_idTable(_$AppDatabase db) =>
       db.assistedPersons.createAlias(
         $_aliasNameGenerator(
-          db.newbornInfos.assisted_person_id,
+          db.newbornInformation.assisted_person_id,
           db.assistedPersons.assisted_person_id,
         ),
       );
@@ -37430,9 +38830,9 @@ final class $$NewbornInfosTableReferences
   }
 }
 
-class $$NewbornInfosTableFilterComposer
-    extends Composer<_$AppDatabase, $NewbornInfosTable> {
-  $$NewbornInfosTableFilterComposer({
+class $$NewbornInformationTableFilterComposer
+    extends Composer<_$AppDatabase, $NewbornInformationTable> {
+  $$NewbornInformationTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -37519,9 +38919,9 @@ class $$NewbornInfosTableFilterComposer
   }
 }
 
-class $$NewbornInfosTableOrderingComposer
-    extends Composer<_$AppDatabase, $NewbornInfosTable> {
-  $$NewbornInfosTableOrderingComposer({
+class $$NewbornInformationTableOrderingComposer
+    extends Composer<_$AppDatabase, $NewbornInformationTable> {
+  $$NewbornInformationTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -37608,9 +39008,9 @@ class $$NewbornInfosTableOrderingComposer
   }
 }
 
-class $$NewbornInfosTableAnnotationComposer
-    extends Composer<_$AppDatabase, $NewbornInfosTable> {
-  $$NewbornInfosTableAnnotationComposer({
+class $$NewbornInformationTableAnnotationComposer
+    extends Composer<_$AppDatabase, $NewbornInformationTable> {
+  $$NewbornInformationTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -37697,37 +39097,47 @@ class $$NewbornInfosTableAnnotationComposer
   }
 }
 
-class $$NewbornInfosTableTableManager
+class $$NewbornInformationTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $NewbornInfosTable,
-          NewbornInfoData,
-          $$NewbornInfosTableFilterComposer,
-          $$NewbornInfosTableOrderingComposer,
-          $$NewbornInfosTableAnnotationComposer,
-          $$NewbornInfosTableCreateCompanionBuilder,
-          $$NewbornInfosTableUpdateCompanionBuilder,
-          (NewbornInfoData, $$NewbornInfosTableReferences),
-          NewbornInfoData,
+          $NewbornInformationTable,
+          NewbornInformationData,
+          $$NewbornInformationTableFilterComposer,
+          $$NewbornInformationTableOrderingComposer,
+          $$NewbornInformationTableAnnotationComposer,
+          $$NewbornInformationTableCreateCompanionBuilder,
+          $$NewbornInformationTableUpdateCompanionBuilder,
+          (NewbornInformationData, $$NewbornInformationTableReferences),
+          NewbornInformationData,
           PrefetchHooks Function({
             bool person_id,
             bool delivery_place_id,
             bool assisted_person_id,
           })
         > {
-  $$NewbornInfosTableTableManager(_$AppDatabase db, $NewbornInfosTable table)
-    : super(
+  $$NewbornInformationTableTableManager(
+    _$AppDatabase db,
+    $NewbornInformationTable table,
+  ) : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer:
-              () => $$NewbornInfosTableFilterComposer($db: db, $table: table),
+              () => $$NewbornInformationTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
           createOrderingComposer:
-              () => $$NewbornInfosTableOrderingComposer($db: db, $table: table),
+              () => $$NewbornInformationTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
           createComputedFieldComposer:
-              () =>
-                  $$NewbornInfosTableAnnotationComposer($db: db, $table: table),
+              () => $$NewbornInformationTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
           updateCompanionCallback:
               ({
                 Value<int> newborn_info_id = const Value.absent(),
@@ -37735,7 +39145,7 @@ class $$NewbornInfosTableTableManager
                 Value<bool?> immunization = const Value.absent(),
                 Value<int?> delivery_place_id = const Value.absent(),
                 Value<int?> assisted_person_id = const Value.absent(),
-              }) => NewbornInfosCompanion(
+              }) => NewbornInformationCompanion(
                 newborn_info_id: newborn_info_id,
                 person_id: person_id,
                 immunization: immunization,
@@ -37749,7 +39159,7 @@ class $$NewbornInfosTableTableManager
                 Value<bool?> immunization = const Value.absent(),
                 Value<int?> delivery_place_id = const Value.absent(),
                 Value<int?> assisted_person_id = const Value.absent(),
-              }) => NewbornInfosCompanion.insert(
+              }) => NewbornInformationCompanion.insert(
                 newborn_info_id: newborn_info_id,
                 person_id: person_id,
                 immunization: immunization,
@@ -37762,7 +39172,7 @@ class $$NewbornInfosTableTableManager
                       .map(
                         (e) => (
                           e.readTable(table),
-                          $$NewbornInfosTableReferences(db, table, e),
+                          $$NewbornInformationTableReferences(db, table, e),
                         ),
                       )
                       .toList(),
@@ -37794,10 +39204,10 @@ class $$NewbornInfosTableTableManager
                       state.withJoin(
                             currentTable: table,
                             currentColumn: table.person_id,
-                            referencedTable: $$NewbornInfosTableReferences
+                            referencedTable: $$NewbornInformationTableReferences
                                 ._person_idTable(db),
                             referencedColumn:
-                                $$NewbornInfosTableReferences
+                                $$NewbornInformationTableReferences
                                     ._person_idTable(db)
                                     .person_id,
                           )
@@ -37808,10 +39218,10 @@ class $$NewbornInfosTableTableManager
                       state.withJoin(
                             currentTable: table,
                             currentColumn: table.delivery_place_id,
-                            referencedTable: $$NewbornInfosTableReferences
+                            referencedTable: $$NewbornInformationTableReferences
                                 ._delivery_place_idTable(db),
                             referencedColumn:
-                                $$NewbornInfosTableReferences
+                                $$NewbornInformationTableReferences
                                     ._delivery_place_idTable(db)
                                     .delivery_place_id,
                           )
@@ -37822,10 +39232,10 @@ class $$NewbornInfosTableTableManager
                       state.withJoin(
                             currentTable: table,
                             currentColumn: table.assisted_person_id,
-                            referencedTable: $$NewbornInfosTableReferences
+                            referencedTable: $$NewbornInformationTableReferences
                                 ._assisted_person_idTable(db),
                             referencedColumn:
-                                $$NewbornInfosTableReferences
+                                $$NewbornInformationTableReferences
                                     ._assisted_person_idTable(db)
                                     .assisted_person_id,
                           )
@@ -37843,23 +39253,1539 @@ class $$NewbornInfosTableTableManager
       );
 }
 
-typedef $$NewbornInfosTableProcessedTableManager =
+typedef $$NewbornInformationTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $NewbornInfosTable,
-      NewbornInfoData,
-      $$NewbornInfosTableFilterComposer,
-      $$NewbornInfosTableOrderingComposer,
-      $$NewbornInfosTableAnnotationComposer,
-      $$NewbornInfosTableCreateCompanionBuilder,
-      $$NewbornInfosTableUpdateCompanionBuilder,
-      (NewbornInfoData, $$NewbornInfosTableReferences),
-      NewbornInfoData,
+      $NewbornInformationTable,
+      NewbornInformationData,
+      $$NewbornInformationTableFilterComposer,
+      $$NewbornInformationTableOrderingComposer,
+      $$NewbornInformationTableAnnotationComposer,
+      $$NewbornInformationTableCreateCompanionBuilder,
+      $$NewbornInformationTableUpdateCompanionBuilder,
+      (NewbornInformationData, $$NewbornInformationTableReferences),
+      NewbornInformationData,
       PrefetchHooks Function({
         bool person_id,
         bool delivery_place_id,
         bool assisted_person_id,
       })
+    >;
+typedef $$BarangayInfosTableCreateCompanionBuilder =
+    BarangayInfosCompanion Function({
+      Value<int> brgy_info_id,
+      required String brgy_name,
+      Value<String?> brgy_code,
+      Value<int?> population,
+      Value<double?> land_area,
+    });
+typedef $$BarangayInfosTableUpdateCompanionBuilder =
+    BarangayInfosCompanion Function({
+      Value<int> brgy_info_id,
+      Value<String> brgy_name,
+      Value<String?> brgy_code,
+      Value<int?> population,
+      Value<double?> land_area,
+    });
+
+class $$BarangayInfosTableFilterComposer
+    extends Composer<_$AppDatabase, $BarangayInfosTable> {
+  $$BarangayInfosTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get brgy_info_id => $composableBuilder(
+    column: $table.brgy_info_id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get brgy_name => $composableBuilder(
+    column: $table.brgy_name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get brgy_code => $composableBuilder(
+    column: $table.brgy_code,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get population => $composableBuilder(
+    column: $table.population,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get land_area => $composableBuilder(
+    column: $table.land_area,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BarangayInfosTableOrderingComposer
+    extends Composer<_$AppDatabase, $BarangayInfosTable> {
+  $$BarangayInfosTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get brgy_info_id => $composableBuilder(
+    column: $table.brgy_info_id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get brgy_name => $composableBuilder(
+    column: $table.brgy_name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get brgy_code => $composableBuilder(
+    column: $table.brgy_code,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get population => $composableBuilder(
+    column: $table.population,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get land_area => $composableBuilder(
+    column: $table.land_area,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BarangayInfosTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BarangayInfosTable> {
+  $$BarangayInfosTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get brgy_info_id => $composableBuilder(
+    column: $table.brgy_info_id,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get brgy_name =>
+      $composableBuilder(column: $table.brgy_name, builder: (column) => column);
+
+  GeneratedColumn<String> get brgy_code =>
+      $composableBuilder(column: $table.brgy_code, builder: (column) => column);
+
+  GeneratedColumn<int> get population => $composableBuilder(
+    column: $table.population,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get land_area =>
+      $composableBuilder(column: $table.land_area, builder: (column) => column);
+}
+
+class $$BarangayInfosTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BarangayInfosTable,
+          BarangayInfoData,
+          $$BarangayInfosTableFilterComposer,
+          $$BarangayInfosTableOrderingComposer,
+          $$BarangayInfosTableAnnotationComposer,
+          $$BarangayInfosTableCreateCompanionBuilder,
+          $$BarangayInfosTableUpdateCompanionBuilder,
+          (
+            BarangayInfoData,
+            BaseReferences<
+              _$AppDatabase,
+              $BarangayInfosTable,
+              BarangayInfoData
+            >,
+          ),
+          BarangayInfoData,
+          PrefetchHooks Function()
+        > {
+  $$BarangayInfosTableTableManager(_$AppDatabase db, $BarangayInfosTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer:
+              () => $$BarangayInfosTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () =>
+                  $$BarangayInfosTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () => $$BarangayInfosTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> brgy_info_id = const Value.absent(),
+                Value<String> brgy_name = const Value.absent(),
+                Value<String?> brgy_code = const Value.absent(),
+                Value<int?> population = const Value.absent(),
+                Value<double?> land_area = const Value.absent(),
+              }) => BarangayInfosCompanion(
+                brgy_info_id: brgy_info_id,
+                brgy_name: brgy_name,
+                brgy_code: brgy_code,
+                population: population,
+                land_area: land_area,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> brgy_info_id = const Value.absent(),
+                required String brgy_name,
+                Value<String?> brgy_code = const Value.absent(),
+                Value<int?> population = const Value.absent(),
+                Value<double?> land_area = const Value.absent(),
+              }) => BarangayInfosCompanion.insert(
+                brgy_info_id: brgy_info_id,
+                brgy_name: brgy_name,
+                brgy_code: brgy_code,
+                population: population,
+                land_area: land_area,
+              ),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          BaseReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BarangayInfosTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BarangayInfosTable,
+      BarangayInfoData,
+      $$BarangayInfosTableFilterComposer,
+      $$BarangayInfosTableOrderingComposer,
+      $$BarangayInfosTableAnnotationComposer,
+      $$BarangayInfosTableCreateCompanionBuilder,
+      $$BarangayInfosTableUpdateCompanionBuilder,
+      (
+        BarangayInfoData,
+        BaseReferences<_$AppDatabase, $BarangayInfosTable, BarangayInfoData>,
+      ),
+      BarangayInfoData,
+      PrefetchHooks Function()
+    >;
+typedef $$BarangayOfficialsTableCreateCompanionBuilder =
+    BarangayOfficialsCompanion Function({
+      Value<int> brgy_official_id,
+      required int person_id,
+      required BarangayPositions brgy_position,
+      Value<DateTime?> start_date,
+      Value<DateTime?> end_date,
+      Value<bool?> is_current,
+    });
+typedef $$BarangayOfficialsTableUpdateCompanionBuilder =
+    BarangayOfficialsCompanion Function({
+      Value<int> brgy_official_id,
+      Value<int> person_id,
+      Value<BarangayPositions> brgy_position,
+      Value<DateTime?> start_date,
+      Value<DateTime?> end_date,
+      Value<bool?> is_current,
+    });
+
+final class $$BarangayOfficialsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $BarangayOfficialsTable,
+          BarangayOfficialData
+        > {
+  $$BarangayOfficialsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PersonsTable _person_idTable(_$AppDatabase db) =>
+      db.persons.createAlias(
+        $_aliasNameGenerator(
+          db.barangayOfficials.person_id,
+          db.persons.person_id,
+        ),
+      );
+
+  $$PersonsTableProcessedTableManager get person_id {
+    final $_column = $_itemColumn<int>('person_id')!;
+
+    final manager = $$PersonsTableTableManager(
+      $_db,
+      $_db.persons,
+    ).filter((f) => f.person_id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_person_idTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$BarangayOfficialsTableFilterComposer
+    extends Composer<_$AppDatabase, $BarangayOfficialsTable> {
+  $$BarangayOfficialsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get brgy_official_id => $composableBuilder(
+    column: $table.brgy_official_id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<BarangayPositions, BarangayPositions, String>
+  get brgy_position => $composableBuilder(
+    column: $table.brgy_position,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<DateTime> get start_date => $composableBuilder(
+    column: $table.start_date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get end_date => $composableBuilder(
+    column: $table.end_date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get is_current => $composableBuilder(
+    column: $table.is_current,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PersonsTableFilterComposer get person_id {
+    final $$PersonsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.person_id,
+      referencedTable: $db.persons,
+      getReferencedColumn: (t) => t.person_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PersonsTableFilterComposer(
+            $db: $db,
+            $table: $db.persons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BarangayOfficialsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BarangayOfficialsTable> {
+  $$BarangayOfficialsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get brgy_official_id => $composableBuilder(
+    column: $table.brgy_official_id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get brgy_position => $composableBuilder(
+    column: $table.brgy_position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get start_date => $composableBuilder(
+    column: $table.start_date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get end_date => $composableBuilder(
+    column: $table.end_date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get is_current => $composableBuilder(
+    column: $table.is_current,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PersonsTableOrderingComposer get person_id {
+    final $$PersonsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.person_id,
+      referencedTable: $db.persons,
+      getReferencedColumn: (t) => t.person_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PersonsTableOrderingComposer(
+            $db: $db,
+            $table: $db.persons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BarangayOfficialsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BarangayOfficialsTable> {
+  $$BarangayOfficialsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get brgy_official_id => $composableBuilder(
+    column: $table.brgy_official_id,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<BarangayPositions, String>
+  get brgy_position => $composableBuilder(
+    column: $table.brgy_position,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get start_date => $composableBuilder(
+    column: $table.start_date,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get end_date =>
+      $composableBuilder(column: $table.end_date, builder: (column) => column);
+
+  GeneratedColumn<bool> get is_current => $composableBuilder(
+    column: $table.is_current,
+    builder: (column) => column,
+  );
+
+  $$PersonsTableAnnotationComposer get person_id {
+    final $$PersonsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.person_id,
+      referencedTable: $db.persons,
+      getReferencedColumn: (t) => t.person_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PersonsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.persons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BarangayOfficialsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BarangayOfficialsTable,
+          BarangayOfficialData,
+          $$BarangayOfficialsTableFilterComposer,
+          $$BarangayOfficialsTableOrderingComposer,
+          $$BarangayOfficialsTableAnnotationComposer,
+          $$BarangayOfficialsTableCreateCompanionBuilder,
+          $$BarangayOfficialsTableUpdateCompanionBuilder,
+          (BarangayOfficialData, $$BarangayOfficialsTableReferences),
+          BarangayOfficialData,
+          PrefetchHooks Function({bool person_id})
+        > {
+  $$BarangayOfficialsTableTableManager(
+    _$AppDatabase db,
+    $BarangayOfficialsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer:
+              () => $$BarangayOfficialsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer:
+              () => $$BarangayOfficialsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer:
+              () => $$BarangayOfficialsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> brgy_official_id = const Value.absent(),
+                Value<int> person_id = const Value.absent(),
+                Value<BarangayPositions> brgy_position = const Value.absent(),
+                Value<DateTime?> start_date = const Value.absent(),
+                Value<DateTime?> end_date = const Value.absent(),
+                Value<bool?> is_current = const Value.absent(),
+              }) => BarangayOfficialsCompanion(
+                brgy_official_id: brgy_official_id,
+                person_id: person_id,
+                brgy_position: brgy_position,
+                start_date: start_date,
+                end_date: end_date,
+                is_current: is_current,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> brgy_official_id = const Value.absent(),
+                required int person_id,
+                required BarangayPositions brgy_position,
+                Value<DateTime?> start_date = const Value.absent(),
+                Value<DateTime?> end_date = const Value.absent(),
+                Value<bool?> is_current = const Value.absent(),
+              }) => BarangayOfficialsCompanion.insert(
+                brgy_official_id: brgy_official_id,
+                person_id: person_id,
+                brgy_position: brgy_position,
+                start_date: start_date,
+                end_date: end_date,
+                is_current: is_current,
+              ),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$BarangayOfficialsTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
+          prefetchHooksCallback: ({person_id = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                T extends TableManagerState<
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic
+                >
+              >(state) {
+                if (person_id) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.person_id,
+                            referencedTable: $$BarangayOfficialsTableReferences
+                                ._person_idTable(db),
+                            referencedColumn:
+                                $$BarangayOfficialsTableReferences
+                                    ._person_idTable(db)
+                                    .person_id,
+                          )
+                          as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$BarangayOfficialsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BarangayOfficialsTable,
+      BarangayOfficialData,
+      $$BarangayOfficialsTableFilterComposer,
+      $$BarangayOfficialsTableOrderingComposer,
+      $$BarangayOfficialsTableAnnotationComposer,
+      $$BarangayOfficialsTableCreateCompanionBuilder,
+      $$BarangayOfficialsTableUpdateCompanionBuilder,
+      (BarangayOfficialData, $$BarangayOfficialsTableReferences),
+      BarangayOfficialData,
+      PrefetchHooks Function({bool person_id})
+    >;
+typedef $$LoginCredentialsTableCreateCompanionBuilder =
+    LoginCredentialsCompanion Function({
+      Value<int> login_id,
+      required UserType user_type,
+      required String username,
+      Value<String?> password,
+    });
+typedef $$LoginCredentialsTableUpdateCompanionBuilder =
+    LoginCredentialsCompanion Function({
+      Value<int> login_id,
+      Value<UserType> user_type,
+      Value<String> username,
+      Value<String?> password,
+    });
+
+class $$LoginCredentialsTableFilterComposer
+    extends Composer<_$AppDatabase, $LoginCredentialsTable> {
+  $$LoginCredentialsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get login_id => $composableBuilder(
+    column: $table.login_id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<UserType, UserType, String> get user_type =>
+      $composableBuilder(
+        column: $table.user_type,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<String> get username => $composableBuilder(
+    column: $table.username,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get password => $composableBuilder(
+    column: $table.password,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LoginCredentialsTableOrderingComposer
+    extends Composer<_$AppDatabase, $LoginCredentialsTable> {
+  $$LoginCredentialsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get login_id => $composableBuilder(
+    column: $table.login_id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get user_type => $composableBuilder(
+    column: $table.user_type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get username => $composableBuilder(
+    column: $table.username,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get password => $composableBuilder(
+    column: $table.password,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LoginCredentialsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LoginCredentialsTable> {
+  $$LoginCredentialsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get login_id =>
+      $composableBuilder(column: $table.login_id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<UserType, String> get user_type =>
+      $composableBuilder(column: $table.user_type, builder: (column) => column);
+
+  GeneratedColumn<String> get username =>
+      $composableBuilder(column: $table.username, builder: (column) => column);
+
+  GeneratedColumn<String> get password =>
+      $composableBuilder(column: $table.password, builder: (column) => column);
+}
+
+class $$LoginCredentialsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LoginCredentialsTable,
+          LoginCredentialData,
+          $$LoginCredentialsTableFilterComposer,
+          $$LoginCredentialsTableOrderingComposer,
+          $$LoginCredentialsTableAnnotationComposer,
+          $$LoginCredentialsTableCreateCompanionBuilder,
+          $$LoginCredentialsTableUpdateCompanionBuilder,
+          (
+            LoginCredentialData,
+            BaseReferences<
+              _$AppDatabase,
+              $LoginCredentialsTable,
+              LoginCredentialData
+            >,
+          ),
+          LoginCredentialData,
+          PrefetchHooks Function()
+        > {
+  $$LoginCredentialsTableTableManager(
+    _$AppDatabase db,
+    $LoginCredentialsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer:
+              () =>
+                  $$LoginCredentialsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$LoginCredentialsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer:
+              () => $$LoginCredentialsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> login_id = const Value.absent(),
+                Value<UserType> user_type = const Value.absent(),
+                Value<String> username = const Value.absent(),
+                Value<String?> password = const Value.absent(),
+              }) => LoginCredentialsCompanion(
+                login_id: login_id,
+                user_type: user_type,
+                username: username,
+                password: password,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> login_id = const Value.absent(),
+                required UserType user_type,
+                required String username,
+                Value<String?> password = const Value.absent(),
+              }) => LoginCredentialsCompanion.insert(
+                login_id: login_id,
+                user_type: user_type,
+                username: username,
+                password: password,
+              ),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          BaseReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LoginCredentialsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LoginCredentialsTable,
+      LoginCredentialData,
+      $$LoginCredentialsTableFilterComposer,
+      $$LoginCredentialsTableOrderingComposer,
+      $$LoginCredentialsTableAnnotationComposer,
+      $$LoginCredentialsTableCreateCompanionBuilder,
+      $$LoginCredentialsTableUpdateCompanionBuilder,
+      (
+        LoginCredentialData,
+        BaseReferences<
+          _$AppDatabase,
+          $LoginCredentialsTable,
+          LoginCredentialData
+        >,
+      ),
+      LoginCredentialData,
+      PrefetchHooks Function()
+    >;
+typedef $$HouseholdVisitsTableCreateCompanionBuilder =
+    HouseholdVisitsCompanion Function({
+      Value<int> household_visit_id,
+      required int household_id,
+      Value<int?> visit_num,
+      required BarangayPositions brgy_position,
+      Value<DateTime?> visit_date,
+    });
+typedef $$HouseholdVisitsTableUpdateCompanionBuilder =
+    HouseholdVisitsCompanion Function({
+      Value<int> household_visit_id,
+      Value<int> household_id,
+      Value<int?> visit_num,
+      Value<BarangayPositions> brgy_position,
+      Value<DateTime?> visit_date,
+    });
+
+final class $$HouseholdVisitsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $HouseholdVisitsTable,
+          HouseholdVisitData
+        > {
+  $$HouseholdVisitsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $HouseholdsTable _household_idTable(_$AppDatabase db) =>
+      db.households.createAlias(
+        $_aliasNameGenerator(
+          db.householdVisits.household_id,
+          db.households.household_id,
+        ),
+      );
+
+  $$HouseholdsTableProcessedTableManager get household_id {
+    final $_column = $_itemColumn<int>('household_id')!;
+
+    final manager = $$HouseholdsTableTableManager(
+      $_db,
+      $_db.households,
+    ).filter((f) => f.household_id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_household_idTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$HouseholdVisitsTableFilterComposer
+    extends Composer<_$AppDatabase, $HouseholdVisitsTable> {
+  $$HouseholdVisitsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get household_visit_id => $composableBuilder(
+    column: $table.household_visit_id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get visit_num => $composableBuilder(
+    column: $table.visit_num,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<BarangayPositions, BarangayPositions, String>
+  get brgy_position => $composableBuilder(
+    column: $table.brgy_position,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<DateTime> get visit_date => $composableBuilder(
+    column: $table.visit_date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$HouseholdsTableFilterComposer get household_id {
+    final $$HouseholdsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.households,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HouseholdsTableFilterComposer(
+            $db: $db,
+            $table: $db.households,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$HouseholdVisitsTableOrderingComposer
+    extends Composer<_$AppDatabase, $HouseholdVisitsTable> {
+  $$HouseholdVisitsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get household_visit_id => $composableBuilder(
+    column: $table.household_visit_id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get visit_num => $composableBuilder(
+    column: $table.visit_num,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get brgy_position => $composableBuilder(
+    column: $table.brgy_position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get visit_date => $composableBuilder(
+    column: $table.visit_date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$HouseholdsTableOrderingComposer get household_id {
+    final $$HouseholdsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.households,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HouseholdsTableOrderingComposer(
+            $db: $db,
+            $table: $db.households,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$HouseholdVisitsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HouseholdVisitsTable> {
+  $$HouseholdVisitsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get household_visit_id => $composableBuilder(
+    column: $table.household_visit_id,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get visit_num =>
+      $composableBuilder(column: $table.visit_num, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<BarangayPositions, String>
+  get brgy_position => $composableBuilder(
+    column: $table.brgy_position,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get visit_date => $composableBuilder(
+    column: $table.visit_date,
+    builder: (column) => column,
+  );
+
+  $$HouseholdsTableAnnotationComposer get household_id {
+    final $$HouseholdsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.households,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HouseholdsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.households,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$HouseholdVisitsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $HouseholdVisitsTable,
+          HouseholdVisitData,
+          $$HouseholdVisitsTableFilterComposer,
+          $$HouseholdVisitsTableOrderingComposer,
+          $$HouseholdVisitsTableAnnotationComposer,
+          $$HouseholdVisitsTableCreateCompanionBuilder,
+          $$HouseholdVisitsTableUpdateCompanionBuilder,
+          (HouseholdVisitData, $$HouseholdVisitsTableReferences),
+          HouseholdVisitData,
+          PrefetchHooks Function({bool household_id})
+        > {
+  $$HouseholdVisitsTableTableManager(
+    _$AppDatabase db,
+    $HouseholdVisitsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer:
+              () =>
+                  $$HouseholdVisitsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$HouseholdVisitsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer:
+              () => $$HouseholdVisitsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> household_visit_id = const Value.absent(),
+                Value<int> household_id = const Value.absent(),
+                Value<int?> visit_num = const Value.absent(),
+                Value<BarangayPositions> brgy_position = const Value.absent(),
+                Value<DateTime?> visit_date = const Value.absent(),
+              }) => HouseholdVisitsCompanion(
+                household_visit_id: household_visit_id,
+                household_id: household_id,
+                visit_num: visit_num,
+                brgy_position: brgy_position,
+                visit_date: visit_date,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> household_visit_id = const Value.absent(),
+                required int household_id,
+                Value<int?> visit_num = const Value.absent(),
+                required BarangayPositions brgy_position,
+                Value<DateTime?> visit_date = const Value.absent(),
+              }) => HouseholdVisitsCompanion.insert(
+                household_visit_id: household_visit_id,
+                household_id: household_id,
+                visit_num: visit_num,
+                brgy_position: brgy_position,
+                visit_date: visit_date,
+              ),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$HouseholdVisitsTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
+          prefetchHooksCallback: ({household_id = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                T extends TableManagerState<
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic
+                >
+              >(state) {
+                if (household_id) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.household_id,
+                            referencedTable: $$HouseholdVisitsTableReferences
+                                ._household_idTable(db),
+                            referencedColumn:
+                                $$HouseholdVisitsTableReferences
+                                    ._household_idTable(db)
+                                    .household_id,
+                          )
+                          as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$HouseholdVisitsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $HouseholdVisitsTable,
+      HouseholdVisitData,
+      $$HouseholdVisitsTableFilterComposer,
+      $$HouseholdVisitsTableOrderingComposer,
+      $$HouseholdVisitsTableAnnotationComposer,
+      $$HouseholdVisitsTableCreateCompanionBuilder,
+      $$HouseholdVisitsTableUpdateCompanionBuilder,
+      (HouseholdVisitData, $$HouseholdVisitsTableReferences),
+      HouseholdVisitData,
+      PrefetchHooks Function({bool household_id})
+    >;
+typedef $$HouseholdMembersTableCreateCompanionBuilder =
+    HouseholdMembersCompanion Function({
+      Value<int> household_member_id,
+      required int person_id,
+      required int household_id,
+    });
+typedef $$HouseholdMembersTableUpdateCompanionBuilder =
+    HouseholdMembersCompanion Function({
+      Value<int> household_member_id,
+      Value<int> person_id,
+      Value<int> household_id,
+    });
+
+final class $$HouseholdMembersTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $HouseholdMembersTable,
+          HouseholdMemberData
+        > {
+  $$HouseholdMembersTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PersonsTable _person_idTable(_$AppDatabase db) =>
+      db.persons.createAlias(
+        $_aliasNameGenerator(
+          db.householdMembers.person_id,
+          db.persons.person_id,
+        ),
+      );
+
+  $$PersonsTableProcessedTableManager get person_id {
+    final $_column = $_itemColumn<int>('person_id')!;
+
+    final manager = $$PersonsTableTableManager(
+      $_db,
+      $_db.persons,
+    ).filter((f) => f.person_id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_person_idTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $HouseholdsTable _household_idTable(_$AppDatabase db) =>
+      db.households.createAlias(
+        $_aliasNameGenerator(
+          db.householdMembers.household_id,
+          db.households.household_id,
+        ),
+      );
+
+  $$HouseholdsTableProcessedTableManager get household_id {
+    final $_column = $_itemColumn<int>('household_id')!;
+
+    final manager = $$HouseholdsTableTableManager(
+      $_db,
+      $_db.households,
+    ).filter((f) => f.household_id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_household_idTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$HouseholdMembersTableFilterComposer
+    extends Composer<_$AppDatabase, $HouseholdMembersTable> {
+  $$HouseholdMembersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get household_member_id => $composableBuilder(
+    column: $table.household_member_id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PersonsTableFilterComposer get person_id {
+    final $$PersonsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.person_id,
+      referencedTable: $db.persons,
+      getReferencedColumn: (t) => t.person_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PersonsTableFilterComposer(
+            $db: $db,
+            $table: $db.persons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$HouseholdsTableFilterComposer get household_id {
+    final $$HouseholdsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.households,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HouseholdsTableFilterComposer(
+            $db: $db,
+            $table: $db.households,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$HouseholdMembersTableOrderingComposer
+    extends Composer<_$AppDatabase, $HouseholdMembersTable> {
+  $$HouseholdMembersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get household_member_id => $composableBuilder(
+    column: $table.household_member_id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PersonsTableOrderingComposer get person_id {
+    final $$PersonsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.person_id,
+      referencedTable: $db.persons,
+      getReferencedColumn: (t) => t.person_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PersonsTableOrderingComposer(
+            $db: $db,
+            $table: $db.persons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$HouseholdsTableOrderingComposer get household_id {
+    final $$HouseholdsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.households,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HouseholdsTableOrderingComposer(
+            $db: $db,
+            $table: $db.households,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$HouseholdMembersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HouseholdMembersTable> {
+  $$HouseholdMembersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get household_member_id => $composableBuilder(
+    column: $table.household_member_id,
+    builder: (column) => column,
+  );
+
+  $$PersonsTableAnnotationComposer get person_id {
+    final $$PersonsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.person_id,
+      referencedTable: $db.persons,
+      getReferencedColumn: (t) => t.person_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PersonsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.persons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$HouseholdsTableAnnotationComposer get household_id {
+    final $$HouseholdsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.household_id,
+      referencedTable: $db.households,
+      getReferencedColumn: (t) => t.household_id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HouseholdsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.households,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$HouseholdMembersTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $HouseholdMembersTable,
+          HouseholdMemberData,
+          $$HouseholdMembersTableFilterComposer,
+          $$HouseholdMembersTableOrderingComposer,
+          $$HouseholdMembersTableAnnotationComposer,
+          $$HouseholdMembersTableCreateCompanionBuilder,
+          $$HouseholdMembersTableUpdateCompanionBuilder,
+          (HouseholdMemberData, $$HouseholdMembersTableReferences),
+          HouseholdMemberData,
+          PrefetchHooks Function({bool person_id, bool household_id})
+        > {
+  $$HouseholdMembersTableTableManager(
+    _$AppDatabase db,
+    $HouseholdMembersTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer:
+              () =>
+                  $$HouseholdMembersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$HouseholdMembersTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer:
+              () => $$HouseholdMembersTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> household_member_id = const Value.absent(),
+                Value<int> person_id = const Value.absent(),
+                Value<int> household_id = const Value.absent(),
+              }) => HouseholdMembersCompanion(
+                household_member_id: household_member_id,
+                person_id: person_id,
+                household_id: household_id,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> household_member_id = const Value.absent(),
+                required int person_id,
+                required int household_id,
+              }) => HouseholdMembersCompanion.insert(
+                household_member_id: household_member_id,
+                person_id: person_id,
+                household_id: household_id,
+              ),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$HouseholdMembersTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
+          prefetchHooksCallback: ({person_id = false, household_id = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                T extends TableManagerState<
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic
+                >
+              >(state) {
+                if (person_id) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.person_id,
+                            referencedTable: $$HouseholdMembersTableReferences
+                                ._person_idTable(db),
+                            referencedColumn:
+                                $$HouseholdMembersTableReferences
+                                    ._person_idTable(db)
+                                    .person_id,
+                          )
+                          as T;
+                }
+                if (household_id) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.household_id,
+                            referencedTable: $$HouseholdMembersTableReferences
+                                ._household_idTable(db),
+                            referencedColumn:
+                                $$HouseholdMembersTableReferences
+                                    ._household_idTable(db)
+                                    .household_id,
+                          )
+                          as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$HouseholdMembersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $HouseholdMembersTable,
+      HouseholdMemberData,
+      $$HouseholdMembersTableFilterComposer,
+      $$HouseholdMembersTableOrderingComposer,
+      $$HouseholdMembersTableAnnotationComposer,
+      $$HouseholdMembersTableCreateCompanionBuilder,
+      $$HouseholdMembersTableUpdateCompanionBuilder,
+      (HouseholdMemberData, $$HouseholdMembersTableReferences),
+      HouseholdMemberData,
+      PrefetchHooks Function({bool person_id, bool household_id})
     >;
 
 class $AppDatabaseManager {
@@ -37875,10 +40801,6 @@ class $AppDatabaseManager {
       $$BloodTypesTableTableManager(_db, _db.bloodTypes);
   $$AddressesTableTableManager get addresses =>
       $$AddressesTableTableManager(_db, _db.addresses);
-  $$BuildingTypesTableTableManager get buildingTypes =>
-      $$BuildingTypesTableTableManager(_db, _db.buildingTypes);
-  $$HouseholdsTableTableManager get households =>
-      $$HouseholdsTableTableManager(_db, _db.households);
   $$MonthlyIncomesTableTableManager get monthlyIncomes =>
       $$MonthlyIncomesTableTableManager(_db, _db.monthlyIncomes);
   $$DailyIncomesTableTableManager get dailyIncomes =>
@@ -37887,6 +40809,10 @@ class $AppDatabaseManager {
       $$EducationTableTableManager(_db, _db.education);
   $$PersonsTableTableManager get persons =>
       $$PersonsTableTableManager(_db, _db.persons);
+  $$BuildingTypesTableTableManager get buildingTypes =>
+      $$BuildingTypesTableTableManager(_db, _db.buildingTypes);
+  $$HouseholdsTableTableManager get households =>
+      $$HouseholdsTableTableManager(_db, _db.households);
   $$OccupationsTableTableManager get occupations =>
       $$OccupationsTableTableManager(_db, _db.occupations);
   $$EmailsTableTableManager get emails =>
@@ -37895,8 +40821,6 @@ class $AppDatabaseManager {
       $$PhoneNumbersTableTableManager(_db, _db.phoneNumbers);
   $$GadgetsTableTableManager get gadgets =>
       $$GadgetsTableTableManager(_db, _db.gadgets);
-  $$GovermentProgramsTableTableManager get govermentPrograms =>
-      $$GovermentProgramsTableTableManager(_db, _db.govermentPrograms);
   $$VoterRegistriesTableTableManager get voterRegistries =>
       $$VoterRegistriesTableTableManager(_db, _db.voterRegistries);
   $$RegisteredSeniorsTableTableManager get registeredSeniors =>
@@ -37956,14 +40880,24 @@ class $AppDatabaseManager {
       $$QuestionChoicesTableTableManager(_db, _db.questionChoices);
   $$HouseholdResponsesTableTableManager get householdResponses =>
       $$HouseholdResponsesTableTableManager(_db, _db.householdResponses);
-  $$FamilyPlansTableTableManager get familyPlans =>
-      $$FamilyPlansTableTableManager(_db, _db.familyPlans);
-  $$MaternalInfosTableTableManager get maternalInfos =>
-      $$MaternalInfosTableTableManager(_db, _db.maternalInfos);
+  $$FamilyPlanningTableTableManager get familyPlanning =>
+      $$FamilyPlanningTableTableManager(_db, _db.familyPlanning);
+  $$MaternalInformationTableTableManager get maternalInformation =>
+      $$MaternalInformationTableTableManager(_db, _db.maternalInformation);
   $$VisitedFacilitiesTableTableManager get visitedFacilities =>
       $$VisitedFacilitiesTableTableManager(_db, _db.visitedFacilities);
   $$HealthInsurancesTableTableManager get healthInsurances =>
       $$HealthInsurancesTableTableManager(_db, _db.healthInsurances);
-  $$NewbornInfosTableTableManager get newbornInfos =>
-      $$NewbornInfosTableTableManager(_db, _db.newbornInfos);
+  $$NewbornInformationTableTableManager get newbornInformation =>
+      $$NewbornInformationTableTableManager(_db, _db.newbornInformation);
+  $$BarangayInfosTableTableManager get barangayInfos =>
+      $$BarangayInfosTableTableManager(_db, _db.barangayInfos);
+  $$BarangayOfficialsTableTableManager get barangayOfficials =>
+      $$BarangayOfficialsTableTableManager(_db, _db.barangayOfficials);
+  $$LoginCredentialsTableTableManager get loginCredentials =>
+      $$LoginCredentialsTableTableManager(_db, _db.loginCredentials);
+  $$HouseholdVisitsTableTableManager get householdVisits =>
+      $$HouseholdVisitsTableTableManager(_db, _db.householdVisits);
+  $$HouseholdMembersTableTableManager get householdMembers =>
+      $$HouseholdMembersTableTableManager(_db, _db.householdMembers);
 }
