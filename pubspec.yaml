@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  google_fonts: ^6.2.1
   cupertino_icons: ^1.0.6
   drift: ^2.29.0
   drift_flutter: ^0.2.7

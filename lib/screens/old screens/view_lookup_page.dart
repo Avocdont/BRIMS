@@ -1,9 +1,9 @@
 import 'package:brims/database/app_db.dart';
 import 'package:brims/provider/household%20providers/household_provider.dart';
 import 'package:brims/screens/add_person_page.dart';
-import 'package:brims/screens/household_lookups_page.dart';
-import 'package:brims/screens/medinfo_lookups_page.dart';
-import 'package:brims/screens/profile_lookups_page.dart';
+import 'package:brims/screens/old%20screens/household_lookups_page.dart';
+import 'package:brims/screens/old%20screens/medinfo_lookups_page.dart';
+import 'package:brims/screens/old%20screens/profile_lookups_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

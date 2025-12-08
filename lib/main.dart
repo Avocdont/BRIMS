@@ -5,8 +5,7 @@ import 'package:brims/provider/profiling%20providers/contact_info_provider.dart'
 import 'package:brims/provider/profiling%20providers/occupation_provider.dart';
 import 'package:brims/provider/profiling%20providers/person_provider.dart';
 import 'package:brims/provider/profiling%20providers/profile_lookup_provider.dart';
-import 'package:brims/screens/add_person_page.dart';
-import 'package:brims/screens/view_lookup_page.dart';
+import 'package:brims/screens/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as scn;
@@ -51,10 +50,10 @@ class MainApp extends StatelessWidget {
       ],
       child: scn.ShadcnApp(
         theme: scn.ThemeData(
-          colorScheme: scn.ColorSchemes.darkBlue(),
+          colorScheme: scn.ColorSchemes.darkGreen(),
           radius: 0.5,
         ),
-        home: ViewLookupPage(),
+        home: MainPage(),
       ),
     );
   }
