@@ -5,6 +5,7 @@ import 'package:brims/provider/profiling%20providers/contact_info_provider.dart'
 import 'package:brims/provider/profiling%20providers/occupation_provider.dart';
 import 'package:brims/provider/profiling%20providers/person_provider.dart';
 import 'package:brims/provider/profiling%20providers/profile_lookup_provider.dart';
+import 'package:brims/provider/profiling%20providers/profile_provider.dart';
 import 'package:brims/screens/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -46,6 +47,9 @@ class MainApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<ContactInfoProvider>(
           create: (_) => ContactInfoProvider(),
+        ),
+        ChangeNotifierProvider<ProfileProvider>(
+          create: (_) => ProfileProvider(),
         ),
       ],
       child: scn.ShadcnApp(

@@ -1,3 +1,4 @@
+import 'package:brims/screens/add_person_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -47,7 +48,12 @@ class _HomePageState extends State<HomePage> {
               color: Colors.white,
               margin: EdgeInsets.only(right: 40),
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddPersonPage()),
+                  );
+                },
                 child: Container(
                   width: 250,
                   height: 250,

@@ -26,8 +26,8 @@ class _AddPersonPageState extends State<AddPersonPage> {
   int? personId;
 
   // Insert to person table
-  TextEditingController _lastNameController = TextEditingController();
   TextEditingController _firstNameController = TextEditingController();
+  TextEditingController _lastNameController = TextEditingController();
   TextEditingController _middleNameController = TextEditingController();
   TextEditingController _suffixController = TextEditingController();
   TextEditingController _ageController = TextEditingController();
@@ -113,6 +113,32 @@ class _AddPersonPageState extends State<AddPersonPage> {
   DateTime? _issueDate;
 
   @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _middleNameController.dispose();
+    _suffixController.dispose();
+    _ageController.dispose();
+    _residencyYearsController.dispose();
+    _birthPlaceController.dispose();
+    _registrationPlaceController.dispose();
+    _zoneController.dispose();
+    _streetController.dispose();
+    _blockController.dispose();
+    _lotController.dispose();
+    _emailController.dispose();
+    _phoneNumberController.dispose();
+    _occupationController.dispose();
+    _placeOfVoteRegistryController.dispose();
+    _disabilityNameController.dispose();
+    _disabilityTypeController.dispose();
+    _enrolledAtController.dispose();
+    _issueNumController.dispose();
+    _placeOfIssueController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final personProvider = context.watch<PersonProvider>();
     final citizenRegistryProvider = context.watch<CitizenRegistryProvider>();
@@ -122,14 +148,15 @@ class _AddPersonPageState extends State<AddPersonPage> {
     final householdProvider = context.watch<HouseholdProvider>();
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text("Add Person"), centerTitle: true),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              Padding(
+              Container(
+                width: 1000,
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,7 +182,8 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   ],
                 ),
               ),
-              Padding(
+              Container(
+                width: 1000,
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,7 +209,8 @@ class _AddPersonPageState extends State<AddPersonPage> {
                 ),
               ),
 
-              Padding(
+              Container(
+                width: 1000,
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,7 +232,8 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   ],
                 ),
               ),
-              Padding(
+              Container(
+                width: 1000,
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,7 +255,8 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   ],
                 ),
               ),
-              Padding(
+              Container(
+                width: 1000,
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -247,7 +278,8 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   ],
                 ),
               ),
-              Padding(
+              Container(
+                width: 500,
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -292,6 +324,8 @@ class _AddPersonPageState extends State<AddPersonPage> {
 
               _isSeniorCitizen == true
                   ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text("Registered Senior Citizen?"),
                       RadioListTile<bool>(

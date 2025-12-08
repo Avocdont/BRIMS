@@ -32,87 +32,89 @@ class _HouseholdLookupsState extends State<HouseholdLookups> {
         builder: (_, lookupProvider, __) {
           return SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            child: Column(
-              children: [
-                // ------------ Building Types ------------
-                Text("Building Types").h4,
-                LookupTable<BuildingTypeData>(
-                  columns: ["Type"],
-                  items: lookupProvider.allBuildingTypes,
-                  buildRow: (item) => [item.type],
-                  onEdit: (item, newValues) {
-                    final companion = item.toCompanion(true);
-                    final updated = companion.copyWith(
-                      type: db.Value(newValues[0]),
-                    );
-                    lookupProvider.updateBuildingType(updated);
-                  },
-                  onDelete:
-                      (item) => lookupProvider.deleteBuildingType(
-                        item.building_type_id,
-                      ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder:
-                          (_) => AddLookup(
-                            columns: ['Type'],
-                            onInsert: (values) async {
-                              final companion = BuildingTypesCompanion(
-                                type: db.Value(values[0]),
-                              );
-                              await lookupProvider.addBuildingType(companion);
-                              setState(() {});
-                            },
-                          ),
-                    );
-                  },
-                  child: const Text("Add"),
-                ),
-                SizedBox(height: 15),
+            child: Center(
+              child: Column(
+                children: [
+                  // ------------ Building Types ------------
+                  Text("Building Types").h4,
+                  LookupTable<BuildingTypeData>(
+                    columns: ["Type"],
+                    items: lookupProvider.allBuildingTypes,
+                    buildRow: (item) => [item.type],
+                    onEdit: (item, newValues) {
+                      final companion = item.toCompanion(true);
+                      final updated = companion.copyWith(
+                        type: db.Value(newValues[0]),
+                      );
+                      lookupProvider.updateBuildingType(updated);
+                    },
+                    onDelete:
+                        (item) => lookupProvider.deleteBuildingType(
+                          item.building_type_id,
+                        ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder:
+                            (_) => AddLookup(
+                              columns: ['Type'],
+                              onInsert: (values) async {
+                                final companion = BuildingTypesCompanion(
+                                  type: db.Value(values[0]),
+                                );
+                                await lookupProvider.addBuildingType(companion);
+                                setState(() {});
+                              },
+                            ),
+                      );
+                    },
+                    child: const Text("Add"),
+                  ),
+                  SizedBox(height: 15),
 
-                // ------------ Relationship Types ------------
-                Text("Relationship Types").h4,
-                LookupTable<RelationshipTypeData>(
-                  columns: ["Relationship"],
-                  items: lookupProvider.allRelationshipTypes,
-                  buildRow: (item) => [item.relationship],
-                  onEdit: (item, newValues) {
-                    final companion = item.toCompanion(true);
-                    final updated = companion.copyWith(
-                      relationship: db.Value(newValues[0]),
-                    );
-                    lookupProvider.updateRelationshipType(updated);
-                  },
-                  onDelete:
-                      (item) => lookupProvider.deleteRelationshipType(
-                        item.relationship_id,
-                      ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder:
-                          (_) => AddLookup(
-                            columns: ['Relationship'],
-                            onInsert: (values) async {
-                              final companion = RelationshipTypesCompanion(
-                                relationship: db.Value(values[0]),
-                              );
-                              await lookupProvider.addRelationshipType(
-                                companion,
-                              );
-                              setState(() {});
-                            },
-                          ),
-                    );
-                  },
-                  child: const Text("Add"),
-                ),
-              ],
+                  // ------------ Relationship Types ------------
+                  Text("Relationship Types").h4,
+                  LookupTable<RelationshipTypeData>(
+                    columns: ["Relationship"],
+                    items: lookupProvider.allRelationshipTypes,
+                    buildRow: (item) => [item.relationship],
+                    onEdit: (item, newValues) {
+                      final companion = item.toCompanion(true);
+                      final updated = companion.copyWith(
+                        relationship: db.Value(newValues[0]),
+                      );
+                      lookupProvider.updateRelationshipType(updated);
+                    },
+                    onDelete:
+                        (item) => lookupProvider.deleteRelationshipType(
+                          item.relationship_id,
+                        ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder:
+                            (_) => AddLookup(
+                              columns: ['Relationship'],
+                              onInsert: (values) async {
+                                final companion = RelationshipTypesCompanion(
+                                  relationship: db.Value(values[0]),
+                                );
+                                await lookupProvider.addRelationshipType(
+                                  companion,
+                                );
+                                setState(() {});
+                              },
+                            ),
+                      );
+                    },
+                    child: const Text("Add"),
+                  ),
+                ],
+              ),
             ),
           );
         },
