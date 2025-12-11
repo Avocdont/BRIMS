@@ -1,3 +1,5 @@
+import 'package:brims/screens/add_address_page.dart';
+import 'package:brims/screens/add_household_page.dart';
 import 'package:brims/screens/add_person_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -77,9 +79,15 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Card(
+              margin: EdgeInsets.only(right: 40),
               color: Colors.white,
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddHouseholdPage()),
+                  );
+                },
                 child: Container(
                   width: 250,
                   height: 250,
@@ -91,6 +99,37 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(height: 16),
                       Text(
                         "Add Household",
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Card(
+              color: Colors.white,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddAddressPage()),
+                  );
+                },
+                child: Container(
+                  width: 250,
+                  height: 250,
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.add_location, size: 64, color: Colors.black),
+                      const SizedBox(height: 16),
+                      Text(
+                        "Add Address",
                         style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,

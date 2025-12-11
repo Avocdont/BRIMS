@@ -22,11 +22,13 @@ class HouseholdRepository {
 
   getHouseholdByID(int id) async {
     try {
-      return await (db.select(db.households)..where(
-        (household) => household.household_id.equals(
-          id,
-        ), // household here specifically is a row
-      )).getSingle(); // .. is a cascde operator
+      return await (db.select(db.households)
+            ..where(
+              (household) => household.household_id.equals(
+                id,
+              ), // household here specifically is a row
+            ))
+          .getSingle(); // .. is a cascde operator
     } catch (e) {
       log(e.toString());
     }
@@ -34,11 +36,13 @@ class HouseholdRepository {
 
   searchHouseholdHead(String lastName, String firstName) async {
     try {
-      return await (db.select(db.persons)..where(
-        (persons) =>
-            persons.last_name.equals(lastName) &
-            persons.first_name.equals(firstName),
-      )).getSingle(); // .. is a cascde operator
+      return await (db.select(db.persons)
+            ..where(
+              (persons) =>
+                  persons.last_name.equals(lastName) &
+                  persons.first_name.equals(firstName),
+            ))
+          .getSingle(); // .. is a cascde operator
     } catch (e) {
       log(e.toString());
     }
@@ -67,7 +71,8 @@ class HouseholdRepository {
   deleteHousehold(int id) async {
     try {
       return await (db.delete(db.households)
-        ..where((household) => household.household_id.equals(id))).go();
+            ..where((household) => household.household_id.equals(id)))
+          .go();
     } catch (e) {
       log(e.toString());
     }
@@ -86,7 +91,8 @@ class HouseholdRepository {
   getAddressByID(int id) async {
     try {
       return await (db.select(db.addresses)
-        ..where((address) => address.address_id.equals(id))).getSingle();
+            ..where((address) => address.address_id.equals(id)))
+          .getSingle();
     } catch (e) {
       log(e.toString());
     }
@@ -108,7 +114,8 @@ class HouseholdRepository {
   deleteAddress(int id) async {
     try {
       return await (db.delete(db.addresses)
-        ..where((address) => address.address_id.equals(id))).go();
+            ..where((address) => address.address_id.equals(id)))
+          .go();
     } catch (e) {
       log(e.toString());
     }
@@ -164,6 +171,7 @@ class HouseholdRepository {
         'householdId': household?.household_id, // null if no household
         'address': {
           // Use address.zone if not null, else empty string
+          'id': address.address_id,
           'zone': address.zone ?? '',
           'street': address.street ?? '',
           'block': address.block ?? '',
@@ -171,5 +179,295 @@ class HouseholdRepository {
         },
       };
     }).toList();
+  }
+  // ------------ Services ------------
+
+  Future<List<ServiceData>> allServices() async {
+    try {
+      return await db.select(db.services).get();
+    } catch (e) {
+      log(e.toString());
+      return [];
+    }
+  }
+
+  getServiceByID(int id) async {
+    try {
+      return await (db.select(db.services)
+            ..where((service) => service.service_id.equals(id)))
+          .getSingle();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  addService(ServicesCompanion sc) async {
+    try {
+      return await db.into(db.services).insert(sc);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  updateService(ServicesCompanion sc) async {
+    try {
+      return await db.update(db.services).replace(sc);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  deleteService(int id) async {
+    try {
+      return await (db.delete(db.services)
+            ..where((service) => service.service_id.equals(id)))
+          .go();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  // ------------ Primary Needs ------------
+
+  Future<List<PrimaryNeedData>> allPrimaryNeeds() async {
+    try {
+      return await db.select(db.primaryNeeds).get();
+    } catch (e) {
+      log(e.toString());
+      return [];
+    }
+  }
+
+  getPrimaryNeedByID(int id) async {
+    try {
+      return await (db.select(db.primaryNeeds)
+            ..where((need) => need.primary_need_id.equals(id)))
+          .getSingle();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  addPrimaryNeed(PrimaryNeedsCompanion pnc) async {
+    try {
+      return await db.into(db.primaryNeeds).insert(pnc);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  updatePrimaryNeed(PrimaryNeedsCompanion pnc) async {
+    try {
+      return await db.update(db.primaryNeeds).replace(pnc);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  deletePrimaryNeed(int id) async {
+    try {
+      return await (db.delete(db.primaryNeeds)
+            ..where((need) => need.primary_need_id.equals(id)))
+          .go();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  // ------------ Female Mortalities ------------
+
+  Future<List<FemaleMortalityData>> allFemaleMortalities() async {
+    try {
+      return await db.select(db.femaleMortalities).get();
+    } catch (e) {
+      log(e.toString());
+      return [];
+    }
+  }
+
+  getFemaleMortalityByID(int id) async {
+    try {
+      return await (db.select(db.femaleMortalities)
+            ..where((fm) => fm.female_mortality_id.equals(id)))
+          .getSingle();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  addFemaleMortality(FemaleMortalitiesCompanion fmc) async {
+    try {
+      return await db.into(db.femaleMortalities).insert(fmc);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  updateFemaleMortality(FemaleMortalitiesCompanion fmc) async {
+    try {
+      return await db.update(db.femaleMortalities).replace(fmc);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  deleteFemaleMortality(int id) async {
+    try {
+      return await (db.delete(db.femaleMortalities)
+            ..where((fm) => fm.female_mortality_id.equals(id)))
+          .go();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  // ------------ Child Mortalities ------------
+
+  Future<List<ChildMortalityData>> allChildMortalities() async {
+    try {
+      return await db.select(db.childMortalities).get();
+    } catch (e) {
+      log(e.toString());
+      return [];
+    }
+  }
+
+  getChildMortalityByID(int id) async {
+    try {
+      return await (db.select(db.childMortalities)
+            ..where((cm) => cm.child_mortality_id.equals(id)))
+          .getSingle();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  addChildMortality(ChildMortalitiesCompanion cmc) async {
+    try {
+      return await db.into(db.childMortalities).insert(cmc);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  updateChildMortality(ChildMortalitiesCompanion cmc) async {
+    try {
+      return await db.update(db.childMortalities).replace(cmc);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  deleteChildMortality(int id) async {
+    try {
+      return await (db.delete(db.childMortalities)
+            ..where((cm) => cm.child_mortality_id.equals(id)))
+          .go();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  // ------------ Future Residencies ------------
+
+  Future<List<FutureResidency>> allFutureResidencies() async {
+    try {
+      return await db.select(db.futureResidencies).get();
+    } catch (e) {
+      log(e.toString());
+      return [];
+    }
+  }
+
+  getFutureResidencyByID(int id) async {
+    try {
+      return await (db.select(db.futureResidencies)
+            ..where((fr) => fr.future_residency_id.equals(id)))
+          .getSingle();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  addFutureResidency(FutureResidenciesCompanion frc) async {
+    try {
+      return await db.into(db.futureResidencies).insert(frc);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  updateFutureResidency(FutureResidenciesCompanion frc) async {
+    try {
+      return await db.update(db.futureResidencies).replace(frc);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  deleteFutureResidency(int id) async {
+    try {
+      return await (db.delete(db.futureResidencies)
+            ..where((fr) => fr.future_residency_id.equals(id)))
+          .go();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<List<HouseholdVisitData>> allHouseholdVisits() async {
+    try {
+      return await db.select(db.householdVisits).get();
+    } catch (e) {
+      log(e.toString());
+
+      return [];
+    }
+  }
+
+  getHouseholdVisitByID(int id) async {
+    try {
+      return await (db.select(db.householdVisits)
+            ..where((visit) => visit.household_visit_id.equals(id)))
+          .getSingle();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  addHouseholdVisit(HouseholdVisitsCompanion hvc) async {
+    try {
+      return await db.into(db.householdVisits).insert(hvc);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  updateHouseholdVisit(HouseholdVisitsCompanion hvc) async {
+    try {
+      return await db.update(db.householdVisits).replace(hvc);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  deleteHouseholdVisit(int id) async {
+    try {
+      return await (db.delete(db.householdVisits)
+            ..where((visit) => visit.household_visit_id.equals(id)))
+          .go();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<void> addHouseholdMember(HouseholdMembersCompanion hmc) async {
+    await db.into(db.householdMembers).insert(hmc);
+  }
+
+  Future<void> addHouseholdRelationship(
+    HouseholdRelationshipsCompanion hrc,
+  ) async {
+    await db.into(db.householdRelationships).insert(hrc);
   }
 }

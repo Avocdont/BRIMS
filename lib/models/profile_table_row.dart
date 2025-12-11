@@ -1,5 +1,3 @@
-// lib/models/profile_table_row.dart
-
 import 'package:brims/database/tables/enums.dart';
 
 class ProfileTableRow {
@@ -9,15 +7,18 @@ class ProfileTableRow {
   final Sex? sex;
   final CivilStatus? civilStatus;
   final String address;
-
-  // Added the raw ID for navigation logic
   final int? householdId;
-  // Kept the string for easy display
   final String householdInfo;
-
-  final String occupation;
+  // Removed Occupation
   final String contactNumber;
   final RegistrationStatus registrationStatus;
+
+  // New optional fields for dynamic columns
+  final String? nationality;
+  final String? ethnicity;
+  final String? religion;
+  final String? education;
+  final String? bloodType;
 
   ProfileTableRow({
     required this.personId,
@@ -28,8 +29,12 @@ class ProfileTableRow {
     required this.address,
     this.householdId,
     required this.householdInfo,
-    required this.occupation,
     required this.contactNumber,
     required this.registrationStatus,
+    this.nationality,
+    this.ethnicity,
+    this.religion,
+    this.education,
+    this.bloodType,
   });
 }

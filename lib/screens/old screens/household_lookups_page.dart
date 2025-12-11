@@ -3,7 +3,7 @@ import 'package:brims/provider/household%20providers/household_lookup_provider.d
 import 'package:brims/screens/components/add_lookup.dart';
 import 'package:brims/screens/components/lookup_table.dart';
 import 'package:drift/drift.dart' as db;
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide RadioGroup;
 import 'package:provider/provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as scn;
 

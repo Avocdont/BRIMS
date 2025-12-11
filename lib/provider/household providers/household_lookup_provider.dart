@@ -70,4 +70,9 @@ class HouseholdLookupProvider extends ChangeNotifier {
     await _lookupRepository.deleteRelationshipType(id);
     await getAllRelationshipTypes();
   }
+
+  // ------------ Convenience Getters ------------
+
+  List<BuildingTypeData> get buildingTypes => _currentBuildingTypes;
+  List<RelationshipTypeData> get relationshipTypes => _currentRelationshipTypes;
 }

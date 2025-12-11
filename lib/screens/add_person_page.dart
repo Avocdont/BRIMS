@@ -25,6 +25,15 @@ class _AddPersonPageState extends State<AddPersonPage> {
 
   int? personId;
 
+  // --- 1. Capitalization Helper ---
+  String _capitalize(String input) {
+    if (input.isEmpty) return input;
+    return input.split(' ').map((word) {
+      if (word.isEmpty) return '';
+      return '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
+    }).join(' ');
+  }
+
   // Insert to person table
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
@@ -69,10 +78,11 @@ class _AddPersonPageState extends State<AddPersonPage> {
   TextEditingController _blockController = TextEditingController();
   TextEditingController _lotController = TextEditingController();
 
-  String? _newZone;
-  String? _newStreet;
-  String? _newBlock;
-  String? _newLot;
+  int? _addressId;
+  String? _Zone;
+  String? _Street;
+  String? _Block;
+  String? _Lot;
 
   // Insert to email table
   final _emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
@@ -171,7 +181,6 @@ class _AddPersonPageState extends State<AddPersonPage> {
                           return "Last name cannot contain numbers";
                         }
                       },
-
                       controller: _lastNameController,
                       decoration: InputDecoration(
                         hintText: "Enter the last name here",
@@ -208,7 +217,6 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   ],
                 ),
               ),
-
               Container(
                 width: 1000,
                 padding: const EdgeInsets.all(8.0),
@@ -308,9 +316,9 @@ class _AddPersonPageState extends State<AddPersonPage> {
                       ),
                       onChanged: (text) {
                         setState(() {
-                          int? _checkAge = int.tryParse(text);
+                          _checkAge = int.tryParse(text);
 
-                          if (_checkAge != null && _checkAge >= 60) {
+                          if (_checkAge != null && _checkAge! >= 60) {
                             _isSeniorCitizen = true;
                           } else {
                             _isSeniorCitizen = false;
@@ -321,37 +329,35 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   ],
                 ),
               ),
-
               _isSeniorCitizen == true
                   ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text("Registered Senior Citizen?"),
-                      RadioListTile<bool>(
-                        title: Text("Yes"),
-                        value: true,
-                        groupValue: _registeredSeniorCitizen,
-                        onChanged: (value) {
-                          setState(() {
-                            _registeredSeniorCitizen = value!;
-                          });
-                        },
-                      ),
-                      RadioListTile<bool>(
-                        title: Text("No"),
-                        value: false,
-                        groupValue: _registeredSeniorCitizen,
-                        onChanged: (value) {
-                          setState(() {
-                            _registeredSeniorCitizen = value!;
-                          });
-                        },
-                      ),
-                    ],
-                  )
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("Registered Senior Citizen?"),
+                        RadioListTile<bool>(
+                          title: Text("Yes"),
+                          value: true,
+                          groupValue: _registeredSeniorCitizen,
+                          onChanged: (value) {
+                            setState(() {
+                              _registeredSeniorCitizen = value!;
+                            });
+                          },
+                        ),
+                        RadioListTile<bool>(
+                          title: Text("No"),
+                          value: false,
+                          groupValue: _registeredSeniorCitizen,
+                          onChanged: (value) {
+                            setState(() {
+                              _registeredSeniorCitizen = value!;
+                            });
+                          },
+                        ),
+                      ],
+                    )
                   : SizedBox.shrink(),
-
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -377,149 +383,197 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Search for an address"),
-                    TextFormField(
-                      controller: _zoneController,
-                      decoration: InputDecoration(
-                        label: Text("Zone"),
-                        hintText: "Enter the zone here",
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    TextFormField(
-                      controller: _streetController,
-                      decoration: InputDecoration(
-                        label: Text("Street"),
-                        hintText: "Enter the street here",
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    TextFormField(
-                      controller: _blockController,
-                      decoration: InputDecoration(
-                        label: Text("Block"),
-                        hintText: "Enter the block here",
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    TextFormField(
-                      controller: _lotController,
-                      decoration: InputDecoration(
-                        label: Text("Lot"),
-                        hintText: "Enter the lot here",
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        final results = await householdProvider.searchAddresses(
-                          zone:
-                              _zoneController.text != ""
-                                  ? _zoneController.text
-                                  : null,
-                          street:
-                              _streetController.text != ""
-                                  ? _streetController.text
-                                  : null,
-                          block:
-                              _blockController.text != ""
-                                  ? _blockController.text
-                                  : null,
-                          lot:
-                              _lotController.text != ""
-                                  ? _lotController.text
-                                  : null,
-                        );
-                        setState(() {
-                          _searchedAddress = results;
-                          if (_searchedAddress.isEmpty) {
-                            _noResults = true;
-                          }
-                        });
-                      },
-                      child: Text("Search"),
-                    ),
-                    if (_noResults == true && _searchedAddress.isEmpty) ...[
-                      Text("No results. Set this as the address?"),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            if (_zoneController.text != "") {
-                              _newZone = _zoneController.text;
-                            }
-                            if (_streetController.text != "") {
-                              _newStreet = _streetController.text;
-                            }
-                            if (_blockController.text != "") {
-                              _newBlock = _blockController.text;
-                            }
-                            if (_lotController.text != "") {
-                              _newLot = _lotController.text;
-                            }
-                            _noResults = false;
-                          });
-                        },
-                        child: Text("Yes"),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _noResults = false;
-                          });
-                        },
-                        child: Text("No"),
-                      ),
-                    ] else if (_noResults == false &&
-                        _searchedAddress.isNotEmpty) ...[
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              const Text("Address Information",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+
+              Row(
+                children: [
+                  Expanded(
+                      child: TextFormField(
+                          controller: _zoneController,
+                          decoration: const InputDecoration(
+                              labelText: "Zone",
+                              border: OutlineInputBorder()))),
+                  const SizedBox(width: 5),
+                  Expanded(
+                      child: TextFormField(
+                          controller: _streetController,
+                          decoration: const InputDecoration(
+                              labelText: "Street",
+                              border: OutlineInputBorder()))),
+                ],
+              ),
+              const SizedBox(height: 5),
+              Row(
+                children: [
+                  Expanded(
+                      child: TextFormField(
+                          controller: _blockController,
+                          decoration: const InputDecoration(
+                              labelText: "Block",
+                              border: OutlineInputBorder()))),
+                  const SizedBox(width: 5),
+                  Expanded(
+                      child: TextFormField(
+                          controller: _lotController,
+                          decoration: const InputDecoration(
+                              labelText: "Lot", border: OutlineInputBorder()))),
+                ],
+              ),
+
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () async {
+                  // Force a reset first so the UI clears old state
+                  setState(() {
+                    _searchedAddress = [];
+                    _noResults = false;
+                    _addressId = null;
+                  });
+
+                  final results = await householdProvider.searchAddresses(
+                    zone: _zoneController.text.isNotEmpty
+                        ? _zoneController.text
+                        : null,
+                    street: _streetController.text.isNotEmpty
+                        ? _streetController.text
+                        : null,
+                    block: _blockController.text.isNotEmpty
+                        ? _blockController.text
+                        : null,
+                    lot: _lotController.text.isNotEmpty
+                        ? _lotController.text
+                        : null,
+                  );
+
+                  setState(() {
+                    _searchedAddress = results;
+                    _noResults = results.isEmpty;
+                  });
+                },
+                child: const Text("Search Address"),
+              ),
+
+// --- SEARCH RESULTS DISPLAY ---
+
+// CASE 1: No Results Found -> Offer to Create New
+              if (_noResults)
+                Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  padding: const EdgeInsets.all(10),
+                  color: Colors.orange.shade100,
+                  child: Column(
+                    children: [
+                      const Text(
+                          "No address found. Use entered data as new address?"),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Zone: ${_searchedAddress[0]["zone"]}"),
-                          Text("Street: ${_searchedAddress[0]["street"]}"),
-                          Text("Block: ${_searchedAddress[0]["block"]}"),
-                          Text("Lot: ${_searchedAddress[0]["lot"]}"),
-                          Text("Set this as the address?"),
                           ElevatedButton(
-                            onPressed: () {
-                              setState(() async {
-                                if (_zoneController.text != "") {
-                                  _newZone = _zoneController.text;
-                                }
-                                if (_streetController.text != "") {
-                                  _newStreet = _streetController.text;
-                                }
-                                if (_blockController.text != "") {
-                                  _newBlock = _blockController.text;
-                                }
-                                if (_lotController.text != "") {
-                                  _newLot = _lotController.text;
-                                }
-                                _noResults = false;
-                              });
-                            },
-                            child: Text("Yes"),
-                          ),
+                              onPressed: () {
+                                setState(() {
+                                  // 1. Save values to the variables used by "Save Record"
+                                  _Zone = _zoneController.text;
+                                  _Street = _streetController.text;
+                                  _Block = _blockController.text;
+                                  _Lot = _lotController.text;
+
+                                  // 2. Ensure we aren't using an existing ID
+                                  _addressId = null;
+
+                                  // 3. Clear the search UI so user knows it's "set"
+                                  _noResults = false;
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            "New Address Set. You can now save the record.")),
+                                  );
+                                });
+                              },
+                              child: const Text("Yes")),
+                          const SizedBox(width: 10),
                           ElevatedButton(
                             onPressed: () {
                               setState(() {
-                                _noResults = true;
+                                // User rejected creating new. Just hide the prompt.
+                                _noResults = false;
                               });
                             },
-                            child: Text("No"),
+                            child: const Text("No"),
                           ),
                         ],
-                      ),
+                      )
                     ],
-                  ],
-                ),
-              ),
+                  ),
+                )
 
+// CASE 2: Results Found -> Offer to Select
+              else if (_searchedAddress.isNotEmpty)
+                Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  padding: const EdgeInsets.all(10),
+                  decoration:
+                      BoxDecoration(border: Border.all(color: Colors.grey)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Address Found:",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      // Accessing the nested 'address' map
+                      Text("Zone: ${_searchedAddress[0]['address']['zone']}"),
+                      Text(
+                          "Street: ${_searchedAddress[0]['address']['street']}"),
+                      Text("Block: ${_searchedAddress[0]['address']['block']}"),
+                      Text("Lot: ${_searchedAddress[0]['address']['lot']}"),
+
+                      const SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            // 1. SET THE EXISTING ID
+                            _addressId = _searchedAddress[0]['address']['id'];
+
+                            // 2. Clear "new" variables to prevent accidental creation
+                            _Zone = null;
+                            _Street = null;
+                            _Block = null;
+                            _Lot = null;
+
+                            // 3. Auto-fill controllers to show user what they picked
+                            final addr = _searchedAddress[0]['address'];
+                            _zoneController.text = addr['zone'];
+                            _streetController.text = addr['street'];
+                            _blockController.text = addr['block'];
+                            _lotController.text = addr['lot'];
+
+                            // 4. Hide the results list since we picked one
+                            _searchedAddress = [];
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("Existing Address Selected")),
+                            );
+                          });
+                        },
+                        child: const Text("Use This Address"),
+                      ),
+
+                      // Optional: "Cancel / Clear Search" button
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _searchedAddress = [];
+                          });
+                        },
+                        child: const Text("Cancel Search",
+                            style: TextStyle(color: Colors.red)),
+                      )
+                    ],
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -557,24 +611,21 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   }),
                 ],
               ),
-
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Religion"),
                   DropdownButtonFormField<int>(
                     value: _selectedReligionId,
-                    items:
-                        profileLookupProvder.allReligions.map((religion) {
-                          return DropdownMenuItem<int>(
-                            value:
-                                religion
-                                    .religion_id, // the id goes into person table
-                            child: Text(
-                              religion.name,
-                            ), // name displayed to user
-                          );
-                        }).toList(),
+                    items: profileLookupProvder.allReligions.map((religion) {
+                      return DropdownMenuItem<int>(
+                        value: religion
+                            .religion_id, // the id goes into person table
+                        child: Text(
+                          religion.name,
+                        ), // name displayed to user
+                      );
+                    }).toList(),
                     onChanged: (value) {
                       setState(() {
                         _selectedReligionId = value;
@@ -590,19 +641,17 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   Text("Nationality"),
                   DropdownButtonFormField<int>(
                     value: _selectedNationalityId,
-                    items:
-                        profileLookupProvder.allNationalities.map((
-                          nationality,
-                        ) {
-                          return DropdownMenuItem<int>(
-                            value:
-                                nationality
-                                    .nationality_id, // the id goes into person table
-                            child: Text(
-                              nationality.name,
-                            ), // name displayed to user
-                          );
-                        }).toList(),
+                    items: profileLookupProvder.allNationalities.map((
+                      nationality,
+                    ) {
+                      return DropdownMenuItem<int>(
+                        value: nationality
+                            .nationality_id, // the id goes into person table
+                        child: Text(
+                          nationality.name,
+                        ), // name displayed to user
+                      );
+                    }).toList(),
                     onChanged: (value) {
                       setState(() {
                         _selectedNationalityId = value;
@@ -618,17 +667,15 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   Text("Ethnicity"),
                   DropdownButtonFormField<int>(
                     value: _selectedEthnicityId,
-                    items:
-                        profileLookupProvder.allEthnicities.map((ethnicity) {
-                          return DropdownMenuItem<int>(
-                            value:
-                                ethnicity
-                                    .ethnicity_id, // the id goes into person table
-                            child: Text(
-                              ethnicity.name,
-                            ), // name displayed to user
-                          );
-                        }).toList(),
+                    items: profileLookupProvder.allEthnicities.map((ethnicity) {
+                      return DropdownMenuItem<int>(
+                        value: ethnicity
+                            .ethnicity_id, // the id goes into person table
+                        child: Text(
+                          ethnicity.name,
+                        ), // name displayed to user
+                      );
+                    }).toList(),
                     onChanged: (value) {
                       setState(() {
                         _selectedEthnicityId = value;
@@ -644,17 +691,15 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   Text("Blood Type"),
                   DropdownButtonFormField<int>(
                     value: _selectedBloodTypeId,
-                    items:
-                        profileLookupProvder.allBloodTypes.map((bloodType) {
-                          return DropdownMenuItem<int>(
-                            value:
-                                bloodType
-                                    .blood_type_id, // the id goes into person table
-                            child: Text(
-                              bloodType.type,
-                            ), // name displayed to user
-                          );
-                        }).toList(),
+                    items: profileLookupProvder.allBloodTypes.map((bloodType) {
+                      return DropdownMenuItem<int>(
+                        value: bloodType
+                            .blood_type_id, // the id goes into person table
+                        child: Text(
+                          bloodType.type,
+                        ), // name displayed to user
+                      );
+                    }).toList(),
                     onChanged: (value) {
                       setState(() {
                         _selectedBloodTypeId = value;
@@ -763,19 +808,17 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   Text("Monthly Income"),
                   DropdownButtonFormField<int>(
                     value: _selectedMonthlyIncomeId,
-                    items:
-                        profileLookupProvder.allMonthlyIncomes.map((
-                          monthlyIncome,
-                        ) {
-                          return DropdownMenuItem<int>(
-                            value:
-                                monthlyIncome
-                                    .monthly_income_id, // the id goes into person table
-                            child: Text(
-                              monthlyIncome.range,
-                            ), // name displayed to user
-                          );
-                        }).toList(),
+                    items: profileLookupProvder.allMonthlyIncomes.map((
+                      monthlyIncome,
+                    ) {
+                      return DropdownMenuItem<int>(
+                        value: monthlyIncome
+                            .monthly_income_id, // the id goes into person table
+                        child: Text(
+                          monthlyIncome.range,
+                        ), // name displayed to user
+                      );
+                    }).toList(),
                     onChanged: (value) {
                       setState(() {
                         _selectedMonthlyIncomeId = value;
@@ -793,15 +836,14 @@ class _AddPersonPageState extends State<AddPersonPage> {
                     value: _selectedDailyIncomeId,
                     items:
                         profileLookupProvder.allDailyIncomes.map((dailyIncome) {
-                          return DropdownMenuItem<int>(
-                            value:
-                                dailyIncome
-                                    .daily_income_id, // the id goes into person table
-                            child: Text(
-                              dailyIncome.range,
-                            ), // name displayed to user
-                          );
-                        }).toList(),
+                      return DropdownMenuItem<int>(
+                        value: dailyIncome
+                            .daily_income_id, // the id goes into person table
+                        child: Text(
+                          dailyIncome.range,
+                        ), // name displayed to user
+                      );
+                    }).toList(),
                     onChanged: (value) {
                       setState(() {
                         _selectedDailyIncomeId = value;
@@ -863,7 +905,6 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   ],
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -924,27 +965,27 @@ class _AddPersonPageState extends State<AddPersonPage> {
               ),
               _selectedPwd == true
                   ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Name of Disability:"),
-                        TextFormField(
-                          controller: _disabilityNameController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Name of Disability:"),
+                          TextFormField(
+                            controller: _disabilityNameController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                            ),
                           ),
-                        ),
-                        Text("Type of Disability:"),
-                        TextFormField(
-                          controller: _disabilityTypeController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                          Text("Type of Disability:"),
+                          TextFormField(
+                            controller: _disabilityTypeController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )
+                        ],
+                      ),
+                    )
                   : SizedBox.shrink(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -977,40 +1018,37 @@ class _AddPersonPageState extends State<AddPersonPage> {
               ),
               _selectedRegisteredVoter == true
                   ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Place of Vote Registry:"),
-                        TextFormField(
-                          controller: _placeOfVoteRegistryController,
-                          decoration: InputDecoration(
-                            hintText: "Enter the place of vote registry here",
-                            border: OutlineInputBorder(),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Place of Vote Registry:"),
+                          TextFormField(
+                            controller: _placeOfVoteRegistryController,
+                            decoration: InputDecoration(
+                              hintText: "Enter the place of vote registry here",
+                              border: OutlineInputBorder(),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )
+                        ],
+                      ),
+                    )
                   : SizedBox.shrink(),
-
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Education"),
                   DropdownButtonFormField<int>(
                     value: _selectedEducationId,
-                    items:
-                        profileLookupProvder.allEducation.map((education) {
-                          return DropdownMenuItem<int>(
-                            value:
-                                education
-                                    .education_id, // the id goes into person table
-                            child: Text(
-                              education.level,
-                            ), // name displayed to user
-                          );
-                        }).toList(),
+                    items: profileLookupProvder.allEducation.map((education) {
+                      return DropdownMenuItem<int>(
+                        value: education
+                            .education_id, // the id goes into person table
+                        child: Text(
+                          education.level,
+                        ), // name displayed to user
+                      );
+                    }).toList(),
                     onChanged: (value) {
                       setState(() {
                         _selectedEducationId = value;
@@ -1043,25 +1081,23 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   ],
                 ),
               ),
-
               _selectedCurrentlyEnrolled != CurrentlyEnrolled.no
                   ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Enter school enrolled in:"),
-                        TextFormField(
-                          controller: _enrolledAtController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Enter school enrolled in:"),
+                          TextFormField(
+                            controller: _enrolledAtController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )
+                        ],
+                      ),
+                    )
                   : SizedBox.shrink(),
-
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -1093,32 +1129,31 @@ class _AddPersonPageState extends State<AddPersonPage> {
               ),
               _selectedDeceased == true
                   ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Date of Death:"),
-                        scn.DatePicker(
-                          value: _deathDate,
-                          mode: scn.PromptMode.popover,
-                          // Disable selecting dates after "today".
-                          stateBuilder: (date) {
-                            if (date.isAfter(DateTime.now())) {
-                              return scn.DateState.disabled;
-                            }
-                            return scn.DateState.enabled;
-                          },
-                          onChanged: (value) {
-                            setState(() {
-                              _deathDate = value;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  )
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Date of Death:"),
+                          scn.DatePicker(
+                            value: _deathDate,
+                            mode: scn.PromptMode.popover,
+                            // Disable selecting dates after "today".
+                            stateBuilder: (date) {
+                              if (date.isAfter(DateTime.now())) {
+                                return scn.DateState.disabled;
+                              }
+                              return scn.DateState.enabled;
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                _deathDate = value;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    )
                   : SizedBox.shrink(),
-
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -1199,47 +1234,47 @@ class _AddPersonPageState extends State<AddPersonPage> {
               ),
               _hasOccupation == true
                   ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Occupation:"),
-                        TextFormField(
-                          controller: _occupationController,
-                          decoration: InputDecoration(
-                            hintText: "Enter occupation here",
-                            border: OutlineInputBorder(),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Occupation:"),
+                          TextFormField(
+                            controller: _occupationController,
+                            decoration: InputDecoration(
+                              hintText: "Enter occupation here",
+                              border: OutlineInputBorder(),
+                            ),
                           ),
-                        ),
-                        Text("Occupation Status:"),
-                        ...OccupationStatus.values.map((val) {
-                          return RadioListTile<OccupationStatus>(
-                            title: Text(val.label),
-                            value: val,
-                            groupValue: _selectedOccupationStatus,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedOccupationStatus = value;
-                              });
-                            },
-                          );
-                        }),
-                        Text("Occupation Type:"),
-                        ...OccupationType.values.map((val) {
-                          return RadioListTile<OccupationType>(
-                            title: Text(val.label),
-                            value: val,
-                            groupValue: _selectedOccupationType,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedOccupationType = value;
-                              });
-                            },
-                          );
-                        }),
-                      ],
-                    ),
-                  )
+                          Text("Occupation Status:"),
+                          ...OccupationStatus.values.map((val) {
+                            return RadioListTile<OccupationStatus>(
+                              title: Text(val.label),
+                              value: val,
+                              groupValue: _selectedOccupationStatus,
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedOccupationStatus = value;
+                                });
+                              },
+                            );
+                          }),
+                          Text("Occupation Type:"),
+                          ...OccupationType.values.map((val) {
+                            return RadioListTile<OccupationType>(
+                              title: Text(val.label),
+                              value: val,
+                              groupValue: _selectedOccupationType,
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedOccupationType = value;
+                                });
+                              },
+                            );
+                          }),
+                        ],
+                      ),
+                    )
                   : SizedBox.shrink(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -1345,64 +1380,59 @@ class _AddPersonPageState extends State<AddPersonPage> {
                     return; // stop submit
                   }
                   if (_formKey.currentState!.validate()) {
-                    final addressCompanion = AddressesCompanion(
-                      zone:
-                          _newZone != null && _newZone != ""
-                              ? db.Value(_newZone)
-                              : db.Value.absent(),
-                      street:
-                          _newStreet != null && _newStreet != ""
-                              ? db.Value(_newStreet)
-                              : db.Value.absent(),
-                      block:
-                          _newBlock != null && _newBlock != ""
-                              ? db.Value(_newBlock)
-                              : db.Value.absent(),
-                      lot:
-                          _newLot != null && _newLot != ""
-                              ? db.Value(_newLot)
-                              : db.Value.absent(),
-                    );
-
-                    final hasAddress =
-                        addressCompanion.zone.present ||
-                        addressCompanion.street.present ||
-                        addressCompanion.block.present ||
-                        addressCompanion.lot.present;
-                    int? _addressId;
-                    if (hasAddress) {
-                      _addressId = await householdProvider.addAddress(
-                        addressCompanion,
+                    if (_addressId == null) {
+                      final addressCompanion = AddressesCompanion(
+                        zone: _Zone != null && _Zone != ""
+                            ? db.Value(_Zone)
+                            : db.Value.absent(),
+                        street: _Street != null && _Street != ""
+                            ? db.Value(_Street)
+                            : db.Value.absent(),
+                        block: _Block != null && _Block != ""
+                            ? db.Value(_Block)
+                            : db.Value.absent(),
+                        lot: _Lot != null && _Lot != ""
+                            ? db.Value(_Lot)
+                            : db.Value.absent(),
                       );
+
+                      final hasAddress = addressCompanion.zone.present ||
+                          addressCompanion.street.present ||
+                          addressCompanion.block.present ||
+                          addressCompanion.lot.present;
+
+                      if (hasAddress) {
+                        _addressId = await householdProvider.addAddress(
+                          addressCompanion,
+                        );
+                      }
                     }
 
                     final personCompanion = PersonsCompanion(
-                      last_name: db.Value(_lastNameController.text),
-                      first_name: db.Value(_firstNameController.text),
-                      middle_name:
-                          _middleNameController.text.isNotEmpty
-                              ? db.Value(_middleNameController.text)
-                              : db.Value.absent(),
-                      suffix:
-                          _suffixController.text.isNotEmpty
-                              ? db.Value(_suffixController.text)
-                              : db.Value.absent(),
-                      sex:
-                          _selectedSex != null
-                              ? db.Value(_selectedSex)
-                              : db.Value.absent(),
-                      age:
-                          _checkAge != null
-                              ? db.Value(_checkAge)
-                              : db.Value.absent(),
-                      birth_date:
-                          _birthDate != null
-                              ? db.Value(_birthDate)
-                              : db.Value.absent(),
-                      birth_place:
-                          _birthPlaceController.text.isNotEmpty
-                              ? db.Value(_birthPlaceController.text)
-                              : db.Value.absent(),
+                      last_name:
+                          db.Value(_capitalize(_lastNameController.text)),
+                      first_name:
+                          db.Value(_capitalize(_firstNameController.text)),
+
+                      // Handle Optional Middle Name Capitalization
+                      middle_name: _middleNameController.text.isNotEmpty
+                          ? db.Value(_capitalize(_middleNameController.text))
+                          : const db.Value.absent(),
+                      suffix: _suffixController.text.isNotEmpty
+                          ? db.Value(_suffixController.text)
+                          : db.Value.absent(),
+                      sex: _selectedSex != null
+                          ? db.Value(_selectedSex)
+                          : db.Value.absent(),
+                      age: _checkAge != null
+                          ? db.Value(_checkAge)
+                          : db.Value.absent(),
+                      birth_date: _birthDate != null
+                          ? db.Value(_birthDate)
+                          : db.Value.absent(),
+                      birth_place: _birthPlaceController.text.isNotEmpty
+                          ? db.Value(_birthPlaceController.text)
+                          : db.Value.absent(),
                       civil_status: // Enum
                           _selectedCivilStatus != null
                               ? db.Value(_selectedCivilStatus)
@@ -1411,83 +1441,64 @@ class _AddPersonPageState extends State<AddPersonPage> {
                           _selectedNationalityId != null
                               ? db.Value(_selectedNationalityId)
                               : db.Value.absent(),
-                      religion_id:
-                          _selectedReligionId != null
-                              ? db.Value(_selectedReligionId)
-                              : db.Value.absent(),
-                      ethnicity_id:
-                          _selectedEthnicityId != null
-                              ? db.Value(_selectedEthnicityId)
-                              : db.Value.absent(),
-                      blood_type_id:
-                          _selectedBloodTypeId != null
-                              ? db.Value(_selectedBloodTypeId)
-                              : db.Value.absent(),
-                      address_id:
-                          _addressId != null
-                              ? db.Value(_addressId)
-                              : db.Value.absent(),
+                      religion_id: _selectedReligionId != null
+                          ? db.Value(_selectedReligionId)
+                          : db.Value.absent(),
+                      ethnicity_id: _selectedEthnicityId != null
+                          ? db.Value(_selectedEthnicityId)
+                          : db.Value.absent(),
+                      blood_type_id: _selectedBloodTypeId != null
+                          ? db.Value(_selectedBloodTypeId)
+                          : db.Value.absent(),
+                      address_id: _addressId != null
+                          ? db.Value(_addressId)
+                          : db.Value.absent(),
                       registration_place:
                           _registrationPlaceController.text.isNotEmpty
                               ? db.Value(_registrationPlaceController.text)
                               : db.Value.absent(),
-                      residency:
-                          _selectedResidency != null
-                              ? db.Value(_selectedResidency)
-                              : db.Value.absent(),
-                      years_of_residency:
-                          _yearsOfResidency != null
-                              ? db.Value(_yearsOfResidency)
-                              : db.Value.absent(),
-                      transient_type:
-                          _selectedTransient != null
-                              ? db.Value(_selectedTransient)
-                              : db.Value.absent(),
-                      monthly_income_id:
-                          _selectedMonthlyIncomeId != null
-                              ? db.Value(_selectedMonthlyIncomeId)
-                              : db.Value.absent(),
-                      daily_income_id:
-                          _selectedDailyIncomeId != null
-                              ? db.Value(_selectedDailyIncomeId)
-                              : db.Value.absent(),
-                      solo_parent:
-                          _selectedSoloParent != null
-                              ? db.Value(_selectedSoloParent)
-                              : db.Value.absent(),
-                      ofw:
-                          _selectedOfw != null
-                              ? db.Value(_selectedOfw)
-                              : db.Value.absent(),
-                      literate:
-                          _selectedLiterate != null
-                              ? db.Value(_selectedLiterate)
-                              : db.Value.absent(),
-                      pwd:
-                          _selectedPwd != null
-                              ? db.Value(_selectedPwd)
-                              : db.Value.absent(),
-
-                      registered_voter:
-                          _selectedRegisteredVoter != null
-                              ? db.Value(_selectedRegisteredVoter)
-                              : db.Value.absent(),
-                      currently_enrolled:
-                          _selectedCurrentlyEnrolled != null
-                              ? db.Value(_selectedCurrentlyEnrolled)
-                              : db.Value.absent(),
-                      education_id:
-                          _selectedEducationId != null
-                              ? db.Value(_selectedEducationId)
-                              : db.Value.absent(),
-                      deceased:
-                          _selectedDeceased != null
-                              ? db.Value(_selectedDeceased)
-                              : db.Value.absent(),
-                      death_date:
-                          _deathDate != null
-                              ? db.Value(_deathDate)
-                              : db.Value.absent(),
+                      residency: _selectedResidency != null
+                          ? db.Value(_selectedResidency)
+                          : db.Value.absent(),
+                      years_of_residency: _yearsOfResidency != null
+                          ? db.Value(_yearsOfResidency)
+                          : db.Value.absent(),
+                      transient_type: _selectedTransient != null
+                          ? db.Value(_selectedTransient)
+                          : db.Value.absent(),
+                      monthly_income_id: _selectedMonthlyIncomeId != null
+                          ? db.Value(_selectedMonthlyIncomeId)
+                          : db.Value.absent(),
+                      daily_income_id: _selectedDailyIncomeId != null
+                          ? db.Value(_selectedDailyIncomeId)
+                          : db.Value.absent(),
+                      solo_parent: _selectedSoloParent != null
+                          ? db.Value(_selectedSoloParent)
+                          : db.Value.absent(),
+                      ofw: _selectedOfw != null
+                          ? db.Value(_selectedOfw)
+                          : db.Value.absent(),
+                      literate: _selectedLiterate != null
+                          ? db.Value(_selectedLiterate)
+                          : db.Value.absent(),
+                      pwd: _selectedPwd != null
+                          ? db.Value(_selectedPwd)
+                          : db.Value.absent(),
+                      registered_voter: _selectedRegisteredVoter != null
+                          ? db.Value(_selectedRegisteredVoter)
+                          : db.Value.absent(),
+                      currently_enrolled: _selectedCurrentlyEnrolled != null
+                          ? db.Value(_selectedCurrentlyEnrolled)
+                          : db.Value.absent(),
+                      education_id: _selectedEducationId != null
+                          ? db.Value(_selectedEducationId)
+                          : db.Value.absent(),
+                      deceased: _selectedDeceased != null
+                          ? db.Value(_selectedDeceased)
+                          : db.Value.absent(),
+                      death_date: _deathDate != null
+                          ? db.Value(_deathDate)
+                          : db.Value.absent(),
                       registration_status: db.Value(
                         _selectedRegistrationStatus!,
                       ),
@@ -1530,14 +1541,12 @@ class _AddPersonPageState extends State<AddPersonPage> {
                       final occupationCompanion = OccupationsCompanion(
                         person_id: db.Value(personId!),
                         occupation: db.Value(_occupationController.text),
-                        occupation_status:
-                            _selectedOccupationStatus != null
-                                ? db.Value(_selectedOccupationStatus)
-                                : db.Value.absent(),
-                        occupation_type:
-                            _selectedOccupationType != null
-                                ? db.Value(_selectedOccupationType)
-                                : db.Value.absent(),
+                        occupation_status: _selectedOccupationStatus != null
+                            ? db.Value(_selectedOccupationStatus)
+                            : db.Value.absent(),
+                        occupation_type: _selectedOccupationType != null
+                            ? db.Value(_selectedOccupationType)
+                            : db.Value.absent(),
                       );
 
                       await occupationProvider.addOccupation(
@@ -1548,8 +1557,8 @@ class _AddPersonPageState extends State<AddPersonPage> {
                     if (_isSeniorCitizen == true) {
                       final registeredSeniorCompanion =
                           RegisteredSeniorsCompanion(
-                            person_id: db.Value(personId!),
-                          );
+                        person_id: db.Value(personId!),
+                      );
 
                       await citizenRegistryProvider.addRegisteredSenior(
                         registeredSeniorCompanion,
@@ -1560,10 +1569,9 @@ class _AddPersonPageState extends State<AddPersonPage> {
                       final enrolledCompanion = EnrolledCompanion(
                         person_id: db.Value(personId!),
                         school: db.Value(_enrolledAtController.text),
-                        education_id:
-                            _selectedEducationId != null
-                                ? db.Value(_selectedEducationId!)
-                                : db.Value.absent(),
+                        education_id: _selectedEducationId != null
+                            ? db.Value(_selectedEducationId!)
+                            : db.Value.absent(),
                       );
 
                       await citizenRegistryProvider.addEnrolled(
@@ -1574,14 +1582,12 @@ class _AddPersonPageState extends State<AddPersonPage> {
                     if (_selectedPwd == true) {
                       final disabilityCompanion = DisabilitiesCompanion(
                         person_id: db.Value(personId!),
-                        name:
-                            _disabilityNameController.text.isNotEmpty
-                                ? db.Value(_disabilityNameController.text)
-                                : db.Value.absent(),
-                        type:
-                            _disabilityTypeController.text.isNotEmpty
-                                ? db.Value(_disabilityTypeController.text)
-                                : db.Value.absent(),
+                        name: _disabilityNameController.text.isNotEmpty
+                            ? db.Value(_disabilityNameController.text)
+                            : db.Value.absent(),
+                        type: _disabilityTypeController.text.isNotEmpty
+                            ? db.Value(_disabilityTypeController.text)
+                            : db.Value.absent(),
                       );
 
                       await citizenRegistryProvider.addDisability(
@@ -1608,14 +1614,12 @@ class _AddPersonPageState extends State<AddPersonPage> {
                         issue_num: db.Value(
                           int.parse(_issueNumController.text),
                         ),
-                        place_of_issue:
-                            _placeOfIssueController.text.isNotEmpty
-                                ? db.Value(_placeOfIssueController.text)
-                                : db.Value.absent(),
-                        date_of_issue:
-                            _issueDate != null
-                                ? db.Value(_issueDate)
-                                : db.Value.absent(),
+                        place_of_issue: _placeOfIssueController.text.isNotEmpty
+                            ? db.Value(_placeOfIssueController.text)
+                            : db.Value.absent(),
+                        date_of_issue: _issueDate != null
+                            ? db.Value(_issueDate)
+                            : db.Value.absent(),
                       );
                     }
                   }

@@ -3,7 +3,7 @@ import 'package:brims/provider/medical%20providers/medinfo_lookup_provider.dart'
 import 'package:brims/screens/components/add_lookup.dart';
 import 'package:brims/screens/components/lookup_table.dart';
 import 'package:drift/drift.dart' as db;
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide RadioGroup;
 import 'package:provider/provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as scn;
 
@@ -29,7 +29,7 @@ class _MedInfoLookupsState extends State<MedInfoLookups> {
     return Scaffold(
       appBar: AppBar(),
       body: Consumer<MedInfoLookupProvider>(
-        builder: (_, lookupProvider, _) {
+        builder: (_, lookupProvider, __) {
           return SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Center(
