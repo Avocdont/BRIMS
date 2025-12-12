@@ -1,6 +1,7 @@
 import 'package:brims/database/app_db.dart';
 import 'package:brims/provider/household%20providers/household_lookup_provider.dart';
 import 'package:brims/provider/household%20providers/household_provider.dart';
+import 'package:brims/provider/profiling%20providers/person_provider.dart';
 import 'package:brims/provider/lookup%20providers/question_lookup_provider.dart';
 import 'package:brims/screens/edit_household_page.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +19,10 @@ class ViewHouseholdPage extends StatefulWidget {
 }
 
 class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
-  // Map to store QuestionID -> Answer Text for display
   final Map<int, String> _utilityDisplay = {};
+
+  // List to store formatted member data
+  List<Map<String, dynamic>> _householdMembers = [];
 
   @override
   void initState() {
@@ -30,39 +33,82 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
   }
 
   Future<void> _loadData() async {
-    final provider = context.read<HouseholdProvider>();
+    final hProvider = context.read<HouseholdProvider>();
+    final pProvider = context.read<PersonProvider>();
     final qProvider = context.read<QuestionLookupProvider>();
+    final lProvider = context.read<HouseholdLookupProvider>();
 
-    // FIXED: Added <void> to Future.wait to fix the type error
+    // 1. FETCH ALL DATA
     await Future.wait<void>([
-      provider.getAllHouseholds(),
-      provider.getAllAddresses(),
-      provider.getAllServices(),
-      provider.getAllPrimaryNeeds(),
-      provider.getAllFemaleMortalities(),
-      provider.getAllChildMortalities(),
-      provider.getAllFutureResidencies(),
-      provider.getAllHouseholdVisits(),
+      hProvider.getAllHouseholds(),
+      hProvider.getAllAddresses(),
+      hProvider.getAllServices(),
+      hProvider.getAllPrimaryNeeds(),
+      hProvider.getAllFemaleMortalities(),
+      hProvider.getAllChildMortalities(),
+      hProvider.getAllFutureResidencies(),
+      hProvider.getAllHouseholdVisits(),
+      hProvider.getAllHouseholdMembers(),
+      pProvider.getAllPersons(),
+      lProvider.getAllBuildingTypes(),
       qProvider.getAllQuestions(),
       qProvider.getAllQuestionChoices(),
     ]);
 
-    // Fetch Utilities Answers for this household
+    // 2. PROCESS UTILITIES
     final answers = await qProvider.getHouseholdResponses(widget.householdId);
-
-    // Process answers into a display map
+    _utilityDisplay.clear();
     for (var ans in answers) {
-      // Find the choice text based on choice_id
       try {
         final choice = qProvider.allQuestionChoices
             .firstWhere((c) => c.choice_id == ans.choice_id);
         _utilityDisplay[ans.question_id] = choice.choice;
-      } catch (e) {
-        // Choice ID not found
+      } catch (e) {}
+    }
+
+    // 3. PROCESS MEMBERS
+    _householdMembers.clear();
+
+    // Get current household to find the Head's name
+    final currentHousehold = hProvider.allHouseholds
+        .where((h) => h.household_id == widget.householdId)
+        .firstOrNull;
+
+    if (currentHousehold != null) {
+      // A. Add Head of Household
+      if (currentHousehold.head != null) {
+        _householdMembers.add({
+          'name': currentHousehold.head,
+          'role': "Head of Household",
+          'isHead': true,
+        });
+      }
+
+      // B. Add Other Members
+      final links = hProvider.allHouseholdMembers
+          .where((m) => m.household_id == widget.householdId)
+          .toList();
+
+      for (var link in links) {
+        try {
+          final person = pProvider.allPersons
+              .firstWhere((p) => p.person_id == link.person_id);
+
+          String fullName = "${person.first_name} ${person.last_name}";
+
+          // Only add if name doesn't match Head (to avoid duplication if Head is also linked in members table)
+          if (fullName != currentHousehold.head) {
+            _householdMembers.add({
+              'name': fullName,
+              'role':
+                  "Household Member", // Default role since relationship table isn't fully utilized yet
+              'isHead': false,
+            });
+          }
+        } catch (e) {}
       }
     }
 
-    // Trigger rebuild to show answers
     if (mounted) setState(() {});
   }
 
@@ -86,7 +132,7 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
     final lookupProvider = context.watch<HouseholdLookupProvider>();
     final questionProvider = context.watch<QuestionLookupProvider>();
 
-    // 1. Fetch Household (Safe)
+    // 1. Fetch Main Household
     HouseholdData? household;
     try {
       household = householdProvider.allHouseholds
@@ -108,7 +154,7 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
       );
     }
 
-    // 2. Fetch Related Data
+    // 2. Fetch Related Records
     final address = household.address_id != null
         ? householdProvider.allAddresses
             .where((a) => a.address_id == household!.address_id)
@@ -117,6 +163,10 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
 
     final service = householdProvider.allServices
         .where((s) => s.household_id == widget.householdId)
+        .firstOrNull;
+
+    final visit = householdProvider.allHouseholdVisits
+        .where((v) => v.household_id == widget.householdId)
         .firstOrNull;
 
     final needs = householdProvider.allPrimaryNeeds
@@ -157,7 +207,7 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // HEADER
+                // --- HEADER ---
                 Center(
                   child: Column(
                     children: [
@@ -200,7 +250,52 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
 
                 const SizedBox(height: 32),
 
-                // CARD 1: ADDRESS & DETAILS
+                // --- CARD 1: HOUSEHOLD MEMBERS ---
+                _buildCard(
+                  title: "Household Members",
+                  children: [
+                    if (_householdMembers.isEmpty)
+                      const Text("No members found.",
+                          style: TextStyle(color: Colors.white54))
+                    else
+                      ..._householdMembers.map((m) {
+                        bool isHead = m['isHead'] == true;
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: Row(
+                            children: [
+                              Icon(isHead ? Icons.star : Icons.person_outline,
+                                  size: 18,
+                                  color:
+                                      isHead ? Colors.amber : Colors.white54),
+                              const SizedBox(width: 12),
+                              Text(m['name'],
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: isHead
+                                          ? FontWeight.bold
+                                          : FontWeight.w500,
+                                      fontSize: 15)),
+                              const Spacer(),
+                              Text(m['role'],
+                                  style: TextStyle(
+                                      color: isHead
+                                          ? Colors.amber
+                                          : Colors.white54,
+                                      fontSize: 12,
+                                      fontWeight: isHead
+                                          ? FontWeight.w600
+                                          : FontWeight.normal)),
+                            ],
+                          ),
+                        );
+                      }),
+                  ],
+                ),
+
+                const SizedBox(height: 24),
+
+                // --- CARD 2: ADDRESS & CLASSIFICATION ---
                 _buildCard(
                   title: "Address & Classification",
                   children: [
@@ -221,7 +316,7 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
 
                 const SizedBox(height: 24),
 
-                // CARD: UTILITIES (Dynamic)
+                // --- CARD 3: UTILITIES ---
                 if (questionProvider.allQuestions.isNotEmpty) ...[
                   _buildCard(
                     title: "Utilities",
@@ -235,7 +330,7 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                   const SizedBox(height: 24),
                 ],
 
-                // CARD 2: COMMUNITY
+                // --- CARD 4: COMMUNITY ---
                 _buildCard(
                   title: "Community",
                   children: [
@@ -280,7 +375,7 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                     const SizedBox(height: 16),
                     _buildSectionHeader("Primary Needs"),
                     _buildInfoRow(
-                        "Priority 1", needs.length > 0 ? needs[0].need : "N/A"),
+                        "Priority 1", needs.isNotEmpty ? needs[0].need : "N/A"),
                     _buildInfoRow(
                         "Priority 2", needs.length > 1 ? needs[1].need : "N/A"),
                     _buildInfoRow(
@@ -296,16 +391,21 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
 
                 const SizedBox(height: 24),
 
-                // CARD 3: SURVEY INFO
+                // --- CARD 5: SURVEY INFO (MOVED TO BOTTOM) ---
                 _buildCard(
                   title: "Survey Info",
                   children: [
                     _buildRowPair(
                       "No. of Visits",
-                      service?.ave_client_num?.toString() ?? "N/A",
+                      service?.ave_client_num?.toString() ??
+                          visit?.visit_num?.toString() ??
+                          "N/A",
                       "Client Type",
                       _formatEnum(service?.client_type_id),
                     ),
+                    const SizedBox(height: 12),
+                    _buildInfoRow(
+                        "Barangay Position", _formatEnum(visit?.brgy_position)),
                     const SizedBox(height: 12),
                     _buildSectionHeader("Registration"),
                     _buildInfoRow(
@@ -315,7 +415,7 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                   ],
                 ),
 
-                // ACTION BUTTONS
+                // --- ACTION BUTTONS ---
                 const SizedBox(height: 40),
                 Row(
                   children: [
@@ -357,19 +457,14 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.push(
+                        onPressed: () async {
+                          await Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => EditHouseholdPage(
                                     householdId: widget.householdId)),
-                          ).then((_) {
-                            // Refresh data on return
-                            householdProvider.getAllHouseholds();
-                            // Re-fetch local data to update view immediately if you stay on page,
-                            // though usually this pops back to list. If you want live update here:
-                            _loadData();
-                          });
+                          );
+                          if (mounted) await _loadData(); // REFRESH ON RETURN
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
@@ -391,8 +486,7 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
     );
   }
 
-  // --- HELPER WIDGETS ---
-
+  // --- HELPERS ---
   Widget _buildCard({required String title, required List<Widget> children}) {
     return Container(
       width: double.infinity,
@@ -420,13 +514,11 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
   Widget _buildSectionHeader(String title) {
     return Padding(
       padding: const EdgeInsets.only(top: 8, bottom: 8),
-      child: Text(
-        title,
-        style: const TextStyle(
-            color: Colors.blueAccent,
-            fontWeight: FontWeight.w600,
-            fontSize: 14),
-      ),
+      child: Text(title,
+          style: const TextStyle(
+              color: Colors.blueAccent,
+              fontWeight: FontWeight.w600,
+              fontSize: 14)),
     );
   }
 
@@ -437,19 +529,15 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 140,
-            child: Text("$label:",
-                style: TextStyle(color: Colors.grey[500], fontSize: 14)),
-          ),
+              width: 140,
+              child: Text("$label:",
+                  style: TextStyle(color: Colors.grey[500], fontSize: 14))),
           Expanded(
-            child: Text(
-              value.isEmpty ? "N/A" : value,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14),
-            ),
-          ),
+              child: Text(value.isEmpty ? "N/A" : value,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14))),
         ],
       ),
     );
@@ -460,35 +548,31 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
     return Row(
       children: [
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label1,
-                  style: TextStyle(color: Colors.grey[500], fontSize: 12)),
-              const SizedBox(height: 2),
-              Text(value1 ?? "N/A",
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14)),
-            ],
-          ),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(label1,
+                style: TextStyle(color: Colors.grey[500], fontSize: 12)),
+            const SizedBox(height: 2),
+            Text(value1 ?? "N/A",
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14)),
+          ]),
         ),
         const SizedBox(width: 16),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label2,
-                  style: TextStyle(color: Colors.grey[500], fontSize: 12)),
-              const SizedBox(height: 2),
-              Text(value2 ?? "N/A",
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14)),
-            ],
-          ),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(label2,
+                style: TextStyle(color: Colors.grey[500], fontSize: 12)),
+            const SizedBox(height: 2),
+            Text(value2 ?? "N/A",
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14)),
+          ]),
         ),
       ],
     );

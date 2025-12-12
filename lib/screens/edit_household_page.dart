@@ -38,8 +38,11 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
   final TextEditingController _headSearchController = TextEditingController();
   List<PersonData> _headSearchResults = [];
   bool _showHeadResults = false;
+
+  // Member Management
   List<Map<String, dynamic>> _addedMembers = [];
   List<PersonData> _removedMembers = [];
+
   final TextEditingController _memberSearchController = TextEditingController();
   List<PersonData> _memberSearchResults = [];
   bool _showMemberResults = false;
@@ -59,6 +62,14 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
   final _streetController = TextEditingController();
   final _blockController = TextEditingController();
   final _lotController = TextEditingController();
+
+  // Address Search State
+  String? _Zone;
+  String? _Street;
+  String? _Block;
+  String? _Lot;
+  List<Map<String, dynamic>> _searchedAddress = [];
+  bool _noResults = false;
 
   // Household
   HouseholdTypes? _selectedHouseholdType;
@@ -138,38 +149,60 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
         householdProvider.getAllChildMortalities(),
         householdProvider.getAllFutureResidencies(),
         householdProvider.getAllHouseholdVisits(),
+        householdProvider.getAllHouseholdMembers(), // Load members
         questionProvider.getAllQuestions(),
         questionProvider.getAllQuestionChoices(),
       ]);
+
+      if (!mounted) return;
 
       final household =
           await householdProvider.getHouseholdByID(widget.householdId);
 
       if (household != null) {
+        // --- HEAD ---
         try {
-          _selectedHead = personProvider.allPersons.firstWhere(
-              (p) => "${p.first_name} ${p.last_name}" == household.head,
-              orElse: () => personProvider.allPersons.first);
+          _selectedHead = personProvider.allPersons
+              .cast<PersonData?>()
+              .firstWhere(
+                  (p) => "${p!.first_name} ${p.last_name}" == household.head,
+                  orElse: () => null);
         } catch (e) {}
 
-        if (household.household_type_id != null) {
-          _selectedHouseholdType = HouseholdTypes.values
-                  .asMap()
-                  .containsKey(household.household_type_id)
-              ? HouseholdTypes.values[household.household_type_id!]
-              : null;
+        // --- MEMBERS (New Logic) ---
+        // Find links for this household
+        final currentMembersLinks = householdProvider.allHouseholdMembers
+            .where((m) => m.household_id == widget.householdId)
+            .toList();
+
+        _addedMembers = [];
+        for (var link in currentMembersLinks) {
+          try {
+            // Find Person Data
+            final p = personProvider.allPersons
+                .firstWhere((person) => person.person_id == link.person_id);
+
+            // Avoid adding the Head to the member list
+            if (_selectedHead == null ||
+                p.person_id != _selectedHead!.person_id) {
+              _addedMembers.add({
+                'person': p,
+                'relationship':
+                    null // Relationship data not persisted in current schema
+              });
+            }
+          } catch (e) {}
         }
+
+        // --- ENUMS & BASIC INFO ---
+        _selectedHouseholdType = household.household_type_id;
         _selectedBuildingTypeId = household.building_type_id;
-        if (household.ownership_type_id != null) {
-          _selectedOwnershipType = OwnershipTypes.values
-                  .asMap()
-                  .containsKey(household.ownership_type_id)
-              ? OwnershipTypes.values[household.ownership_type_id!]
-              : null;
-        }
+        _selectedOwnershipType = household.ownership_type_id;
+
         _selectedRegistrationStatus = household.registration_status;
         _registrationDate = household.registration_date;
 
+        // --- ADDRESS ---
         if (household.address_id != null) {
           _existingAddressId = household.address_id;
           final address =
@@ -182,33 +215,36 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
           }
         }
 
+        // --- SERVICES ---
         try {
           final services = householdProvider.allServices
               .where((s) => s.household_id == widget.householdId)
               .toList();
           if (services.isNotEmpty) {
-            final service = services.first;
-            _existingServiceId = service.service_id;
-            _selectedClientType = service.client_type_id;
-            _visitNumController.text = service.ave_client_num?.toString() ?? "";
+            _existingServiceId = services.first.service_id;
+            _selectedClientType = services.first.client_type_id;
+            _visitNumController.text =
+                services.first.ave_client_num?.toString() ?? "";
           }
         } catch (e) {}
 
+        // --- VISITS ---
         try {
           final visits = householdProvider.allHouseholdVisits
               .where((v) => v.household_id == widget.householdId)
               .toList();
           if (visits.isNotEmpty) {
-            final v = visits.first;
-            _existingVisitId = v.household_visit_id;
-            _selectedBrgyPosition = v.brgy_position;
-            _visitDate = v.visit_date;
-            if (_visitNumController.text.isEmpty)
-              _visitNumController.text = v.visit_num?.toString() ?? "";
+            _existingVisitId = visits.first.household_visit_id;
+            _selectedBrgyPosition = visits.first.brgy_position;
+            _visitDate = visits.first.visit_date;
+            if (_visitNumController.text.isEmpty) {
+              _visitNumController.text =
+                  visits.first.visit_num?.toString() ?? "";
+            }
           }
         } catch (e) {}
 
-        // LOAD UTILITIES
+        // --- UTILITIES ---
         final existingResponses =
             await questionProvider.getHouseholdResponses(widget.householdId);
         for (var resp in existingResponses) {
@@ -216,6 +252,7 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
           _existingResponseIds[resp.question_id] = resp.response_id;
         }
 
+        // --- NEEDS ---
         try {
           final needs = householdProvider.allPrimaryNeeds
               .where((n) => n.household_id == widget.householdId)
@@ -236,18 +273,19 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
           }
         } catch (e) {}
 
+        // --- RESIDENCY ---
         try {
           final resList = householdProvider.allFutureResidencies
               .where((r) => r.household_id == widget.householdId)
               .toList();
           if (resList.isNotEmpty) {
-            final fr = resList.first;
-            _existingFutureResidencyId = fr.future_residency_id;
-            _frBarangayController.text = fr.barangay ?? "";
-            _frMunicipalityController.text = fr.municipality ?? "";
+            _existingFutureResidencyId = resList.first.future_residency_id;
+            _frBarangayController.text = resList.first.barangay ?? "";
+            _frMunicipalityController.text = resList.first.municipality ?? "";
           }
         } catch (e) {}
 
+        // --- MORTALITY ---
         final fmList = householdProvider.allFemaleMortalities
             .where((f) => f.household_id == widget.householdId)
             .toList();
@@ -267,9 +305,10 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
         }
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Error loading: $e")));
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -339,7 +378,6 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 1. HEAD & MEMBERS
                   const Text("Head of Household",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
@@ -530,7 +568,7 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
 
                   const SizedBox(height: 40),
 
-                  // 2. ADDRESS & INFO
+                  // ADDRESS
                   const Text("Address Information",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
@@ -566,9 +604,116 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                                 labelText: 'Lot',
                                 border: OutlineInputBorder()))),
                   ]),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final provider = context.read<HouseholdProvider>();
+                      setState(() {
+                        _searchedAddress = [];
+                        _noResults = false;
+                        _existingAddressId = null;
+                      });
+                      final results = await provider.searchAddresses(
+                        zone: _zoneController.text.isNotEmpty
+                            ? _zoneController.text
+                            : null,
+                        street: _streetController.text.isNotEmpty
+                            ? _streetController.text
+                            : null,
+                        block: _blockController.text.isNotEmpty
+                            ? _blockController.text
+                            : null,
+                        lot: _lotController.text.isNotEmpty
+                            ? _lotController.text
+                            : null,
+                      );
+                      setState(() {
+                        _searchedAddress = results;
+                        _noResults = results.isEmpty;
+                      });
+                    },
+                    child: const Text("Search Address"),
+                  ),
+                  if (_noResults)
+                    Container(
+                        margin: const EdgeInsets.only(top: 10),
+                        padding: const EdgeInsets.all(10),
+                        child: Column(children: [
+                          const Text(
+                              "No address found. Use entered data as new address?"),
+                          const SizedBox(height: 10),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _Zone = _zoneController.text;
+                                        _Street = _streetController.text;
+                                        _Block = _blockController.text;
+                                        _Lot = _lotController.text;
+                                        _existingAddressId = null;
+                                        _noResults = false;
+                                      });
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content:
+                                                  Text("New Address Set.")));
+                                    },
+                                    child: const Text("Yes")),
+                                const SizedBox(width: 10),
+                                ElevatedButton(
+                                    onPressed: () =>
+                                        setState(() => _noResults = false),
+                                    child: const Text("No")),
+                              ])
+                        ]))
+                  else if (_searchedAddress.isNotEmpty)
+                    Container(
+                        margin: const EdgeInsets.only(top: 10),
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey)),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text("Address Found:",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(
+                                  "Zone: ${_searchedAddress[0]['address']['zone']}"),
+                              Text(
+                                  "Street: ${_searchedAddress[0]['address']['street']}"),
+                              const SizedBox(height: 10),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _existingAddressId =
+                                          _searchedAddress[0]['address']['id'];
+                                      final addr =
+                                          _searchedAddress[0]['address'];
+                                      _zoneController.text = addr['zone'];
+                                      _streetController.text = addr['street'];
+                                      _blockController.text = addr['block'];
+                                      _lotController.text = addr['lot'];
+                                      _searchedAddress = [];
+                                    });
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                "Existing Address Selected")));
+                                  },
+                                  child: const Text("Use This Address")),
+                              TextButton(
+                                  onPressed: () =>
+                                      setState(() => _searchedAddress = []),
+                                  child: const Text("Cancel Search",
+                                      style: TextStyle(color: Colors.red)))
+                            ])),
 
                   const SizedBox(height: 40),
 
+                  // HOUSEHOLD DETAILS
                   const Text("Household Details",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
@@ -613,7 +758,7 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                         setState(() => _selectedOwnershipType = val),
                   ),
 
-                  // 3. UTILITIES (Dynamic)
+                  // UTILITIES
                   if (questionProvider.allQuestions.isNotEmpty) ...[
                     const SizedBox(height: 40),
                     Card(
@@ -623,61 +768,198 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(24.0),
                         child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Center(
+                                  child: Text("UTILITIES",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                          letterSpacing: 1.2))),
+                              const Divider(height: 32, thickness: 1),
+                              ...questionProvider.allQuestions.map((q) {
+                                final choices = questionProvider
+                                    .getChoicesForQuestion(q.question_id);
+                                return Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 16.0),
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(q.question,
+                                              style: const TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600)),
+                                          const SizedBox(height: 8),
+                                          DropdownButtonFormField<int>(
+                                            decoration: const InputDecoration(
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 12),
+                                                border: OutlineInputBorder(),
+                                                isDense: true),
+                                            value:
+                                                _utilityAnswers[q.question_id],
+                                            hint: const Text("Select option"),
+                                            items: choices.map((choice) {
+                                              return DropdownMenuItem<int>(
+                                                  value: choice.choice_id,
+                                                  child: Text(choice.choice));
+                                            }).toList(),
+                                            onChanged: (val) {
+                                              setState(() {
+                                                _utilityAnswers[q.question_id] =
+                                                    val;
+                                              });
+                                            },
+                                          ),
+                                        ]));
+                              }),
+                            ]),
+                      ),
+                    ),
+                  ],
+
+                  // COMMUNITY
+                  const SizedBox(height: 40),
+                  Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Center(
-                                child: Text("UTILITIES",
+                                child: Text("COMMUNITY",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20,
                                         letterSpacing: 1.2))),
                             const Divider(height: 32, thickness: 1),
-                            ...questionProvider.allQuestions.map((q) {
-                              final choices = questionProvider
-                                  .getChoicesForQuestion(q.question_id);
-
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 16.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(q.question,
-                                        style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600)),
-                                    const SizedBox(height: 8),
-                                    DropdownButtonFormField<int>(
+                            const Text("Female died in the last 6 months",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 16)),
+                            const SizedBox(height: 12),
+                            Row(children: [
+                              Expanded(
+                                  child: TextFormField(
+                                      controller: _fmAgeController,
                                       decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 12, vertical: 12),
-                                        border: OutlineInputBorder(),
-                                        isDense: true,
-                                      ),
-                                      value: _utilityAnswers[q.question_id],
-                                      hint: const Text("Select option"),
-                                      items: choices.map((choice) {
-                                        return DropdownMenuItem<int>(
-                                          value: choice.choice_id,
-                                          child: Text(choice.choice),
-                                        );
-                                      }).toList(),
-                                      onChanged: (val) {
-                                        setState(() {
-                                          _utilityAnswers[q.question_id] = val;
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }),
-                          ],
-                        ),
-                      ),
+                                          labelText: 'Age',
+                                          border: OutlineInputBorder()),
+                                      keyboardType: TextInputType.number)),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                  child: TextFormField(
+                                      controller: _fmCauseController,
+                                      decoration: const InputDecoration(
+                                          labelText: 'Cause',
+                                          border: OutlineInputBorder()))),
+                            ]),
+                            const SizedBox(height: 24),
+                            const Text(
+                                "5 Years old below died in the last 6 months",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 16)),
+                            const SizedBox(height: 12),
+                            Row(children: [
+                              Expanded(
+                                  child: TextFormField(
+                                      controller: _cmAgeController,
+                                      decoration: const InputDecoration(
+                                          labelText: 'Age',
+                                          border: OutlineInputBorder()),
+                                      keyboardType: TextInputType.number,
+                                      validator: (value) {
+                                        if (value != null && value.isNotEmpty) {
+                                          final age = int.tryParse(value);
+                                          if (age == null || age > 5)
+                                            return "Age must be 5 or below";
+                                        }
+                                        return null;
+                                      })),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                  child: DropdownButtonFormField<Sex>(
+                                      value: _cmSex,
+                                      decoration: const InputDecoration(
+                                          labelText: 'Sex',
+                                          border: OutlineInputBorder()),
+                                      items: Sex.values
+                                          .map((s) => DropdownMenuItem(
+                                              value: s, child: Text(s.name)))
+                                          .toList(),
+                                      onChanged: (val) =>
+                                          setState(() => _cmSex = val))),
+                            ]),
+                            const SizedBox(height: 12),
+                            TextFormField(
+                                controller: _cmCauseController,
+                                decoration: const InputDecoration(
+                                    labelText: 'Cause of Death',
+                                    border: OutlineInputBorder())),
+                            const SizedBox(height: 32),
+                            const Text("Primary needs of barangay",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 16)),
+                            const SizedBox(height: 12),
+                            TextFormField(
+                                controller: _need1Controller,
+                                decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Padding(
+                                        padding: EdgeInsets.all(12),
+                                        child: Text("1",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16))))),
+                            const SizedBox(height: 12),
+                            TextFormField(
+                                controller: _need2Controller,
+                                decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Padding(
+                                        padding: EdgeInsets.all(12),
+                                        child: Text("2",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16))))),
+                            const SizedBox(height: 12),
+                            TextFormField(
+                                controller: _need3Controller,
+                                decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Padding(
+                                        padding: EdgeInsets.all(12),
+                                        child: Text("3",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16))))),
+                            const SizedBox(height: 32),
+                            const Text("Intend to stay five years from now",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 16)),
+                            const SizedBox(height: 12),
+                            TextFormField(
+                                controller: _frBarangayController,
+                                decoration: const InputDecoration(
+                                    labelText: 'Intended Barangay',
+                                    border: OutlineInputBorder())),
+                            const SizedBox(height: 12),
+                            TextFormField(
+                                controller: _frMunicipalityController,
+                                decoration: const InputDecoration(
+                                    labelText: 'Intended Municipality',
+                                    border: OutlineInputBorder())),
+                          ]),
                     ),
-                  ],
+                  ),
 
-                  // 4. COMMUNITY CARD
+                  // SURVEY INFO
                   const SizedBox(height: 40),
                   Card(
                     elevation: 2,
@@ -686,253 +968,113 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(24.0),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Center(
-                              child: Text("COMMUNITY",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                      letterSpacing: 1.2))),
-                          const Divider(height: 32, thickness: 1),
-                          const Text("Female died in the last 6 months",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 16)),
-                          const SizedBox(height: 12),
-                          Row(children: [
-                            Expanded(
-                                child: TextFormField(
-                                    controller: _fmAgeController,
-                                    decoration: const InputDecoration(
-                                        labelText: 'Age',
-                                        border: OutlineInputBorder()),
-                                    keyboardType: TextInputType.number)),
-                            const SizedBox(width: 16),
-                            Expanded(
-                                child: TextFormField(
-                                    controller: _fmCauseController,
-                                    decoration: const InputDecoration(
-                                        labelText: 'Cause',
-                                        border: OutlineInputBorder()))),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Center(
+                                child: Text("SURVEY INFO",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                        letterSpacing: 1.2))),
+                            const Divider(height: 32, thickness: 1),
+                            Row(children: [
+                              Expanded(
+                                  child: TextFormField(
+                                      controller: _visitNumController,
+                                      decoration: const InputDecoration(
+                                          labelText: 'Number of visits',
+                                          border: OutlineInputBorder()),
+                                      keyboardType: TextInputType.number)),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                  child: DropdownButtonFormField<
+                                          BarangayPositions>(
+                                      value: _selectedBrgyPosition,
+                                      decoration: const InputDecoration(
+                                          labelText: 'Barangay Position',
+                                          border: OutlineInputBorder()),
+                                      items: BarangayPositions.values
+                                          .map((pos) => DropdownMenuItem(
+                                              value: pos,
+                                              child: Text(pos.name)))
+                                          .toList(),
+                                      onChanged: (val) => setState(
+                                          () => _selectedBrgyPosition = val))),
+                            ]),
+                            const SizedBox(height: 16),
+                            DropdownButtonFormField<ClientTypes>(
+                                value: _selectedClientType,
+                                decoration: const InputDecoration(
+                                    labelText: 'Client Type',
+                                    border: OutlineInputBorder()),
+                                items: ClientTypes.values
+                                    .map((type) => DropdownMenuItem(
+                                        value: type, child: Text(type.name)))
+                                    .toList(),
+                                onChanged: (val) =>
+                                    setState(() => _selectedClientType = val)),
+                            const SizedBox(height: 16),
+                            ListTile(
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                    side: const BorderSide(color: Colors.grey)),
+                                title: const Text("Visit Date"),
+                                subtitle: Text(_visitDate == null
+                                    ? "Select Date"
+                                    : _visitDate.toString().split(' ')[0]),
+                                trailing: const Icon(Icons.calendar_today),
+                                onTap: () async {
+                                  final d = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(2000),
+                                      lastDate: DateTime(2100));
+                                  if (d != null) setState(() => _visitDate = d);
+                                }),
+                            const SizedBox(height: 24),
+                            DropdownButtonFormField<RegistrationStatus>(
+                                value: _selectedRegistrationStatus,
+                                decoration: const InputDecoration(
+                                    labelText: 'Registration Status',
+                                    border: OutlineInputBorder()),
+                                items: RegistrationStatus.values
+                                    .map((s) => DropdownMenuItem(
+                                        value: s, child: Text(s.name)))
+                                    .toList(),
+                                onChanged: (val) => setState(
+                                    () => _selectedRegistrationStatus = val),
+                                validator: (val) => val == null
+                                    ? 'Please select a status'
+                                    : null),
+                            const SizedBox(height: 16),
+                            ListTile(
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                    side: const BorderSide(color: Colors.grey)),
+                                title: const Text("Registration Date"),
+                                subtitle: Text(_registrationDate == null
+                                    ? "Select Date"
+                                    : _registrationDate
+                                        .toString()
+                                        .split(' ')[0]),
+                                trailing: const Icon(Icons.calendar_today),
+                                onTap: () async {
+                                  final d = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(2000),
+                                      lastDate: DateTime(2100));
+                                  if (d != null)
+                                    setState(() => _registrationDate = d);
+                                }),
                           ]),
-                          const SizedBox(height: 24),
-                          const Text(
-                              "5 Years old below died in the last 6 months",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 16)),
-                          const SizedBox(height: 12),
-                          Row(children: [
-                            Expanded(
-                                child: TextFormField(
-                              controller: _cmAgeController,
-                              decoration: const InputDecoration(
-                                  labelText: 'Age',
-                                  border: OutlineInputBorder()),
-                              keyboardType: TextInputType.number,
-                              validator: (value) {
-                                if (value != null && value.isNotEmpty) {
-                                  final age = int.tryParse(value);
-                                  if (age == null || age > 5)
-                                    return "Age must be 5 or below";
-                                }
-                                return null;
-                              },
-                            )),
-                            const SizedBox(width: 16),
-                            Expanded(
-                                child: DropdownButtonFormField<Sex>(
-                              value: _cmSex,
-                              decoration: const InputDecoration(
-                                  labelText: 'Sex',
-                                  border: OutlineInputBorder()),
-                              items: Sex.values
-                                  .map((s) => DropdownMenuItem(
-                                      value: s, child: Text(s.name)))
-                                  .toList(),
-                              onChanged: (val) => setState(() => _cmSex = val),
-                            )),
-                          ]),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                              controller: _cmCauseController,
-                              decoration: const InputDecoration(
-                                  labelText: 'Cause of Death',
-                                  border: OutlineInputBorder())),
-                          const SizedBox(height: 32),
-                          const Text("Primary needs of barangay",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 16)),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                              controller: _need1Controller,
-                              decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Padding(
-                                      padding: EdgeInsets.all(12),
-                                      child: Text("1",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16))))),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                              controller: _need2Controller,
-                              decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Padding(
-                                      padding: EdgeInsets.all(12),
-                                      child: Text("2",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16))))),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                              controller: _need3Controller,
-                              decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Padding(
-                                      padding: EdgeInsets.all(12),
-                                      child: Text("3",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16))))),
-                          const SizedBox(height: 32),
-                          const Text("Intend to stay five years from now",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 16)),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                              controller: _frBarangayController,
-                              decoration: const InputDecoration(
-                                  labelText: 'Intended Barangay',
-                                  border: OutlineInputBorder())),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                              controller: _frMunicipalityController,
-                              decoration: const InputDecoration(
-                                  labelText: 'Intended Municipality',
-                                  border: OutlineInputBorder())),
-                        ],
-                      ),
                     ),
                   ),
 
-                  // 5. SURVEY INFO CARD
-                  const SizedBox(height: 40),
-                  Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Center(
-                              child: Text("SURVEY INFO",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                      letterSpacing: 1.2))),
-                          const Divider(height: 32, thickness: 1),
-                          Row(children: [
-                            Expanded(
-                                child: TextFormField(
-                                    controller: _visitNumController,
-                                    decoration: const InputDecoration(
-                                        labelText: 'Number of visits',
-                                        border: OutlineInputBorder()),
-                                    keyboardType: TextInputType.number)),
-                            const SizedBox(width: 16),
-                            Expanded(
-                                child:
-                                    DropdownButtonFormField<BarangayPositions>(
-                              value: _selectedBrgyPosition,
-                              decoration: const InputDecoration(
-                                  labelText: 'Barangay Position',
-                                  border: OutlineInputBorder()),
-                              items: BarangayPositions.values
-                                  .map((pos) => DropdownMenuItem(
-                                      value: pos, child: Text(pos.name)))
-                                  .toList(),
-                              onChanged: (val) =>
-                                  setState(() => _selectedBrgyPosition = val),
-                            )),
-                          ]),
-                          const SizedBox(height: 16),
-                          DropdownButtonFormField<ClientTypes>(
-                            value: _selectedClientType,
-                            decoration: const InputDecoration(
-                                labelText: 'Client Type',
-                                border: OutlineInputBorder()),
-                            items: ClientTypes.values
-                                .map((type) => DropdownMenuItem(
-                                    value: type, child: Text(type.name)))
-                                .toList(),
-                            onChanged: (val) =>
-                                setState(() => _selectedClientType = val),
-                          ),
-                          const SizedBox(height: 16),
-                          ListTile(
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 12),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                                side: const BorderSide(color: Colors.grey)),
-                            title: const Text("Visit Date"),
-                            subtitle: Text(_visitDate == null
-                                ? "Select Date"
-                                : _visitDate.toString().split(' ')[0]),
-                            trailing: const Icon(Icons.calendar_today),
-                            onTap: () async {
-                              final d = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime(2100));
-                              if (d != null) setState(() => _visitDate = d);
-                            },
-                          ),
-                          const SizedBox(height: 24),
-                          DropdownButtonFormField<RegistrationStatus>(
-                            value: _selectedRegistrationStatus,
-                            decoration: const InputDecoration(
-                                labelText: 'Registration Status',
-                                border: OutlineInputBorder()),
-                            items: RegistrationStatus.values
-                                .map((s) => DropdownMenuItem(
-                                    value: s, child: Text(s.name)))
-                                .toList(),
-                            onChanged: (val) => setState(
-                                () => _selectedRegistrationStatus = val),
-                          ),
-                          const SizedBox(height: 16),
-                          ListTile(
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 12),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                                side: const BorderSide(color: Colors.grey)),
-                            title: const Text("Registration Date"),
-                            subtitle: Text(_registrationDate == null
-                                ? "Select Date"
-                                : _registrationDate.toString().split(' ')[0]),
-                            trailing: const Icon(Icons.calendar_today),
-                            onTap: () async {
-                              final d = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime(2100));
-                              if (d != null)
-                                setState(() => _registrationDate = d);
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // SAVE BUTTON
                   const SizedBox(height: 40),
                   SizedBox(
                     width: double.infinity,
@@ -960,19 +1102,252 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
   }
 
   Future<void> _updateHousehold() async {
+    if (_selectedHead == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please select a Head of Household")));
+      return;
+    }
+    if (_selectedRegistrationStatus == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please select Registration Status")));
+      return;
+    }
+
     if (_formKey.currentState!.validate()) {
       setState(() => _isSaving = true);
       final qProvider = context.read<QuestionLookupProvider>();
+      final provider = context.read<HouseholdProvider>();
 
       try {
-        // ... [Update Address, Household, etc.] ...
+        // --- ADDRESS ---
+        final addressCompanion = AddressesCompanion(
+          zone:
+              _Zone != null ? db.Value(_Zone) : db.Value(_zoneController.text),
+          street: _Street != null
+              ? db.Value(_Street)
+              : db.Value(_streetController.text),
+          block: _Block != null
+              ? db.Value(_Block)
+              : db.Value(_blockController.text),
+          lot: _Lot != null ? db.Value(_Lot) : db.Value(_lotController.text),
+        );
 
-        // --- UPDATE UTILITIES ---
+        if (_existingAddressId == null) {
+          if (addressCompanion.zone.present ||
+              addressCompanion.street.present ||
+              addressCompanion.block.present ||
+              addressCompanion.lot.present) {
+            _existingAddressId = await provider.addAddress(addressCompanion);
+          }
+        } else {
+          await provider.updateAddress(addressCompanion.copyWith(
+              address_id: db.Value(_existingAddressId!)));
+        }
+
+        // --- MAIN HOUSEHOLD ---
+        bool hasFm = _fmAgeController.text.isNotEmpty ||
+            _fmCauseController.text.isNotEmpty;
+        bool hasCm = _cmAgeController.text.isNotEmpty ||
+            _cmCauseController.text.isNotEmpty;
+        int memberCount = 1 + _addedMembers.length; // Head + Members
+
+        final householdCompanion = HouseholdsCompanion(
+          household_id: db.Value(widget.householdId),
+          head: _selectedHead != null
+              ? db.Value(
+                  "${_selectedHead!.first_name} ${_selectedHead!.last_name}")
+              : const db.Value.absent(),
+          address_id: _existingAddressId != null
+              ? db.Value(_existingAddressId!)
+              : const db.Value.absent(),
+          household_type_id: _selectedHouseholdType != null
+              ? db.Value(_selectedHouseholdType!)
+              : const db.Value.absent(),
+          building_type_id: db.Value(_selectedBuildingTypeId),
+          ownership_type_id: _selectedOwnershipType != null
+              ? db.Value(_selectedOwnershipType!)
+              : const db.Value.absent(),
+          registration_status: db.Value(_selectedRegistrationStatus!),
+          registration_date: db.Value(_registrationDate),
+          female_mortality: db.Value(hasFm),
+          child_mortality: db.Value(hasCm),
+          household_members_num: db.Value(memberCount),
+        );
+
+        await provider.updateHousehold(householdCompanion);
+
+        // --- SUB-TABLES ---
+
+        // --- MEMBERS (New Logic) ---
+        // 1. Remove deleted members
+        for (var p in _removedMembers) {
+          await provider.deleteHouseholdMember(widget.householdId, p.person_id);
+        }
+        // 2. Add new members (check existence first)
+        await provider.getAllHouseholdMembers();
+        for (var m in _addedMembers) {
+          final person = m['person'] as PersonData;
+          bool exists = provider.allHouseholdMembers.any((dbm) =>
+              dbm.household_id == widget.householdId &&
+              dbm.person_id == person.person_id);
+          if (!exists) {
+            await provider.addHouseholdMember(HouseholdMembersCompanion(
+                household_id: db.Value(widget.householdId),
+                person_id: db.Value(person.person_id)));
+          }
+        }
+
+        // --- SERVICES ---
+        await provider.getAllServices();
+        bool hasServiceData =
+            _selectedClientType != null || _visitNumController.text.isNotEmpty;
+        if (_existingServiceId == null) {
+          final freshList = provider.allServices
+              .where((s) => s.household_id == widget.householdId)
+              .toList();
+          if (freshList.isNotEmpty)
+            _existingServiceId = freshList.first.service_id;
+        }
+        if (_existingServiceId != null) {
+          await provider.updateService(ServicesCompanion(
+              service_id: db.Value(_existingServiceId!),
+              household_id: db.Value(widget.householdId),
+              service: const db.Value("Service"),
+              client_type_id: db.Value(_selectedClientType),
+              ave_client_num:
+                  db.Value(int.tryParse(_visitNumController.text))));
+        } else if (hasServiceData) {
+          await provider.addService(ServicesCompanion(
+              household_id: db.Value(widget.householdId),
+              service: const db.Value("Service"),
+              client_type_id: db.Value(_selectedClientType),
+              ave_client_num:
+                  db.Value(int.tryParse(_visitNumController.text))));
+        }
+
+        // --- VISITS ---
+        await provider.getAllHouseholdVisits();
+        if (_existingVisitId == null) {
+          final freshList = provider.allHouseholdVisits
+              .where((v) => v.household_id == widget.householdId)
+              .toList();
+          if (freshList.isNotEmpty)
+            _existingVisitId = freshList.first.household_visit_id;
+        }
+        if (_existingVisitId != null) {
+          await provider.updateHouseholdVisit(HouseholdVisitsCompanion(
+              household_visit_id: db.Value(_existingVisitId!),
+              household_id: db.Value(widget.householdId),
+              visit_num: db.Value(int.tryParse(_visitNumController.text)),
+              brgy_position: db.Value(_selectedBrgyPosition!),
+              visit_date: db.Value(_visitDate)));
+        } else if (_selectedBrgyPosition != null) {
+          await provider.addHouseholdVisit(HouseholdVisitsCompanion(
+              household_id: db.Value(widget.householdId),
+              visit_num: db.Value(int.tryParse(_visitNumController.text)),
+              brgy_position: db.Value(_selectedBrgyPosition!),
+              visit_date: db.Value(_visitDate)));
+        }
+
+        // --- NEEDS ---
+        Future<void> handleNeed(int priority, String text) async {
+          if (_existingNeedIds.containsKey(priority)) {
+            await provider.updatePrimaryNeed(PrimaryNeedsCompanion(
+                primary_need_id: db.Value(_existingNeedIds[priority]!),
+                household_id: db.Value(widget.householdId),
+                need: db.Value(text)));
+          } else if (text.isNotEmpty) {
+            await provider.addPrimaryNeed(PrimaryNeedsCompanion(
+                household_id: db.Value(widget.householdId),
+                need: db.Value(text),
+                priority: db.Value(priority)));
+          }
+        }
+
+        await handleNeed(1, _need1Controller.text);
+        await handleNeed(2, _need2Controller.text);
+        await handleNeed(3, _need3Controller.text);
+
+        // --- MORTALITY ---
+        await provider.getAllFemaleMortalities();
+        await provider.getAllChildMortalities();
+        if (hasFm && _existingFemaleMortalityId == null) {
+          final fresh = provider.allFemaleMortalities
+              .where((x) => x.household_id == widget.householdId)
+              .toList();
+          if (fresh.isNotEmpty)
+            _existingFemaleMortalityId = fresh.first.female_mortality_id;
+        }
+        if (hasFm) {
+          if (_existingFemaleMortalityId != null) {
+            await provider.updateFemaleMortality(FemaleMortalitiesCompanion(
+                female_mortality_id: db.Value(_existingFemaleMortalityId!),
+                household_id: db.Value(widget.householdId),
+                age: db.Value(int.tryParse(_fmAgeController.text)),
+                death_cause: db.Value(_fmCauseController.text)));
+          } else {
+            await provider.addFemaleMortality(FemaleMortalitiesCompanion(
+                household_id: db.Value(widget.householdId),
+                age: db.Value(int.tryParse(_fmAgeController.text)),
+                death_cause: db.Value(_fmCauseController.text)));
+          }
+        }
+        if (hasCm && _existingChildMortalityId == null) {
+          final fresh = provider.allChildMortalities
+              .where((x) => x.household_id == widget.householdId)
+              .toList();
+          if (fresh.isNotEmpty)
+            _existingChildMortalityId = fresh.first.child_mortality_id;
+        }
+        if (hasCm) {
+          if (_existingChildMortalityId != null) {
+            await provider.updateChildMortality(ChildMortalitiesCompanion(
+                child_mortality_id: db.Value(_existingChildMortalityId!),
+                household_id: db.Value(widget.householdId),
+                age: db.Value(int.tryParse(_cmAgeController.text)),
+                sex: db.Value(_cmSex),
+                death_cause: db.Value(_cmCauseController.text)));
+          } else {
+            await provider.addChildMortality(ChildMortalitiesCompanion(
+                household_id: db.Value(widget.householdId),
+                age: db.Value(int.tryParse(_cmAgeController.text)),
+                sex: db.Value(_cmSex),
+                death_cause: db.Value(_cmCauseController.text)));
+          }
+        }
+
+        // --- RESIDENCY ---
+        await provider.getAllFutureResidencies();
+        if ((_frBarangayController.text.isNotEmpty ||
+                _frMunicipalityController.text.isNotEmpty) &&
+            _existingFutureResidencyId == null) {
+          final fresh = provider.allFutureResidencies
+              .where((x) => x.household_id == widget.householdId)
+              .toList();
+          if (fresh.isNotEmpty)
+            _existingFutureResidencyId = fresh.first.future_residency_id;
+        }
+        if (_frBarangayController.text.isNotEmpty ||
+            _frMunicipalityController.text.isNotEmpty) {
+          if (_existingFutureResidencyId != null) {
+            await provider.updateFutureResidency(FutureResidenciesCompanion(
+                future_residency_id: db.Value(_existingFutureResidencyId!),
+                household_id: db.Value(widget.householdId),
+                barangay: db.Value(_frBarangayController.text),
+                municipality: db.Value(_frMunicipalityController.text)));
+          } else {
+            await provider.addFutureResidency(FutureResidenciesCompanion(
+                household_id: db.Value(widget.householdId),
+                barangay: db.Value(_frBarangayController.text),
+                municipality: db.Value(_frMunicipalityController.text)));
+          }
+        }
+
+        // --- UTILITIES ---
         for (var entry in _utilityAnswers.entries) {
           int qId = entry.key;
           int? choiceId = entry.value;
           int? existingResponseId = _existingResponseIds[qId];
-
           if (choiceId != null) {
             final companion = HouseholdResponsesCompanion(
               response_id: existingResponseId != null
@@ -982,7 +1357,6 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
               question_id: db.Value(qId),
               choice_id: db.Value(choiceId),
             );
-
             if (existingResponseId != null) {
               await qProvider.updateHouseholdResponse(companion);
             } else {
@@ -993,11 +1367,13 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
           }
         }
 
-        // ... [Finish Update] ...
-
         if (mounted) Navigator.pop(context);
       } catch (e) {
-        // ... handle error
+        if (mounted)
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Error saving: $e")));
+      } finally {
+        if (mounted) setState(() => _isSaving = false);
       }
     }
   }

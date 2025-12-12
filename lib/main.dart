@@ -1,3 +1,4 @@
+import 'package:brims/database/app_db.dart';
 import 'package:brims/locator.dart';
 import 'package:flutter/material.dart' hide RadioGroup;
 import 'package:provider/provider.dart';
@@ -27,8 +28,21 @@ import 'package:brims/provider/medical%20providers/medinfo_lookup_provider.dart'
 import 'package:brims/provider/lookup%20providers/farming_lookup_provider.dart';
 import 'package:brims/provider/lookup%20providers/question_lookup_provider.dart';
 
-void main() {
+void main() async {
   setUp();
+  // --- VERIFICATION CODE START ---
+  final db = locator.get<AppDatabase>();
+
+  // Query the table structure directly from SQLite
+  final columns =
+      await db.customSelect("PRAGMA table_info(household_responses);").get();
+
+  print("--- COLUMNS IN HOUSEHOLD_RESPONSES ---");
+  for (var row in columns) {
+    print("Column: ${row.data['name']}");
+  }
+  print("--------------------------------------");
+  // --- VERIFICATION CODE END ---
   runApp(const MainApp());
 }
 

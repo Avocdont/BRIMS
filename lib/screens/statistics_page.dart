@@ -39,28 +39,39 @@ class _StatisticsPageState extends State<StatisticsPage> {
     // Demographics
     final int males = persons.where((p) => p.sex == Sex.male).length;
     final int females = persons.where((p) => p.sex == Sex.female).length;
-    // Fix: Use genderTotal as denominator so percentages sum to 100%
+
     final int genderTotal = males + females;
     final int safeGenderBase = genderTotal == 0 ? 1 : genderTotal;
     final double malePct = (males / safeGenderBase);
     final double femalePct = (females / safeGenderBase);
 
-    // Age Groups
-    final int infants = persons.where((p) => (p.age ?? 0) <= 2).length;
-    final int children =
-        persons.where((p) => (p.age ?? 0) > 2 && (p.age ?? 0) <= 12).length;
-    final int teens =
-        persons.where((p) => (p.age ?? 0) > 12 && (p.age ?? 0) <= 17).length;
-    final int adults =
-        persons.where((p) => (p.age ?? 0) > 17 && (p.age ?? 0) < 60).length;
-    final int seniors = persons.where((p) => (p.age ?? 0) >= 60).length;
+    // --- REVISED AGE GROUPS LOGIC ---
+    // Count unknowns separately
+    final int unknownAge = persons.where((p) => p.age == null).length;
+
+    // Strictly check for non-null age
+    final int infants =
+        persons.where((p) => p.age != null && p.age! <= 2).length;
+    final int children = persons
+        .where((p) => p.age != null && p.age! > 2 && p.age! <= 12)
+        .length;
+    final int teens = persons
+        .where((p) => p.age != null && p.age! > 12 && p.age! <= 17)
+        .length;
+    final int adults = persons
+        .where((p) => p.age != null && p.age! > 17 && p.age! < 60)
+        .length;
+    final int seniors =
+        persons.where((p) => p.age != null && p.age! >= 60).length;
 
     // Vulnerable Sectors
     final int pwds = persons.where((p) => p.pwd == true).length;
     final int soloParents = persons
         .where((p) => p.solo_parent != null && p.solo_parent != SoloParent.no)
         .length;
-    final int minors = persons.where((p) => (p.age ?? 0) < 18).length;
+    // Minors: Check for non-null and under 18
+    final int minors =
+        persons.where((p) => p.age != null && p.age! < 18).length;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -107,7 +118,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // SEX RATIO (Circular Donut Chart)
+                // SEX RATIO (Donut Chart)
                 Expanded(
                   flex: 2,
                   child: _buildSectionCard(
@@ -178,6 +189,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
                         const SizedBox(height: 12),
                         _buildAgeBar(
                             "Seniors (60+)", seniors, totalPop, Colors.teal),
+                        const SizedBox(height: 12),
+                        // NEW: Unknown Age Bar
+                        _buildAgeBar(
+                            "Unknown Age", unknownAge, totalPop, Colors.grey),
                       ],
                     ),
                   ),
@@ -187,7 +202,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
             const SizedBox(height: 40),
 
-            // --- 3. VULNERABLE SECTORS (Circular Cards) ---
+            // --- 3. VULNERABLE SECTORS ---
             const Text("Vulnerable Groups",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
@@ -217,7 +232,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
     );
   }
 
-  // --- WIDGET HELPERS ---
+  // --- WIDGET HELPERS --- (Identical to your provided code)
 
   Widget _buildSectionCard({required String title, required Widget child}) {
     return Container(
@@ -354,7 +369,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
     );
   }
 
-  // Legend for Donut Chart (updated to take double pct)
   Widget _buildLegendItem(
       String label, int count, double percentage, Color color) {
     return Column(
@@ -414,10 +428,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
   }
 }
 
-// --- CUSTOM PAINTER FOR DONUT CHART ---
+// --- CUSTOM PAINTER (Identical to your provided code) ---
 class DonutChartPainter extends CustomPainter {
-  final double value1; // Males
-  final double value2; // Females
+  final double value1;
+  final double value2;
   final Color color1;
   final Color color2;
 
@@ -456,16 +470,14 @@ class DonutChartPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
 
-    // Draw background ring
     canvas.drawArc(rect, 0, 2 * pi, false, bgPaint);
 
-    double startAngle = -pi / 2; // Start from top
+    double startAngle = -pi / 2;
     double sweepAngle1 = (value1 / total) * 2 * pi;
     double sweepAngle2 = (value2 / total) * 2 * pi;
 
     if (value1 > 0)
       canvas.drawArc(rect, startAngle, sweepAngle1, false, paint1);
-    // Draw second arc starting where first ended
     if (value2 > 0)
       canvas.drawArc(
           rect, startAngle + sweepAngle1, sweepAngle2, false, paint2);

@@ -1,61 +1,17 @@
 import 'package:brims/database/app_db.dart';
 import 'package:brims/repository/household%20repositories/household_repository.dart';
+import 'package:drift/drift.dart'; // Needed for Companions
 import 'package:flutter/material.dart';
 
 class HouseholdProvider extends ChangeNotifier {
   final HouseholdRepository _lookupRepository = HouseholdRepository();
 
+  // --- HOUSEHOLDS ---
   List<HouseholdData> _allHouseholds = [];
   List<HouseholdData> get allHouseholds => _allHouseholds;
 
   List<HouseholdData> _currentHouseholds = [];
   List<HouseholdData> get currentHouseholds => _currentHouseholds;
-
-  List<AddressData> _allAddresses = [];
-  List<AddressData> get allAddresses => _allAddresses;
-
-  List<AddressData> _currentAddresses = [];
-  List<AddressData> get currentAddresses => _currentAddresses;
-
-  List<ServiceData> _allServices = [];
-  List<ServiceData> get allServices => _allServices;
-
-  List<ServiceData> _currentServices = [];
-  List<ServiceData> get currentServices => _currentServices;
-
-  List<PrimaryNeedData> _allPrimaryNeeds = [];
-  List<PrimaryNeedData> get allPrimaryNeeds => _allPrimaryNeeds;
-
-  List<PrimaryNeedData> _currentPrimaryNeeds = [];
-  List<PrimaryNeedData> get currentPrimaryNeeds => _currentPrimaryNeeds;
-
-  List<FemaleMortalityData> _allFemaleMortalities = [];
-  List<FemaleMortalityData> get allFemaleMortalities => _allFemaleMortalities;
-
-  List<FemaleMortalityData> _currentFemaleMortalities = [];
-  List<FemaleMortalityData> get currentFemaleMortalities =>
-      _currentFemaleMortalities;
-
-  List<ChildMortalityData> _allChildMortalities = [];
-  List<ChildMortalityData> get allChildMortalities => _allChildMortalities;
-
-  List<ChildMortalityData> _currentChildMortalities = [];
-  List<ChildMortalityData> get currentChildMortalities =>
-      _currentChildMortalities;
-
-  List<FutureResidency> _allFutureResidencies = [];
-  List<FutureResidency> get allFutureResidencies => _allFutureResidencies;
-
-  List<FutureResidency> _currentFutureResidencies = [];
-  List<FutureResidency> get currentFutureResidencies =>
-      _currentFutureResidencies;
-
-  List<HouseholdVisitData> _allHouseholdVisits = [];
-  List<HouseholdVisitData> get allHouseholdVisits => _allHouseholdVisits;
-
-  List<HouseholdVisitData> _currentHouseholdVisits = [];
-  List<HouseholdVisitData> get currentHouseholdVisits =>
-      _currentHouseholdVisits;
 
   getAllHouseholds() async {
     _allHouseholds = await _lookupRepository.allHouseholds();
@@ -73,6 +29,7 @@ class HouseholdProvider extends ChangeNotifier {
     return id;
   }
 
+  // --- FIX: Now accepts ONLY the Companion (ID is inside it) ---
   updateHousehold(HouseholdsCompanion hc) async {
     await _lookupRepository.updateHousehold(hc);
     getAllHouseholds();
@@ -82,6 +39,13 @@ class HouseholdProvider extends ChangeNotifier {
     await _lookupRepository.deleteHousehold(id);
     getAllHouseholds();
   }
+
+  // --- ADDRESSES ---
+  List<AddressData> _allAddresses = [];
+  List<AddressData> get allAddresses => _allAddresses;
+
+  List<AddressData> _currentAddresses = [];
+  List<AddressData> get currentAddresses => _currentAddresses;
 
   getAllAddresses() async {
     _allAddresses = await _lookupRepository.allAddresses();
@@ -110,7 +74,6 @@ class HouseholdProvider extends ChangeNotifier {
   }
 
   searchAddresses({
-    // Named parameters, optional but you have to specify which arguments you're gonna pass. Ex: Zone : "1B"
     String? zone,
     String? street,
     String? block,
@@ -123,6 +86,13 @@ class HouseholdProvider extends ChangeNotifier {
       lot: lot,
     );
   }
+
+  // --- SERVICES ---
+  List<ServiceData> _allServices = [];
+  List<ServiceData> get allServices => _allServices;
+
+  List<ServiceData> _currentServices = [];
+  List<ServiceData> get currentServices => _currentServices;
 
   getAllServices() async {
     _allServices = await _lookupRepository.allServices();
@@ -149,6 +119,13 @@ class HouseholdProvider extends ChangeNotifier {
     getAllServices();
   }
 
+  // --- PRIMARY NEEDS ---
+  List<PrimaryNeedData> _allPrimaryNeeds = [];
+  List<PrimaryNeedData> get allPrimaryNeeds => _allPrimaryNeeds;
+
+  List<PrimaryNeedData> _currentPrimaryNeeds = [];
+  List<PrimaryNeedData> get currentPrimaryNeeds => _currentPrimaryNeeds;
+
   getAllPrimaryNeeds() async {
     _allPrimaryNeeds = await _lookupRepository.allPrimaryNeeds();
     _currentPrimaryNeeds = _allPrimaryNeeds;
@@ -173,6 +150,14 @@ class HouseholdProvider extends ChangeNotifier {
     await _lookupRepository.deletePrimaryNeed(id);
     getAllPrimaryNeeds();
   }
+
+  // --- FEMALE MORTALITY ---
+  List<FemaleMortalityData> _allFemaleMortalities = [];
+  List<FemaleMortalityData> get allFemaleMortalities => _allFemaleMortalities;
+
+  List<FemaleMortalityData> _currentFemaleMortalities = [];
+  List<FemaleMortalityData> get currentFemaleMortalities =>
+      _currentFemaleMortalities;
 
   getAllFemaleMortalities() async {
     _allFemaleMortalities = await _lookupRepository.allFemaleMortalities();
@@ -199,6 +184,14 @@ class HouseholdProvider extends ChangeNotifier {
     getAllFemaleMortalities();
   }
 
+  // --- CHILD MORTALITY ---
+  List<ChildMortalityData> _allChildMortalities = [];
+  List<ChildMortalityData> get allChildMortalities => _allChildMortalities;
+
+  List<ChildMortalityData> _currentChildMortalities = [];
+  List<ChildMortalityData> get currentChildMortalities =>
+      _currentChildMortalities;
+
   getAllChildMortalities() async {
     _allChildMortalities = await _lookupRepository.allChildMortalities();
     _currentChildMortalities = _allChildMortalities;
@@ -223,6 +216,14 @@ class HouseholdProvider extends ChangeNotifier {
     await _lookupRepository.deleteChildMortality(id);
     getAllChildMortalities();
   }
+
+  // --- FUTURE RESIDENCY ---
+  List<FutureResidency> _allFutureResidencies = [];
+  List<FutureResidency> get allFutureResidencies => _allFutureResidencies;
+
+  List<FutureResidency> _currentFutureResidencies = [];
+  List<FutureResidency> get currentFutureResidencies =>
+      _currentFutureResidencies;
 
   getAllFutureResidencies() async {
     _allFutureResidencies = await _lookupRepository.allFutureResidencies();
@@ -249,6 +250,14 @@ class HouseholdProvider extends ChangeNotifier {
     getAllFutureResidencies();
   }
 
+  // --- HOUSEHOLD VISITS ---
+  List<HouseholdVisitData> _allHouseholdVisits = [];
+  List<HouseholdVisitData> get allHouseholdVisits => _allHouseholdVisits;
+
+  List<HouseholdVisitData> _currentHouseholdVisits = [];
+  List<HouseholdVisitData> get currentHouseholdVisits =>
+      _currentHouseholdVisits;
+
   getAllHouseholdVisits() async {
     _allHouseholdVisits = await _lookupRepository.allHouseholdVisits();
     _currentHouseholdVisits = _allHouseholdVisits;
@@ -274,8 +283,23 @@ class HouseholdProvider extends ChangeNotifier {
     getAllHouseholdVisits();
   }
 
+  // --- HOUSEHOLD MEMBERS ---
+  List<HouseholdMemberData> _allHouseholdMembers = [];
+  List<HouseholdMemberData> get allHouseholdMembers => _allHouseholdMembers;
+
+  getAllHouseholdMembers() async {
+    _allHouseholdMembers = await _lookupRepository.allHouseholdMembers();
+    notifyListeners();
+  }
+
   Future<void> addHouseholdMember(HouseholdMembersCompanion hmc) async {
     await _lookupRepository.addHouseholdMember(hmc);
+    getAllHouseholdMembers();
+  }
+
+  Future<void> deleteHouseholdMember(int householdId, int personId) async {
+    await _lookupRepository.deleteHouseholdMember(householdId, personId);
+    getAllHouseholdMembers();
   }
 
   Future<void> addHouseholdRelationship(

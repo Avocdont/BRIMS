@@ -10,12 +10,12 @@ class HouseholdRepository {
 
   PersonRepository personRepository = PersonRepository();
 
+  // --- HOUSEHOLDS ---
   Future<List<HouseholdData>> allHouseholds() async {
     try {
       return await db.select(db.households).get();
     } catch (e) {
       log(e.toString());
-
       return [];
     }
   }
@@ -23,12 +23,8 @@ class HouseholdRepository {
   getHouseholdByID(int id) async {
     try {
       return await (db.select(db.households)
-            ..where(
-              (household) => household.household_id.equals(
-                id,
-              ), // household here specifically is a row
-            ))
-          .getSingle(); // .. is a cascde operator
+            ..where((household) => household.household_id.equals(id)))
+          .getSingle();
     } catch (e) {
       log(e.toString());
     }
@@ -37,32 +33,29 @@ class HouseholdRepository {
   searchHouseholdHead(String lastName, String firstName) async {
     try {
       return await (db.select(db.persons)
-            ..where(
-              (persons) =>
-                  persons.last_name.equals(lastName) &
-                  persons.first_name.equals(firstName),
-            ))
-          .getSingle(); // .. is a cascde operator
+            ..where((persons) =>
+                persons.last_name.equals(lastName) &
+                persons.first_name.equals(firstName)))
+          .getSingle();
     } catch (e) {
       log(e.toString());
     }
   }
 
   addHousehold(HouseholdsCompanion hc) async {
-    // HouseholdsCompanion is a Drift generated type safe table inserter that enforces required fields, prevents illegal values, and lets you choose which columns to insert or update
     try {
-      return await db
-          .into(db.households)
-          .insert(hc); // Returns id of the inserted row
+      return await db.into(db.households).insert(hc);
     } catch (e) {
       log(e.toString());
     }
   }
 
+  // ** FIX: Use WRITE to update specific columns without replacing (deleting) the row **
   updateHousehold(HouseholdsCompanion hc) async {
-    // hc holds row data
     try {
-      return await db.update(db.households).replace(hc);
+      return await (db.update(db.households)
+            ..where((t) => t.household_id.equals(hc.household_id.value)))
+          .write(hc);
     } catch (e) {
       log(e.toString());
     }
@@ -78,12 +71,12 @@ class HouseholdRepository {
     }
   }
 
+  // --- ADDRESSES ---
   Future<List<AddressData>> allAddresses() async {
     try {
       return await db.select(db.addresses).get();
     } catch (e) {
       log(e.toString());
-
       return [];
     }
   }
@@ -103,8 +96,8 @@ class HouseholdRepository {
   }
 
   updateAddress(AddressesCompanion ac) async {
-    // hc holds row data
     try {
+      // For address, replace is usually fine, or you can switch to .write() if needed
       return await db.update(db.addresses).replace(ac);
     } catch (e) {
       log(e.toString());
@@ -122,15 +115,11 @@ class HouseholdRepository {
   }
 
   Future<List<Map<String, dynamic>>> searchAddresses({
-    // Named parameters, optional but you have to specify which arguments you're gonna pass. Ex: Zone : "1B"
     String? zone,
     String? street,
     String? block,
     String? lot,
   }) async {
-    // Select all addresses whose id matches those in
-    // household's address_id and even those addresses with
-    // no matching household address_id but leave those as null
     final query = db.select(db.addresses).join([
       leftOuterJoin(
         db.households,
@@ -138,15 +127,11 @@ class HouseholdRepository {
       ),
     ]);
 
-    // If user passed a zone, street, block, lot, add these queries
     if (zone != null && zone.isNotEmpty) {
       query.where(db.addresses.zone.like('%$zone%'));
-      // From all the addresses above,
-      // narrow it down to where zone in address is like user typed zone
     }
     if (street != null && street.isNotEmpty) {
       query.where(db.addresses.street.like('%$street%'));
-      // Same as above
     }
     if (block != null && block.isNotEmpty) {
       query.where(db.addresses.block.like('%$block%'));
@@ -155,22 +140,15 @@ class HouseholdRepository {
       query.where(db.addresses.lot.like('%$lot%'));
     }
 
-    final results =
-        await query.get(); // Contains combined columns of address and household
+    final results = await query.get();
 
-    // Map each row to a null-safe result
     return results.map((row) {
-      // Map row, if empty list, code below doesn't execute
-      // Assign data from the address table to address
       final address = row.readTable(db.addresses);
-      // Assign data from the household table to household
       final household = row.readTableOrNull(db.households);
 
       return {
-        // A map or dictionary
-        'householdId': household?.household_id, // null if no household
+        'householdId': household?.household_id,
         'address': {
-          // Use address.zone if not null, else empty string
           'id': address.address_id,
           'zone': address.zone ?? '',
           'street': address.street ?? '',
@@ -180,8 +158,8 @@ class HouseholdRepository {
       };
     }).toList();
   }
-  // ------------ Services ------------
 
+  // --- SERVICES ---
   Future<List<ServiceData>> allServices() async {
     try {
       return await db.select(db.services).get();
@@ -227,8 +205,7 @@ class HouseholdRepository {
     }
   }
 
-  // ------------ Primary Needs ------------
-
+  // --- PRIMARY NEEDS ---
   Future<List<PrimaryNeedData>> allPrimaryNeeds() async {
     try {
       return await db.select(db.primaryNeeds).get();
@@ -274,8 +251,7 @@ class HouseholdRepository {
     }
   }
 
-  // ------------ Female Mortalities ------------
-
+  // --- FEMALE MORTALITIES ---
   Future<List<FemaleMortalityData>> allFemaleMortalities() async {
     try {
       return await db.select(db.femaleMortalities).get();
@@ -321,8 +297,7 @@ class HouseholdRepository {
     }
   }
 
-  // ------------ Child Mortalities ------------
-
+  // --- CHILD MORTALITIES ---
   Future<List<ChildMortalityData>> allChildMortalities() async {
     try {
       return await db.select(db.childMortalities).get();
@@ -368,8 +343,7 @@ class HouseholdRepository {
     }
   }
 
-  // ------------ Future Residencies ------------
-
+  // --- FUTURE RESIDENCIES ---
   Future<List<FutureResidency>> allFutureResidencies() async {
     try {
       return await db.select(db.futureResidencies).get();
@@ -415,12 +389,12 @@ class HouseholdRepository {
     }
   }
 
+  // --- HOUSEHOLD VISITS ---
   Future<List<HouseholdVisitData>> allHouseholdVisits() async {
     try {
       return await db.select(db.householdVisits).get();
     } catch (e) {
       log(e.toString());
-
       return [];
     }
   }
@@ -461,8 +435,33 @@ class HouseholdRepository {
     }
   }
 
+  // --- HOUSEHOLD MEMBERS & RELATIONSHIPS ---
+
+  // ** Added to fetch members **
+  Future<List<HouseholdMemberData>> allHouseholdMembers() async {
+    try {
+      return await db.select(db.householdMembers).get();
+    } catch (e) {
+      log(e.toString());
+      return [];
+    }
+  }
+
   Future<void> addHouseholdMember(HouseholdMembersCompanion hmc) async {
     await db.into(db.householdMembers).insert(hmc);
+  }
+
+  // ** Added to delete specific member **
+  Future<void> deleteHouseholdMember(int householdId, int personId) async {
+    try {
+      await (db.delete(db.householdMembers)
+            ..where((m) =>
+                m.household_id.equals(householdId) &
+                m.person_id.equals(personId)))
+          .go();
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   Future<void> addHouseholdRelationship(

@@ -1555,7 +1555,8 @@ class _AddPersonPageState extends State<AddPersonPage> {
                       );
                     }
 
-                    if (_isSeniorCitizen == true) {
+                    if (_isSeniorCitizen == true &&
+                        _registeredSeniorCitizen == true) {
                       final registeredSeniorCompanion =
                           RegisteredSeniorsCompanion(
                         person_id: db.Value(personId!),
@@ -1580,7 +1581,8 @@ class _AddPersonPageState extends State<AddPersonPage> {
                       );
                     }
 
-                    if (_selectedPwd == true) {
+                    if (_selectedPwd == true &&
+                        _disabilityNameController.text.isNotEmpty) {
                       final disabilityCompanion = DisabilitiesCompanion(
                         person_id: db.Value(personId!),
                         name: _disabilityNameController.text.isNotEmpty
@@ -1596,14 +1598,12 @@ class _AddPersonPageState extends State<AddPersonPage> {
                       );
                     }
 
-                    if (_selectedRegisteredVoter == true) {
+                    if (_selectedRegisteredVoter == true &&
+                        _placeOfVoteRegistryController.text.isNotEmpty) {
                       final voterCompanion = VoterRegistriesCompanion(
-                        person_id: db.Value(personId!),
-                        place_of_vote_registry:
-                            _placeOfVoteRegistryController.text.isNotEmpty
-                                ? db.Value(_placeOfVoteRegistryController.text)
-                                : db.Value.absent(),
-                      );
+                          person_id: db.Value(personId!),
+                          place_of_vote_registry:
+                              db.Value(_placeOfVoteRegistryController.text));
                       await citizenRegistryProvider.addVoterRegistry(
                         voterCompanion,
                       );
@@ -1624,6 +1624,8 @@ class _AddPersonPageState extends State<AddPersonPage> {
                       );
                     }
                   }
+                  if (!context.mounted) return;
+                  Navigator.of(context).pop();
                 },
                 child: Text("Save"),
               ),

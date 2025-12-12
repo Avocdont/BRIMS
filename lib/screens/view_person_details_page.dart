@@ -214,6 +214,10 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
                     const SizedBox(height: 12),
                     _buildRowPair("Birth Date", _formatDate(person.birth_date),
                         "Birth Place", person.birth_place),
+                    const SizedBox(height: 12),
+                    if (person.registration_place != null)
+                      _buildInfoRow(
+                          "Place of Registration", person.registration_place!),
                     const Divider(color: Colors.white24, height: 32),
 
                     // Unconditional Residency Fields
@@ -351,8 +355,6 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
                     if (voter != null)
                       _buildInfoRow(
                           "Polling Place", voter.place_of_vote_registry),
-                    if (person.registration_place != null)
-                      _buildInfoRow("Reg. Place", person.registration_place!),
                     const SizedBox(height: 12),
                     if (ctc != null) ...[
                       _buildSectionHeader("Community Tax Certificate (CTC)"),
