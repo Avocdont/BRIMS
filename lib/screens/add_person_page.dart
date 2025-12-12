@@ -34,6 +34,23 @@ class _AddPersonPageState extends State<AddPersonPage> {
     }).join(' ');
   }
 
+  Future<void> pickDate({
+    required BuildContext context,
+    required DateTime? currentValue,
+    required ValueChanged<DateTime?> onDatePicked,
+  }) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: currentValue ?? DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null) {
+      onDatePicked(picked);
+    }
+  }
+
   // Insert to person table
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
@@ -358,31 +375,30 @@ class _AddPersonPageState extends State<AddPersonPage> {
                       ],
                     )
                   : SizedBox.shrink(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Birth Date:"),
-                    scn.DatePicker(
-                      value: _birthDate,
-                      mode: scn.PromptMode.popover,
-                      // Disable selecting dates after "today".
-                      stateBuilder: (date) {
-                        if (date.isAfter(DateTime.now())) {
-                          return scn.DateState.disabled;
-                        }
-                        return scn.DateState.enabled;
-                      },
-                      onChanged: (value) {
-                        setState(() {
-                          _birthDate = value;
-                        });
-                      },
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      await pickDate(
+                        context: context,
+                        currentValue: _birthDate,
+                        onDatePicked: (d) => setState(() => _birthDate = d),
+                      );
+                    },
+                    child: const Text("Select Birth Date"),
+                  ),
+                  if (_birthDate != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Text(
+                        "Selected: ${_birthDate!.month}/${_birthDate!.day}/${_birthDate!.year}",
+                        style: const TextStyle(fontSize: 14),
+                      ),
                     ),
-                  ],
-                ),
+                ],
               ),
+
               const Text("Address Information",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
@@ -1129,31 +1145,29 @@ class _AddPersonPageState extends State<AddPersonPage> {
                 ),
               ),
               _selectedDeceased == true
-                  ? Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Date of Death:"),
-                          scn.DatePicker(
-                            value: _deathDate,
-                            mode: scn.PromptMode.popover,
-                            // Disable selecting dates after "today".
-                            stateBuilder: (date) {
-                              if (date.isAfter(DateTime.now())) {
-                                return scn.DateState.disabled;
-                              }
-                              return scn.DateState.enabled;
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              await pickDate(
+                                context: context,
+                                currentValue: _deathDate,
+                                onDatePicked: (d) =>
+                                    setState(() => _deathDate = d),
+                              );
                             },
-                            onChanged: (value) {
-                              setState(() {
-                                _deathDate = value;
-                              });
-                            },
+                            child: const Text("Select Date of Death"),
                           ),
-                        ],
-                      ),
-                    )
+                          if (_deathDate != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6),
+                              child: Text(
+                                "Selected: ${_deathDate!.month}/${_deathDate!.day}/${_deathDate!.year}",
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            )
+                        ])
                   : SizedBox.shrink(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -1325,25 +1339,27 @@ class _AddPersonPageState extends State<AddPersonPage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Issuance Date:"),
-                        scn.DatePicker(
-                          value: _issueDate,
-                          mode: scn.PromptMode.popover,
-                          // Disable selecting dates after "today".
-                          stateBuilder: (date) {
-                            if (date.isAfter(DateTime.now())) {
-                              return scn.DateState.disabled;
-                            }
-                            return scn.DateState.enabled;
+                        ElevatedButton(
+                          onPressed: () async {
+                            await pickDate(
+                              context: context,
+                              currentValue: _issueDate,
+                              onDatePicked: (d) =>
+                                  setState(() => _issueDate = d),
+                            );
                           },
-                          onChanged: (value) {
-                            setState(() {
-                              _issueDate = value;
-                            });
-                          },
+                          child: const Text("Select Issue Date"),
                         ),
+                        if (_issueDate != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 6),
+                            child: Text(
+                              "Selected: ${_issueDate!.month}/${_issueDate!.day}/${_issueDate!.year}",
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ),
                       ],
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -1622,6 +1638,8 @@ class _AddPersonPageState extends State<AddPersonPage> {
                             ? db.Value(_issueDate)
                             : db.Value.absent(),
                       );
+
+                      await citizenRegistryProvider.addCTCRecord(ctcCompanion);
                     }
                   }
                   if (!context.mounted) return;

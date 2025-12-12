@@ -111,6 +111,23 @@ class _EditPersonPageState extends State<EditPersonPage> {
 
   List<Gadget> _selectedGadgets = [];
 
+  Future<void> pickDate({
+    required BuildContext context,
+    required DateTime? currentValue,
+    required ValueChanged<DateTime?> onDatePicked,
+  }) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: currentValue ?? DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null) {
+      onDatePicked(picked);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -590,7 +607,7 @@ class _EditPersonPageState extends State<EditPersonPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ...Sex.values.map((val) => RadioListTile<Sex>(
-                          title: Text(val.name),
+                          title: Text(val.label),
                           value: val,
                           groupValue: _selectedSex,
                           onChanged: (value) =>
@@ -648,19 +665,28 @@ class _EditPersonPageState extends State<EditPersonPage> {
                 ]),
 
               // --- 4. BIRTH DATE & PLACE ---
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text("Birth Date:"),
-                      scn.DatePicker(
-                        value: _birthDate,
-                        mode: scn.PromptMode.popover,
-                        onChanged: (value) =>
-                            setState(() => _birthDate = value),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      await pickDate(
+                        context: context,
+                        currentValue: _birthDate,
+                        onDatePicked: (d) => setState(() => _birthDate = d),
+                      );
+                    },
+                    child: const Text("Select Birth Date"),
+                  ),
+                  if (_birthDate != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Text(
+                        "Selected: ${_birthDate!.month}/${_birthDate!.day}/${_birthDate!.year}",
+                        style: const TextStyle(fontSize: 14),
                       ),
-                    ]),
+                    ),
+                ],
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -814,7 +840,7 @@ class _EditPersonPageState extends State<EditPersonPage> {
               Column(children: [
                 const Text("Civil Status"),
                 ...CivilStatus.values.map((g) => RadioListTile<CivilStatus>(
-                    title: Text(g.name),
+                    title: Text(g.label),
                     value: g,
                     groupValue: _selectedCivilStatus,
                     onChanged: (v) =>
@@ -865,7 +891,7 @@ class _EditPersonPageState extends State<EditPersonPage> {
               Column(children: [
                 const Text("Residency"),
                 ...Residency.values.map((v) => RadioListTile<Residency>(
-                    title: Text(v.name),
+                    title: Text(v.label),
                     value: v,
                     groupValue: _selectedResidency,
                     onChanged: (val) =>
@@ -885,7 +911,7 @@ class _EditPersonPageState extends State<EditPersonPage> {
               Column(children: [
                 const Text("Transient"),
                 ...Transient.values.map((v) => RadioListTile<Transient>(
-                    title: Text(v.name),
+                    title: Text(v.label),
                     value: v,
                     groupValue: _selectedTransient,
                     onChanged: (val) =>
@@ -916,7 +942,7 @@ class _EditPersonPageState extends State<EditPersonPage> {
               Column(children: [
                 const Text("Solo Parent"),
                 ...SoloParent.values.map((v) => RadioListTile<SoloParent>(
-                    title: Text(v.name),
+                    title: Text(v.label),
                     value: v,
                     groupValue: _selectedSoloParent,
                     onChanged: (val) =>
@@ -1025,14 +1051,20 @@ class _EditPersonPageState extends State<EditPersonPage> {
                         onChanged: (val) =>
                             setState(() => _selectedCurrentlyEnrolled = val))),
               ]),
-              if (_selectedCurrentlyEnrolled != CurrentlyEnrolled.no)
-                Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                        controller: _enrolledAtController,
-                        decoration: const InputDecoration(
-                            labelText: "School Name",
-                            border: OutlineInputBorder()))),
+              _selectedCurrentlyEnrolled != CurrentlyEnrolled.no
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Text("School enrolled at"),
+                          TextFormField(
+                              controller: _enrolledAtController,
+                              decoration: const InputDecoration(
+                                  labelText: "School Name",
+                                  border: OutlineInputBorder())),
+                        ],
+                      ))
+                  : SizedBox.shrink(),
 
               // --- 13. DECEASED ---
               Column(children: [
@@ -1048,18 +1080,34 @@ class _EditPersonPageState extends State<EditPersonPage> {
                     groupValue: _selectedDeceased,
                     onChanged: (v) => setState(() => _selectedDeceased = v)),
               ]),
-              if (_selectedDeceased == true)
-                Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
+              _selectedDeceased == true
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Date of Death:"),
-                          scn.DatePicker(
-                              value: _deathDate,
-                              mode: scn.PromptMode.popover,
-                              onChanged: (v) => setState(() => _deathDate = v)),
-                        ])),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await pickDate(
+                                context: context,
+                                currentValue: _deathDate,
+                                onDatePicked: (d) =>
+                                    setState(() => _deathDate = d),
+                              );
+                            },
+                            child: const Text("Select Date of Death"),
+                          ),
+                          if (_deathDate != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6),
+                              child: Text(
+                                "Selected: ${_deathDate!.month}/${_deathDate!.day}/${_deathDate!.year}",
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            ),
+                        ],
+                      ))
+                  : SizedBox.shrink(),
 
               // --- 14. CONTACT INFO ---
               Padding(
@@ -1160,11 +1208,30 @@ class _EditPersonPageState extends State<EditPersonPage> {
                             controller: _placeOfIssueController,
                             decoration: const InputDecoration(
                                 border: OutlineInputBorder())),
-                        const Text("Date:"),
-                        scn.DatePicker(
-                            value: _issueDate,
-                            mode: scn.PromptMode.popover,
-                            onChanged: (v) => setState(() => _issueDate = v)),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () async {
+                                await pickDate(
+                                  context: context,
+                                  currentValue: _issueDate,
+                                  onDatePicked: (d) =>
+                                      setState(() => _issueDate = d),
+                                );
+                              },
+                              child: const Text("Select Issue Date"),
+                            ),
+                            if (_issueDate != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 6),
+                                child: Text(
+                                  "Selected: ${_issueDate!.month}/${_issueDate!.day}/${_issueDate!.year}",
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ),
+                          ],
+                        )
                       ])),
 
               // --- 18. FINAL REGISTRATION STATUS ---

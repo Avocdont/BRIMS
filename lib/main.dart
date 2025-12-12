@@ -30,19 +30,6 @@ import 'package:brims/provider/lookup%20providers/question_lookup_provider.dart'
 
 void main() async {
   setUp();
-  // --- VERIFICATION CODE START ---
-  final db = locator.get<AppDatabase>();
-
-  // Query the table structure directly from SQLite
-  final columns =
-      await db.customSelect("PRAGMA table_info(household_responses);").get();
-
-  print("--- COLUMNS IN HOUSEHOLD_RESPONSES ---");
-  for (var row in columns) {
-    print("Column: ${row.data['name']}");
-  }
-  print("--------------------------------------");
-  // --- VERIFICATION CODE END ---
   runApp(const MainApp());
 }
 

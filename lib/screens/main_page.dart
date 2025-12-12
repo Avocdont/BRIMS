@@ -1,9 +1,11 @@
+import 'package:brims/provider/profiling%20providers/profile_provider.dart';
 import 'package:brims/screens/home_page.dart';
 import 'package:brims/screens/households_page.dart';
 import 'package:brims/screens/lookups_page.dart';
 import 'package:brims/screens/profiles_page.dart';
 import 'package:brims/screens/statistics_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -35,7 +37,21 @@ class _MainPageState extends State<MainPage> {
             labelType: NavigationRailLabelType.all,
             selectedIndex: _index,
             onDestinationSelected: (i) => setState(() {
-              _index = i;
+              // 1. Check if the user clicked the Profiles tab (Index 1)
+              if (i == 1) {
+                final provider = context.read<ProfileProvider>();
+
+                // 2. Reset the table to the first page
+                provider.onPageChanged(0);
+
+                // 3. Force a reload of the data to get the new person
+                provider.loadProfiles();
+              }
+
+              // 4. Update the UI tab selection
+              setState(() {
+                _index = i;
+              });
             }),
 
             // 👇 Logo placed above Home icon
