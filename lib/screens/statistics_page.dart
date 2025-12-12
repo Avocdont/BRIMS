@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:brims/provider/household%20providers/household_provider.dart';
 import 'package:brims/provider/profiling%20providers/person_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../database/tables/enums.dart';
 
@@ -13,6 +14,16 @@ class StatisticsPage extends StatefulWidget {
 }
 
 class _StatisticsPageState extends State<StatisticsPage> {
+  // --- Enhanced Color Palette (Matching Main Page) ---
+  static const Color primaryBackground = Color(0xFFF5F7FA);
+  static const Color cardBackground = Color(0xFFFFFFFF);
+  static const Color navBackground = Color(0xFF40C4FF);
+  static const Color selectedAccent = Color(0xFF0288D1);
+  static const Color actionGreen = Color(0xFF00C853);
+  static const Color primaryText = Color(0xFF1A1A1A);
+  static const Color secondaryText = Color(0xFF555555);
+  static const Color dividerColor = Color(0xFFE0E0E0);
+
   @override
   void initState() {
     super.initState();
@@ -45,11 +56,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
     final double malePct = (males / safeGenderBase);
     final double femalePct = (females / safeGenderBase);
 
-    // --- REVISED AGE GROUPS LOGIC ---
-    // Count unknowns separately
+    // Age Groups
     final int unknownAge = persons.where((p) => p.age == null).length;
-
-    // Strictly check for non-null age
     final int infants =
         persons.where((p) => p.age != null && p.age! <= 2).length;
     final int children = persons
@@ -69,35 +77,29 @@ class _StatisticsPageState extends State<StatisticsPage> {
     final int soloParents = persons
         .where((p) => p.solo_parent != null && p.solo_parent != SoloParent.no)
         .length;
-    // Minors: Check for non-null and under 18
     final int minors =
         persons.where((p) => p.age != null && p.age! < 18).length;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text("Barangay Statistics"),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        surfaceTintColor: Colors.white,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(color: Colors.grey[200], height: 1),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+    return Container(
+      color: primaryBackground,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(32.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // --- 1. OVERVIEW ---
-            const Text("Overview",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
+            Text(
+              "Overview",
+              style: GoogleFonts.poppins(
+                fontSize: 28,
+                fontWeight: FontWeight.w700,
+                color: primaryText,
+              ),
+            ),
+            const SizedBox(height: 20),
             Wrap(
-              spacing: 16,
-              runSpacing: 16,
+              spacing: 20,
+              runSpacing: 20,
               children: [
                 _buildKpiCard(
                     "Population", "$totalPop", Icons.groups, Colors.blue),
@@ -108,12 +110,18 @@ class _StatisticsPageState extends State<StatisticsPage> {
               ],
             ),
 
-            const SizedBox(height: 40),
+            const SizedBox(height: 48),
 
             // --- 2. DEMOGRAPHICS ---
-            const Text("Demographics",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
+            Text(
+              "Demographics",
+              style: GoogleFonts.poppins(
+                fontSize: 28,
+                fontWeight: FontWeight.w700,
+                color: primaryText,
+              ),
+            ),
+            const SizedBox(height: 20),
 
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,13 +147,21 @@ class _StatisticsPageState extends State<StatisticsPage> {
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text("$totalPop",
-                                      style: const TextStyle(
-                                          fontSize: 28,
-                                          fontWeight: FontWeight.bold)),
-                                  const Text("Total",
-                                      style: TextStyle(
-                                          color: Colors.grey, fontSize: 12)),
+                                  Text(
+                                    "$totalPop",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: primaryText,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Total",
+                                    style: GoogleFonts.poppins(
+                                      color: secondaryText,
+                                      fontSize: 12,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -190,7 +206,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
                         _buildAgeBar(
                             "Seniors (60+)", seniors, totalPop, Colors.teal),
                         const SizedBox(height: 12),
-                        // NEW: Unknown Age Bar
                         _buildAgeBar(
                             "Unknown Age", unknownAge, totalPop, Colors.grey),
                       ],
@@ -200,18 +215,24 @@ class _StatisticsPageState extends State<StatisticsPage> {
               ],
             ),
 
-            const SizedBox(height: 40),
+            const SizedBox(height: 48),
 
             // --- 3. VULNERABLE SECTORS ---
-            const Text("Vulnerable Groups",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
+            Text(
+              "Vulnerable Groups",
+              style: GoogleFonts.poppins(
+                fontSize: 28,
+                fontWeight: FontWeight.w700,
+                color: primaryText,
+              ),
+            ),
+            const SizedBox(height: 20),
 
             SizedBox(
               width: double.infinity,
               child: Wrap(
-                spacing: 16,
-                runSpacing: 16,
+                spacing: 20,
+                runSpacing: 20,
                 alignment: WrapAlignment.start,
                 children: [
                   _buildCircularStatCard("Seniors", seniors, totalPop,
@@ -232,30 +253,33 @@ class _StatisticsPageState extends State<StatisticsPage> {
     );
   }
 
-  // --- WIDGET HELPERS --- (Identical to your provided code)
+  // --- WIDGET HELPERS ---
 
   Widget _buildSectionCard({required String title, required Widget child}) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardBackground,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 10,
-              offset: const Offset(0, 4))
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          )
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black87)),
+          Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: primaryText,
+            ),
+          ),
           const SizedBox(height: 24),
           child,
         ],
@@ -265,42 +289,52 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   Widget _buildKpiCard(String title, String value, IconData icon, Color color) {
     return SizedBox(
-      width: 250,
+      width: 260,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade200),
+          color: cardBackground,
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4))
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 12,
+              offset: const Offset(0, 3),
+            )
           ],
         ),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10)),
-              child: Icon(icon, color: color, size: 28),
+                color: color.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: color, size: 32),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 18),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(value,
-                      style: const TextStyle(
-                          fontSize: 28, fontWeight: FontWeight.bold)),
-                  Text(title,
-                      style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w500)),
+                  Text(
+                    value,
+                    style: GoogleFonts.poppins(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: primaryText,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    title,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: secondaryText,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -315,55 +349,69 @@ class _StatisticsPageState extends State<StatisticsPage> {
     double percentage = total == 0 ? 0.0 : (count / total);
 
     return Container(
-      width: 180,
-      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+      width: 190,
+      padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardBackground,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade100),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 12,
-              offset: const Offset(0, 4))
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          )
         ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            height: 80,
-            width: 80,
+            height: 90,
+            width: 90,
             child: Stack(
               children: [
                 SizedBox.expand(
                   child: CircularProgressIndicator(
                     value: percentage,
-                    strokeWidth: 8,
+                    strokeWidth: 10,
                     color: color,
-                    backgroundColor: color.withOpacity(0.1),
+                    backgroundColor: color.withOpacity(0.12),
                     strokeCap: StrokeCap.round,
                   ),
                 ),
                 Center(
-                  child: Icon(icon, color: color, size: 32),
+                  child: Icon(icon, color: color, size: 36),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
-          Text("$count",
-              style:
-                  const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          Text(title,
-              style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500)),
+          const SizedBox(height: 18),
+          Text(
+            "$count",
+            style: GoogleFonts.poppins(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: primaryText,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text("${(percentage * 100).toStringAsFixed(1)}% of Pop.",
-              style: TextStyle(
-                  color: color, fontSize: 11, fontWeight: FontWeight.bold)),
+          Text(
+            title,
+            style: GoogleFonts.poppins(
+              color: secondaryText,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            "${(percentage * 100).toStringAsFixed(1)}% of Pop.",
+            style: GoogleFonts.poppins(
+              color: color,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );
@@ -373,11 +421,22 @@ class _StatisticsPageState extends State<StatisticsPage> {
       String label, int count, double percentage, Color color) {
     return Column(
       children: [
-        Text("${(percentage * 100).toStringAsFixed(0)}%",
-            style: TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: color)),
-        Text("$label ($count)",
-            style: const TextStyle(color: Colors.grey, fontSize: 12)),
+        Text(
+          "${(percentage * 100).toStringAsFixed(0)}%",
+          style: GoogleFonts.poppins(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          "$label ($count)",
+          style: GoogleFonts.poppins(
+            color: secondaryText,
+            fontSize: 13,
+          ),
+        ),
       ],
     );
   }
@@ -389,57 +448,72 @@ class _StatisticsPageState extends State<StatisticsPage> {
       child: Row(
         children: [
           SizedBox(
-              width: 100,
-              child: Text(label,
-                  style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black87))),
+            width: 110,
+            child: Text(
+              label,
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: primaryText,
+              ),
+            ),
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Stack(
               children: [
                 Container(
-                    height: 10,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(5))),
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
                 FractionallySizedBox(
                   widthFactor: percentage.clamp(0.01, 1.0),
                   child: Container(
-                      height: 10,
-                      decoration: BoxDecoration(
-                          color: color,
-                          borderRadius: BorderRadius.circular(5))),
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
           const SizedBox(width: 12),
           SizedBox(
-              width: 40,
-              child: Text("$count",
-                  textAlign: TextAlign.end,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 13))),
+            width: 45,
+            child: Text(
+              "$count",
+              textAlign: TextAlign.end,
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: primaryText,
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-// --- CUSTOM PAINTER (Identical to your provided code) ---
+// --- CUSTOM PAINTER ---
 class DonutChartPainter extends CustomPainter {
   final double value1;
   final double value2;
   final Color color1;
   final Color color2;
 
-  DonutChartPainter(
-      {required this.value1,
-      required this.value2,
-      required this.color1,
-      required this.color2});
+  DonutChartPainter({
+    required this.value1,
+    required this.value2,
+    required this.color1,
+    required this.color2,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -466,7 +540,7 @@ class DonutChartPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     final bgPaint = Paint()
-      ..color = Colors.grey[100]!
+      ..color = const Color(0xFFF0F0F0)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
 
@@ -476,11 +550,13 @@ class DonutChartPainter extends CustomPainter {
     double sweepAngle1 = (value1 / total) * 2 * pi;
     double sweepAngle2 = (value2 / total) * 2 * pi;
 
-    if (value1 > 0)
+    if (value1 > 0) {
       canvas.drawArc(rect, startAngle, sweepAngle1, false, paint1);
-    if (value2 > 0)
+    }
+    if (value2 > 0) {
       canvas.drawArc(
           rect, startAngle + sweepAngle1, sweepAngle2, false, paint2);
+    }
   }
 
   @override

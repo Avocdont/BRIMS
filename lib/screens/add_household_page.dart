@@ -8,6 +8,7 @@ import 'package:drift/drift.dart' as db;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as scn;
+import 'package:google_fonts/google_fonts.dart';
 import '../database/tables/enums.dart';
 
 class AddHouseholdPage extends StatefulWidget {
@@ -20,6 +21,53 @@ class AddHouseholdPage extends StatefulWidget {
 class _AddHouseholdPageState extends State<AddHouseholdPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isSaving = false;
+
+  // --- Consistent Color Palette ---
+  static const Color primaryBackground = Color(0xFFF5F7FA);
+  static const Color cardBackground = Color(0xFFFFFFFF);
+  static const Color navBackground = Color(0xFF40C4FF);
+  static const Color navBackgroundDark = Color(0xFF29B6F6);
+  static const Color actionGreen = Color(0xFF00C853);
+  static const Color primaryText = Color(0xFF1A1A1A);
+  static const Color secondaryText = Color(0xFF555555);
+
+  // --- Styles ---
+  final BoxDecoration _cardDecoration = BoxDecoration(
+    color: cardBackground,
+    borderRadius: BorderRadius.circular(12),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.05),
+        blurRadius: 10,
+        offset: const Offset(0, 4),
+      ),
+    ],
+  );
+
+  InputDecoration _inputDecoration(String label,
+      {String? helper, Color? fillColor = const Color(0xFFFAFAFA)}) {
+    return InputDecoration(
+      labelText: label,
+      helperText: helper,
+      labelStyle: GoogleFonts.poppins(color: primaryText.withOpacity(0.8)),
+      hintStyle: GoogleFonts.poppins(color: secondaryText.withOpacity(0.5)),
+      helperStyle: GoogleFonts.poppins(color: secondaryText.withOpacity(0.7)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: navBackground, width: 2),
+      ),
+      filled: true,
+      fillColor: fillColor,
+    );
+  }
 
   // --- 1. HEAD & MEMBERS STATE ---
   PersonData? _selectedHead;
@@ -162,6 +210,35 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
     });
   }
 
+  // Helper for Date Pickers to ensure consistent style
+  Future<void> _pickDate({
+    required BuildContext context,
+    required DateTime? currentValue,
+    required ValueChanged<DateTime?> onDatePicked,
+  }) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: currentValue ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: navBackgroundDark,
+              onPrimary: Colors.white,
+              onSurface: primaryText,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      onDatePicked(picked);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final householdLookupProvider = context.watch<HouseholdLookupProvider>();
@@ -169,7 +246,25 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
     int totalMembers = (_selectedHead != null ? 1 : 0) + _addedMembers.length;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Add Household"), centerTitle: true),
+      backgroundColor: primaryBackground,
+      appBar: AppBar(
+        title: Text(
+          "Add Household",
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+        ),
+        centerTitle: true,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [navBackground, navBackgroundDark],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        foregroundColor: Colors.white,
+        elevation: 2,
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Container(
@@ -180,423 +275,498 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // --------------------------------------------------------
-                  // 1. HEAD & MEMBERS
-                  // --------------------------------------------------------
-                  const Text("Head of Household",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                  const SizedBox(height: 12),
+                  // --- 1. HEAD & MEMBERS CARD ---------------------------------
+                  Container(
+                    padding: const EdgeInsets.all(24.0),
+                    decoration: _cardDecoration,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Household Members",
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: navBackgroundDark)),
+                        const Divider(
+                            height: 32, thickness: 1, color: secondaryText),
 
-                  if (_selectedHead == null) ...[
-                    TextFormField(
-                      controller: _headSearchController,
-                      decoration: InputDecoration(
-                        labelText: "Search Person",
-                        prefixIcon: const Icon(Icons.search),
-                        border: const OutlineInputBorder(),
-                        suffixIcon: _headSearchController.text.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Icons.clear),
-                                onPressed: () {
-                                  _headSearchController.clear();
-                                  _searchHead('');
-                                })
-                            : null,
-                      ),
-                      onChanged: _searchHead,
-                    ),
-                    if (_showHeadResults)
-                      Container(
-                        height: 200,
-                        margin: const EdgeInsets.only(top: 4),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey.shade300),
-                            borderRadius: BorderRadius.circular(4)),
-                        child: ListView.builder(
-                          itemCount: _headSearchResults.length,
-                          itemBuilder: (context, index) {
-                            final person = _headSearchResults[index];
-                            return ListTile(
-                              title: Text(
-                                  "${person.first_name} ${person.last_name}"),
-                              onTap: () {
-                                setState(() {
-                                  _selectedHead = person;
-                                  _showHeadResults = false;
-                                  _headSearchController.clear();
-                                });
-                              },
-                            );
-                          },
+                        // Head Section
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Head of Household",
+                                style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    color: primaryText)),
+                            Chip(
+                                backgroundColor: navBackground.withOpacity(0.1),
+                                label: Text("Total: $totalMembers",
+                                    style: GoogleFonts.poppins(
+                                        color: navBackgroundDark,
+                                        fontWeight: FontWeight.w600))),
+                          ],
                         ),
-                      ),
-                  ] else ...[
-                    Card(
-                      elevation: 0,
-                      color: Colors.blue.shade50,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      child: ListTile(
-                        leading: const CircleAvatar(child: Icon(Icons.person)),
-                        title: Text(
-                            "${_selectedHead!.first_name} ${_selectedHead!.last_name}",
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: const Text("Selected as Head"),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.close, color: Colors.red),
-                          onPressed: () => setState(() => _selectedHead = null),
-                        ),
-                      ),
-                    ),
-                  ],
+                        const SizedBox(height: 12),
 
-                  const SizedBox(height: 32),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Household Members",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18)),
-                      Chip(label: Text("Total: $totalMembers")),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-
-                  TextFormField(
-                    controller: _memberSearchController,
-                    decoration: InputDecoration(
-                      labelText: "Search Member to Add",
-                      prefixIcon: const Icon(Icons.person_add),
-                      border: const OutlineInputBorder(),
-                      suffixIcon: _memberSearchController.text.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: () {
-                                _memberSearchController.clear();
-                                _searchMember('');
-                              })
-                          : null,
-                    ),
-                    onChanged: _searchMember,
-                  ),
-                  if (_showMemberResults)
-                    Container(
-                      height: 200,
-                      margin: const EdgeInsets.only(top: 4),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(4)),
-                      child: ListView.builder(
-                        itemCount: _memberSearchResults.length,
-                        itemBuilder: (context, index) {
-                          final person = _memberSearchResults[index];
-                          return ListTile(
-                            title: Text(
-                                "${person.first_name} ${person.last_name}"),
-                            trailing: const Icon(Icons.add_circle_outline,
-                                color: Colors.green),
-                            onTap: () {
-                              setState(() {
-                                // Initialize relationship_id as null
-                                _addedMembers.add({
-                                  'person': person,
-                                  'relationship_id': null
-                                });
-                                _showMemberResults = false;
-                                _memberSearchController.clear();
-                              });
-                            },
-                          );
-                        },
-                      ),
-                    ),
-
-                  const SizedBox(height: 16),
-
-                  if (_addedMembers.isNotEmpty)
-                    ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _addedMembers.length,
-                      separatorBuilder: (ctx, i) => const SizedBox(height: 8),
-                      itemBuilder: (context, index) {
-                        final memberMap = _addedMembers[index];
-                        final person = memberMap['person'] as PersonData;
-                        return Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey.shade300),
-                            borderRadius: BorderRadius.circular(8),
+                        if (_selectedHead == null) ...[
+                          TextFormField(
+                            style: GoogleFonts.poppins(color: primaryText),
+                            controller: _headSearchController,
+                            decoration: _inputDecoration("Search Person"),
+                            onChanged: _searchHead,
                           ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.person,
-                                  size: 24, color: Colors.grey),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                      "${person.first_name} ${person.last_name}",
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w600))),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                flex: 3,
-                                child: DropdownButtonFormField<int>(
-                                  isExpanded: true,
-                                  decoration: const InputDecoration(
-                                      labelText: "Relation",
-                                      contentPadding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      border: OutlineInputBorder()),
-                                  value: memberMap['relationship_id'],
-                                  // POPULATE FROM DB LOOKUP
-                                  items: householdLookupProvider
-                                      .allRelationshipTypes
-                                      .map((r) => DropdownMenuItem<int>(
-                                          value: r.relationship_id,
-                                          child: Text(
-                                              r
-                                                  .relationship, // Adjust property name if needed
-                                              style: const TextStyle(
-                                                  fontSize: 14))))
-                                      .toList(),
-                                  onChanged: (val) => setState(() =>
-                                      _addedMembers[index]['relationship_id'] =
-                                          val),
-                                ),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete_outline,
-                                    color: Colors.red),
-                                onPressed: () => setState(
-                                    () => _addedMembers.removeAt(index)),
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-
-                  const SizedBox(height: 40),
-
-                  // --------------------------------------------------------
-                  // 2. ADDRESS & HOUSEHOLD INFO
-                  // --------------------------------------------------------
-                  const Text("Address Information",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                  const SizedBox(height: 16),
-
-                  Row(children: [
-                    Expanded(
-                        child: TextFormField(
-                            controller: _zoneController,
-                            decoration: const InputDecoration(
-                                labelText: 'Zone',
-                                border: OutlineInputBorder()))),
-                    const SizedBox(width: 16),
-                    Expanded(
-                        child: TextFormField(
-                            controller: _streetController,
-                            decoration: const InputDecoration(
-                                labelText: 'Street',
-                                border: OutlineInputBorder()))),
-                  ]),
-                  const SizedBox(height: 16),
-                  Row(children: [
-                    Expanded(
-                        child: TextFormField(
-                            controller: _blockController,
-                            decoration: const InputDecoration(
-                                labelText: 'Block',
-                                border: OutlineInputBorder()))),
-                    const SizedBox(width: 16),
-                    Expanded(
-                        child: TextFormField(
-                            controller: _lotController,
-                            decoration: const InputDecoration(
-                                labelText: 'Lot',
-                                border: OutlineInputBorder()))),
-                  ]),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final provider = context.read<HouseholdProvider>();
-                      setState(() {
-                        _searchedAddress = [];
-                        _noResults = false;
-                        _addressId = null;
-                      });
-                      final results = await provider.searchAddresses(
-                        zone: _zoneController.text.isNotEmpty
-                            ? _zoneController.text
-                            : null,
-                        street: _streetController.text.isNotEmpty
-                            ? _streetController.text
-                            : null,
-                        block: _blockController.text.isNotEmpty
-                            ? _blockController.text
-                            : null,
-                        lot: _lotController.text.isNotEmpty
-                            ? _lotController.text
-                            : null,
-                      );
-                      setState(() {
-                        _searchedAddress = results;
-                        _noResults = results.isEmpty;
-                      });
-                    },
-                    child: const Text("Search Address"),
-                  ),
-
-                  if (_noResults)
-                    Container(
-                        margin: const EdgeInsets.only(top: 10),
-                        padding: const EdgeInsets.all(10),
-                        child: Column(children: [
-                          const Text(
-                              "No address found. Use entered data as new address?"),
-                          const SizedBox(height: 10),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                    onPressed: () {
+                          if (_showHeadResults)
+                            Container(
+                              height: 200,
+                              margin: const EdgeInsets.only(top: 4),
+                              decoration: BoxDecoration(
+                                  color: cardBackground,
+                                  border:
+                                      Border.all(color: Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: ListView.builder(
+                                itemCount: _headSearchResults.length,
+                                itemBuilder: (context, index) {
+                                  final person = _headSearchResults[index];
+                                  return ListTile(
+                                    title: Text(
+                                        "${person.first_name} ${person.last_name}",
+                                        style: GoogleFonts.poppins(
+                                            color: primaryText)),
+                                    onTap: () {
                                       setState(() {
-                                        _Zone = _zoneController.text;
-                                        _Street = _streetController.text;
-                                        _Block = _blockController.text;
-                                        _Lot = _lotController.text;
-                                        _addressId = null;
-                                        _noResults = false;
+                                        _selectedHead = person;
+                                        _showHeadResults = false;
+                                        _headSearchController.clear();
                                       });
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content:
-                                                  Text("New Address Set.")));
                                     },
-                                    child: const Text("Yes")),
-                                const SizedBox(width: 10),
-                                ElevatedButton(
-                                    onPressed: () =>
-                                        setState(() => _noResults = false),
-                                    child: const Text("No")),
-                              ])
-                        ]))
-                  else if (_searchedAddress.isNotEmpty)
-                    Container(
-                        margin: const EdgeInsets.only(top: 10),
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey)),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text("Address Found:",
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                              Text(
-                                  "Zone: ${_searchedAddress[0]['address']['zone']}"),
-                              Text(
-                                  "Street: ${_searchedAddress[0]['address']['street']}"),
-                              const SizedBox(height: 10),
-                              ElevatedButton(
-                                  onPressed: () {
+                                  );
+                                },
+                              ),
+                            ),
+                        ] else ...[
+                          Card(
+                            elevation: 0,
+                            color: navBackground.withOpacity(0.1),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                  backgroundColor: navBackgroundDark,
+                                  child: const Icon(Icons.person,
+                                      color: Colors.white)),
+                              title: Text(
+                                  "${_selectedHead!.first_name} ${_selectedHead!.last_name}",
+                                  style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.bold,
+                                      color: primaryText)),
+                              subtitle: Text("Selected as Head",
+                                  style: GoogleFonts.poppins(
+                                      color: secondaryText)),
+                              trailing: IconButton(
+                                icon:
+                                    const Icon(Icons.close, color: Colors.red),
+                                onPressed: () =>
+                                    setState(() => _selectedHead = null),
+                              ),
+                            ),
+                          ),
+                        ],
+
+                        const SizedBox(height: 32),
+
+                        // Members Section
+                        Text("Add Other Members",
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: primaryText)),
+                        const SizedBox(height: 12),
+
+                        TextFormField(
+                          style: GoogleFonts.poppins(color: primaryText),
+                          controller: _memberSearchController,
+                          decoration: _inputDecoration(
+                              "Search Person to Add to Household"),
+                          onChanged: _searchMember,
+                        ),
+                        if (_showMemberResults)
+                          Container(
+                            height: 200,
+                            margin: const EdgeInsets.only(top: 4),
+                            decoration: BoxDecoration(
+                                color: cardBackground,
+                                border: Border.all(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(8)),
+                            child: ListView.builder(
+                              itemCount: _memberSearchResults.length,
+                              itemBuilder: (context, index) {
+                                final person = _memberSearchResults[index];
+                                return ListTile(
+                                  title: Text(
+                                      "${person.first_name} ${person.last_name}",
+                                      style: GoogleFonts.poppins(
+                                          color: primaryText)),
+                                  trailing: Icon(Icons.add_circle_outline,
+                                      color: actionGreen),
+                                  onTap: () {
                                     setState(() {
-                                      _addressId =
-                                          _searchedAddress[0]['address']['id'];
-                                      final addr =
-                                          _searchedAddress[0]['address'];
-                                      _zoneController.text = addr['zone'];
-                                      _streetController.text = addr['street'];
-                                      _blockController.text = addr['block'];
-                                      _lotController.text = addr['lot'];
-                                      _searchedAddress = [];
+                                      // Initialize relationship_id as null
+                                      _addedMembers.add({
+                                        'person': person,
+                                        'relationship_id': null
+                                      });
+                                      _showMemberResults = false;
+                                      _memberSearchController.clear();
                                     });
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                "Existing Address Selected")));
                                   },
-                                  child: const Text("Use This Address")),
-                              TextButton(
-                                  onPressed: () =>
-                                      setState(() => _searchedAddress = []),
-                                  child: const Text("Cancel Search",
-                                      style: TextStyle(color: Colors.red)))
-                            ])),
+                                );
+                              },
+                            ),
+                          ),
+
+                        const SizedBox(height: 16),
+
+                        // Added Members List
+                        if (_addedMembers.isNotEmpty)
+                          ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: _addedMembers.length,
+                            separatorBuilder: (ctx, i) =>
+                                const SizedBox(height: 8),
+                            itemBuilder: (context, index) {
+                              final memberMap = _addedMembers[index];
+                              final person = memberMap['person'] as PersonData;
+                              return Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: primaryBackground,
+                                  border: Border.all(
+                                      color: secondaryText.withOpacity(0.2)),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.person,
+                                        size: 24, color: navBackground),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                            "${person.first_name} ${person.last_name}",
+                                            style: GoogleFonts.poppins(
+                                                fontWeight: FontWeight.w600,
+                                                color: primaryText))),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      flex: 3,
+                                      child: DropdownButtonFormField<int>(
+                                        isExpanded: true,
+                                        style: GoogleFonts.poppins(
+                                            color: primaryText),
+                                        dropdownColor: cardBackground,
+                                        decoration: _inputDecoration("Relation",
+                                            fillColor: cardBackground),
+                                        value: memberMap['relationship_id'],
+                                        items: householdLookupProvider
+                                            .allRelationshipTypes
+                                            .map((r) => DropdownMenuItem<int>(
+                                                value: r.relationship_id,
+                                                child: Text(r.relationship,
+                                                    style: GoogleFonts.poppins(
+                                                        fontSize: 14,
+                                                        color: primaryText))))
+                                            .toList(),
+                                        onChanged: (val) => setState(() =>
+                                            _addedMembers[index]
+                                                ['relationship_id'] = val),
+                                        validator: (val) {
+                                          if (val == null) {
+                                            return "Required";
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete_outline,
+                                          color: Colors.red),
+                                      onPressed: () => setState(
+                                          () => _addedMembers.removeAt(index)),
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
 
                   const SizedBox(height: 40),
 
-                  const Text("Household Details",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<HouseholdTypes>(
-                    value: _selectedHouseholdType,
-                    decoration: const InputDecoration(
-                        labelText: 'Household Type',
-                        border: OutlineInputBorder()),
-                    items: HouseholdTypes.values
-                        .map((type) => DropdownMenuItem(
-                            value: type, child: Text(type.name)))
-                        .toList(),
-                    onChanged: (val) =>
-                        setState(() => _selectedHouseholdType = val),
-                  ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<int>(
-                    value: _selectedBuildingTypeId,
-                    decoration: const InputDecoration(
-                        labelText: 'Building Type',
-                        border: OutlineInputBorder()),
-                    items: householdLookupProvider.allBuildingTypes
-                        .map((type) => DropdownMenuItem(
-                            value: type.building_type_id,
-                            child: Text(type.type)))
-                        .toList(),
-                    onChanged: (val) =>
-                        setState(() => _selectedBuildingTypeId = val),
-                  ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<OwnershipTypes>(
-                    value: _selectedOwnershipType,
-                    decoration: const InputDecoration(
-                        labelText: 'Ownership Type',
-                        border: OutlineInputBorder()),
-                    items: OwnershipTypes.values
-                        .map((type) => DropdownMenuItem(
-                            value: type, child: Text(type.name)))
-                        .toList(),
-                    onChanged: (val) =>
-                        setState(() => _selectedOwnershipType = val),
+                  // --- 2. ADDRESS & HOUSEHOLD INFO CARD -----------------------
+                  Container(
+                    padding: const EdgeInsets.all(24.0),
+                    decoration: _cardDecoration,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Location & Building Details",
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: navBackgroundDark)),
+                        const Divider(
+                            height: 32, thickness: 1, color: secondaryText),
+
+                        // Address Search Fields
+                        Row(children: [
+                          Expanded(
+                              child: TextFormField(
+                                  style:
+                                      GoogleFonts.poppins(color: primaryText),
+                                  controller: _zoneController,
+                                  decoration: _inputDecoration('Zone'))),
+                          const SizedBox(width: 16),
+                          Expanded(
+                              child: TextFormField(
+                                  style:
+                                      GoogleFonts.poppins(color: primaryText),
+                                  controller: _streetController,
+                                  decoration: _inputDecoration('Street'))),
+                        ]),
+                        const SizedBox(height: 16),
+                        Row(children: [
+                          Expanded(
+                              child: TextFormField(
+                                  style:
+                                      GoogleFonts.poppins(color: primaryText),
+                                  controller: _blockController,
+                                  decoration: _inputDecoration('Block'))),
+                          const SizedBox(width: 16),
+                          Expanded(
+                              child: TextFormField(
+                                  style:
+                                      GoogleFonts.poppins(color: primaryText),
+                                  controller: _lotController,
+                                  decoration: _inputDecoration('Lot'))),
+                        ]),
+                        const SizedBox(height: 10),
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.saved_search),
+                          onPressed: () async {
+                            final provider = context.read<HouseholdProvider>();
+                            setState(() {
+                              _searchedAddress = [];
+                              _noResults = false;
+                              _addressId = null;
+                            });
+                            final results = await provider.searchAddresses(
+                              zone: _zoneController.text.isNotEmpty
+                                  ? _zoneController.text
+                                  : null,
+                              street: _streetController.text.isNotEmpty
+                                  ? _streetController.text
+                                  : null,
+                              block: _blockController.text.isNotEmpty
+                                  ? _blockController.text
+                                  : null,
+                              lot: _lotController.text.isNotEmpty
+                                  ? _lotController.text
+                                  : null,
+                            );
+                            setState(() {
+                              _searchedAddress = results;
+                              _noResults = results.isEmpty;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: navBackgroundDark,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
+                          label: Text("Search Address",
+                              style: GoogleFonts.poppins()),
+                        ),
+
+                        // Search Results Display
+                        if (_noResults)
+                          Container(
+                              margin: const EdgeInsets.only(top: 10),
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                  color: Colors.orange.shade50,
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: Column(children: [
+                                Text(
+                                    "No address found. Use entered data as new address?",
+                                    style: GoogleFonts.poppins(
+                                        color: primaryText)),
+                                const SizedBox(height: 10),
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _Zone = _zoneController.text;
+                                              _Street = _streetController.text;
+                                              _Block = _blockController.text;
+                                              _Lot = _lotController.text;
+                                              _addressId = null;
+                                              _noResults = false;
+                                            });
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        "New Address Set.")));
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor: actionGreen,
+                                              foregroundColor: Colors.white),
+                                          child: const Text("Yes")),
+                                      const SizedBox(width: 10),
+                                      OutlinedButton(
+                                          onPressed: () => setState(
+                                              () => _noResults = false),
+                                          child: Text("No",
+                                              style: GoogleFonts.poppins(
+                                                  color: primaryText))),
+                                    ])
+                              ]))
+                        else if (_searchedAddress.isNotEmpty)
+                          Container(
+                              margin: const EdgeInsets.only(top: 10),
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                  color: Colors.green.shade50,
+                                  border:
+                                      Border.all(color: Colors.green.shade300),
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Address Found:",
+                                        style: GoogleFonts.poppins(
+                                            fontWeight: FontWeight.bold,
+                                            color: primaryText)),
+                                    Text(
+                                        "Zone: ${_searchedAddress[0]['address']['zone']} | Street: ${_searchedAddress[0]['address']['street']}",
+                                        style: GoogleFonts.poppins(
+                                            color: primaryText)),
+                                    const SizedBox(height: 10),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _addressId = _searchedAddress[0]
+                                                ['address']['id'];
+                                            final addr =
+                                                _searchedAddress[0]['address'];
+                                            _zoneController.text = addr['zone'];
+                                            _streetController.text =
+                                                addr['street'];
+                                            _blockController.text =
+                                                addr['block'];
+                                            _lotController.text = addr['lot'];
+                                            _searchedAddress = [];
+                                          });
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                                  content: Text(
+                                                      "Existing Address Selected")));
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: actionGreen,
+                                            foregroundColor: Colors.white),
+                                        child: const Text("Use This Address")),
+                                    TextButton(
+                                        onPressed: () => setState(
+                                            () => _searchedAddress = []),
+                                        child: Text("Cancel Search",
+                                            style: GoogleFonts.poppins(
+                                                color: Colors.red)))
+                                  ])),
+
+                        const SizedBox(height: 40),
+
+                        // Household Details
+                        DropdownButtonFormField<HouseholdTypes>(
+                          style: GoogleFonts.poppins(color: primaryText),
+                          dropdownColor: cardBackground,
+                          value: _selectedHouseholdType,
+                          decoration: _inputDecoration('Household Type',
+                              fillColor: cardBackground),
+                          items: HouseholdTypes.values
+                              .map((type) => DropdownMenuItem(
+                                  value: type,
+                                  child: Text(type.name,
+                                      style: GoogleFonts.poppins(
+                                          color: primaryText))))
+                              .toList(),
+                          onChanged: (val) =>
+                              setState(() => _selectedHouseholdType = val),
+                        ),
+                        const SizedBox(height: 16),
+                        DropdownButtonFormField<int>(
+                          style: GoogleFonts.poppins(color: primaryText),
+                          dropdownColor: cardBackground,
+                          value: _selectedBuildingTypeId,
+                          decoration: _inputDecoration('Building Type',
+                              fillColor: cardBackground),
+                          items: householdLookupProvider.allBuildingTypes
+                              .map((type) => DropdownMenuItem(
+                                  value: type.building_type_id,
+                                  child: Text(type.type,
+                                      style: GoogleFonts.poppins(
+                                          color: primaryText))))
+                              .toList(),
+                          onChanged: (val) =>
+                              setState(() => _selectedBuildingTypeId = val),
+                        ),
+                        const SizedBox(height: 16),
+                        DropdownButtonFormField<OwnershipTypes>(
+                          style: GoogleFonts.poppins(color: primaryText),
+                          dropdownColor: cardBackground,
+                          value: _selectedOwnershipType,
+                          decoration: _inputDecoration('Ownership Type',
+                              fillColor: cardBackground),
+                          items: OwnershipTypes.values
+                              .map((type) => DropdownMenuItem(
+                                  value: type,
+                                  child: Text(type.name,
+                                      style: GoogleFonts.poppins(
+                                          color: primaryText))))
+                              .toList(),
+                          onChanged: (val) =>
+                              setState(() => _selectedOwnershipType = val),
+                        ),
+                      ],
+                    ),
                   ),
 
-                  // --------------------------------------------------------
-                  // 3. UTILITIES (Dynamic Questions)
-                  // --------------------------------------------------------
-                  if (questionProvider.allQuestions.isNotEmpty) ...[
-                    const SizedBox(height: 40),
-                    Card(
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      child: Padding(
+                  // --- 3. UTILITIES CARD (Dynamic Questions) ------------------
+                  if (questionProvider.allQuestions.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 40),
+                      child: Container(
                         padding: const EdgeInsets.all(24.0),
+                        decoration: _cardDecoration,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Center(
-                                child: Text("UTILITIES",
-                                    style: TextStyle(
+                            Center(
+                                child: Text("UTILITIES & INFRASTRUCTURE",
+                                    style: GoogleFonts.poppins(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20,
-                                        letterSpacing: 1.2))),
-                            const Divider(height: 32, thickness: 1),
+                                        letterSpacing: 1.2,
+                                        color: navBackgroundDark))),
+                            const Divider(
+                                height: 32, thickness: 1, color: secondaryText),
                             ...questionProvider.allQuestions.map((q) {
                               final choices = questionProvider
                                   .getChoicesForQuestion(q.question_id);
@@ -606,29 +776,38 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(q.question,
-                                        style: const TextStyle(
+                                        style: GoogleFonts.poppins(
                                             fontSize: 14,
-                                            fontWeight: FontWeight.w600)),
+                                            fontWeight: FontWeight.w600,
+                                            color: primaryText)),
                                     const SizedBox(height: 8),
                                     DropdownButtonFormField<int>(
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 12, vertical: 12),
-                                        border: OutlineInputBorder(),
-                                        isDense: true,
-                                      ),
+                                      style: GoogleFonts.poppins(
+                                          color: primaryText),
+                                      dropdownColor: cardBackground,
+                                      decoration: _inputDecoration(
+                                          "Select option",
+                                          fillColor: cardBackground),
                                       value: _utilityAnswers[q.question_id],
-                                      hint: const Text("Select option"),
+                                      hint: Text("Select option",
+                                          style: GoogleFonts.poppins(
+                                              color: secondaryText)),
                                       items: choices.map((choice) {
                                         return DropdownMenuItem<int>(
                                           value: choice.choice_id,
-                                          child: Text(choice.choice),
+                                          child: Text(choice.choice,
+                                              style: GoogleFonts.poppins(
+                                                  color: primaryText)),
                                         );
                                       }).toList(),
                                       onChanged: (val) {
                                         setState(() {
                                           _utilityAnswers[q.question_id] = val;
                                         });
+                                      },
+                                      validator: (val) {
+                                        if (val == null) return "Required";
+                                        return null;
                                       },
                                     ),
                                   ],
@@ -639,264 +818,295 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                         ),
                       ),
                     ),
-                  ],
 
-                  // --------------------------------------------------------
-                  // 4. COMMUNITY SECTION (CARD)
-                  // --------------------------------------------------------
+                  // --- 4. COMMUNITY SECTION CARD ------------------------------
                   const SizedBox(height: 40),
-                  Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Center(
-                              child: Text("COMMUNITY",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                      letterSpacing: 1.2))),
-                          const Divider(height: 32, thickness: 1),
-                          const Text("Female died in the last 6 months",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 16)),
-                          const SizedBox(height: 12),
-                          Row(children: [
-                            Expanded(
-                                child: TextFormField(
-                                    controller: _fmAgeController,
-                                    decoration: const InputDecoration(
-                                        labelText: 'Age',
-                                        border: OutlineInputBorder()),
-                                    keyboardType: TextInputType.number)),
-                            const SizedBox(width: 16),
-                            Expanded(
-                                child: TextFormField(
-                                    controller: _fmCauseController,
-                                    decoration: const InputDecoration(
-                                        labelText: 'Cause',
-                                        border: OutlineInputBorder()))),
-                          ]),
-                          const SizedBox(height: 24),
-                          const Text(
-                              "5 Years old below died in the last 6 months",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 16)),
-                          const SizedBox(height: 12),
-                          Row(children: [
-                            Expanded(
-                                child: TextFormField(
-                              controller: _cmAgeController,
-                              decoration: const InputDecoration(
-                                  labelText: 'Age',
-                                  border: OutlineInputBorder()),
-                              keyboardType: TextInputType.number,
-                              validator: (value) {
-                                if (value != null && value.isNotEmpty) {
-                                  final age = int.tryParse(value);
-                                  if (age == null || age > 5)
-                                    return "Age must be 5 or below";
-                                }
-                                return null;
-                              },
-                            )),
-                            const SizedBox(width: 16),
-                            Expanded(
-                                child: DropdownButtonFormField<Sex>(
-                              value: _cmSex,
-                              decoration: const InputDecoration(
-                                  labelText: 'Sex',
-                                  border: OutlineInputBorder()),
-                              items: Sex.values
-                                  .map((s) => DropdownMenuItem(
-                                      value: s, child: Text(s.name)))
-                                  .toList(),
-                              onChanged: (val) => setState(() => _cmSex = val),
-                            )),
-                          ]),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                              controller: _cmCauseController,
-                              decoration: const InputDecoration(
-                                  labelText: 'Cause of Death',
-                                  border: OutlineInputBorder())),
-                          const SizedBox(height: 32),
-                          const Text("Primary needs of barangay",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 16)),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                              controller: _need1Controller,
-                              decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Padding(
-                                      padding: EdgeInsets.all(12),
-                                      child: Text("1",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16))))),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                              controller: _need2Controller,
-                              decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Padding(
-                                      padding: EdgeInsets.all(12),
-                                      child: Text("2",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16))))),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                              controller: _need3Controller,
-                              decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Padding(
-                                      padding: EdgeInsets.all(12),
-                                      child: Text("3",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16))))),
-                          const SizedBox(height: 32),
-                          const Text("Intend to stay five years from now",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 16)),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                              controller: _frBarangayController,
-                              decoration: const InputDecoration(
-                                  labelText: 'Intended Barangay',
-                                  border: OutlineInputBorder())),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                              controller: _frMunicipalityController,
-                              decoration: const InputDecoration(
-                                  labelText: 'Intended Municipality',
-                                  border: OutlineInputBorder())),
-                        ],
-                      ),
+                  Container(
+                    padding: const EdgeInsets.all(24.0),
+                    decoration: _cardDecoration,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                            child: Text("COMMUNITY HEALTH & RESIDENCY",
+                                style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                    letterSpacing: 1.2,
+                                    color: navBackgroundDark))),
+                        const Divider(
+                            height: 32, thickness: 1, color: secondaryText),
+
+                        // Female Mortality
+                        Text("Female Mortality (Last 6 Months)",
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: primaryText)),
+                        const SizedBox(height: 12),
+                        Row(children: [
+                          Expanded(
+                              child: TextFormField(
+                                  style:
+                                      GoogleFonts.poppins(color: primaryText),
+                                  controller: _fmAgeController,
+                                  decoration: _inputDecoration('Age'),
+                                  keyboardType: TextInputType.number)),
+                          const SizedBox(width: 16),
+                          Expanded(
+                              child: TextFormField(
+                                  style:
+                                      GoogleFonts.poppins(color: primaryText),
+                                  controller: _fmCauseController,
+                                  decoration: _inputDecoration('Cause'))),
+                        ]),
+                        const SizedBox(height: 24),
+
+                        // Child Mortality
+                        Text("Child Mortality (Age < 5, Last 6 Months)",
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: primaryText)),
+                        const SizedBox(height: 12),
+                        Row(children: [
+                          Expanded(
+                              child: TextFormField(
+                            style: GoogleFonts.poppins(color: primaryText),
+                            controller: _cmAgeController,
+                            decoration: _inputDecoration('Age (0-5)'),
+                            keyboardType: TextInputType.number,
+                            validator: (value) {
+                              if (value != null && value.isNotEmpty) {
+                                final age = int.tryParse(value);
+                                if (age == null || age > 5)
+                                  return "Age must be 5 or below";
+                              }
+                              return null;
+                            },
+                          )),
+                          const SizedBox(width: 16),
+                          Expanded(
+                              child: DropdownButtonFormField<Sex>(
+                            style: GoogleFonts.poppins(color: primaryText),
+                            dropdownColor: cardBackground,
+                            value: _cmSex,
+                            decoration: _inputDecoration('Sex',
+                                fillColor: cardBackground),
+                            items: Sex.values
+                                .map((s) => DropdownMenuItem(
+                                    value: s,
+                                    child: Text(s.name,
+                                        style: GoogleFonts.poppins(
+                                            color: primaryText))))
+                                .toList(),
+                            onChanged: (val) => setState(() => _cmSex = val),
+                          )),
+                        ]),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                            style: GoogleFonts.poppins(color: primaryText),
+                            controller: _cmCauseController,
+                            decoration: _inputDecoration('Cause of Death')),
+
+                        const SizedBox(height: 32),
+
+                        // Primary Needs
+                        Text("Primary Needs of Barangay (Top 3)",
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: primaryText)),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                            style: GoogleFonts.poppins(color: primaryText),
+                            controller: _need1Controller,
+                            decoration: _inputDecoration('Need 1',
+                                helper: 'Highest Priority')),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                            style: GoogleFonts.poppins(color: primaryText),
+                            controller: _need2Controller,
+                            decoration: _inputDecoration('Need 2')),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                            style: GoogleFonts.poppins(color: primaryText),
+                            controller: _need3Controller,
+                            decoration: _inputDecoration('Need 3',
+                                helper: 'Lowest Priority')),
+
+                        const SizedBox(height: 32),
+
+                        // Future Residency
+                        Text("Intend to Stay in Barangay (5 Years)",
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: primaryText)),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                            style: GoogleFonts.poppins(color: primaryText),
+                            controller: _frBarangayController,
+                            decoration: _inputDecoration('Intended Barangay')),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                            style: GoogleFonts.poppins(color: primaryText),
+                            controller: _frMunicipalityController,
+                            decoration:
+                                _inputDecoration('Intended Municipality')),
+                      ],
                     ),
                   ),
 
-                  // --------------------------------------------------------
-                  // 5. SURVEY INFO SECTION (CARD)
-                  // --------------------------------------------------------
+                  // --- 5. SURVEY INFO SECTION CARD ----------------------------
                   const SizedBox(height: 40),
-                  Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Center(
-                              child: Text("SURVEY INFO",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                      letterSpacing: 1.2))),
-                          const Divider(height: 32, thickness: 1),
-                          Row(children: [
-                            Expanded(
-                                child: TextFormField(
-                                    controller: _visitNumController,
-                                    decoration: const InputDecoration(
-                                        labelText: 'Number of visits',
-                                        border: OutlineInputBorder()),
-                                    keyboardType: TextInputType.number)),
-                            const SizedBox(width: 16),
-                            Expanded(
-                                child:
-                                    DropdownButtonFormField<BarangayPositions>(
-                              value: _selectedBrgyPosition,
-                              decoration: const InputDecoration(
-                                  labelText: 'Barangay Position',
-                                  border: OutlineInputBorder()),
-                              items: BarangayPositions.values
-                                  .map((pos) => DropdownMenuItem(
-                                      value: pos, child: Text(pos.name)))
-                                  .toList(),
-                              onChanged: (val) =>
-                                  setState(() => _selectedBrgyPosition = val),
-                            )),
-                          ]),
-                          const SizedBox(height: 16),
-                          DropdownButtonFormField<ClientTypes>(
-                            value: _selectedClientType,
-                            decoration: const InputDecoration(
-                                labelText: 'Client Type',
-                                border: OutlineInputBorder()),
-                            items: ClientTypes.values
-                                .map((type) => DropdownMenuItem(
-                                    value: type, child: Text(type.name)))
+                  Container(
+                    padding: const EdgeInsets.all(24.0),
+                    decoration: _cardDecoration,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                            child: Text("SURVEY & REGISTRY INFO",
+                                style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                    letterSpacing: 1.2,
+                                    color: navBackgroundDark))),
+                        const Divider(
+                            height: 32, thickness: 1, color: secondaryText),
+
+                        // Visit Info
+                        Row(children: [
+                          Expanded(
+                              child: TextFormField(
+                                  style:
+                                      GoogleFonts.poppins(color: primaryText),
+                                  controller: _visitNumController,
+                                  decoration:
+                                      _inputDecoration('Number of visits'),
+                                  keyboardType: TextInputType.number)),
+                          const SizedBox(width: 16),
+                          Expanded(
+                              child: DropdownButtonFormField<BarangayPositions>(
+                            style: GoogleFonts.poppins(color: primaryText),
+                            dropdownColor: cardBackground,
+                            value: _selectedBrgyPosition,
+                            decoration: _inputDecoration('Barangay Position',
+                                fillColor: cardBackground),
+                            items: BarangayPositions.values
+                                .map((pos) => DropdownMenuItem(
+                                    value: pos,
+                                    child: Text(pos.name,
+                                        style: GoogleFonts.poppins(
+                                            color: primaryText))))
                                 .toList(),
                             onChanged: (val) =>
-                                setState(() => _selectedClientType = val),
-                          ),
-                          const SizedBox(height: 16),
-                          ListTile(
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 12),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                                side: const BorderSide(color: Colors.grey)),
-                            title: const Text("Visit Date"),
-                            subtitle: Text(_visitDate == null
-                                ? "Select Date"
-                                : _visitDate.toString().split(' ')[0]),
-                            trailing: const Icon(Icons.calendar_today),
-                            onTap: () async {
-                              final d = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime(2100));
-                              if (d != null) setState(() => _visitDate = d);
-                            },
-                          ),
-                          const SizedBox(height: 24),
-                          DropdownButtonFormField<RegistrationStatus>(
-                            value: _selectedRegistrationStatus,
-                            decoration: const InputDecoration(
-                                labelText: 'Registration Status',
-                                border: OutlineInputBorder()),
-                            items: RegistrationStatus.values
-                                .map((s) => DropdownMenuItem(
-                                    value: s, child: Text(s.name)))
-                                .toList(),
-                            onChanged: (val) => setState(
-                                () => _selectedRegistrationStatus = val),
-                          ),
-                          const SizedBox(height: 16),
-                          ListTile(
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 12),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                                side: const BorderSide(color: Colors.grey)),
-                            title: const Text("Registration Date"),
-                            subtitle: Text(_registrationDate == null
-                                ? "Select Date"
-                                : _registrationDate.toString().split(' ')[0]),
-                            trailing: const Icon(Icons.calendar_today),
-                            onTap: () async {
-                              final d = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime(2100));
-                              if (d != null)
-                                setState(() => _registrationDate = d);
-                            },
-                          ),
-                        ],
-                      ),
+                                setState(() => _selectedBrgyPosition = val),
+                          )),
+                        ]),
+                        const SizedBox(height: 16),
+                        DropdownButtonFormField<ClientTypes>(
+                          style: GoogleFonts.poppins(color: primaryText),
+                          dropdownColor: cardBackground,
+                          value: _selectedClientType,
+                          decoration: _inputDecoration('Client Type',
+                              fillColor: cardBackground),
+                          items: ClientTypes.values
+                              .map((type) => DropdownMenuItem(
+                                  value: type,
+                                  child: Text(type.name,
+                                      style: GoogleFonts.poppins(
+                                          color: primaryText))))
+                              .toList(),
+                          onChanged: (val) =>
+                              setState(() => _selectedClientType = val),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Visit Date
+                        ListTile(
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 12),
+                          tileColor: primaryBackground,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(
+                                  color: secondaryText.withOpacity(0.2))),
+                          title: Text("Visit Date",
+                              style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w600,
+                                  color: primaryText)),
+                          subtitle: Text(
+                              _visitDate == null
+                                  ? "Select Date"
+                                  : _visitDate.toString().split(' ')[0],
+                              style: GoogleFonts.poppins(color: secondaryText)),
+                          trailing: const Icon(Icons.calendar_today,
+                              color: navBackgroundDark),
+                          onTap: () async {
+                            await _pickDate(
+                                context: context,
+                                currentValue: _visitDate,
+                                onDatePicked: (d) =>
+                                    setState(() => _visitDate = d));
+                          },
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Registration Status
+                        DropdownButtonFormField<RegistrationStatus>(
+                          style: GoogleFonts.poppins(color: primaryText),
+                          dropdownColor: cardBackground,
+                          value: _selectedRegistrationStatus,
+                          decoration: _inputDecoration('Registration Status',
+                              fillColor: cardBackground),
+                          items: RegistrationStatus.values
+                              .map((s) => DropdownMenuItem(
+                                  value: s,
+                                  child: Text(s.name,
+                                      style: GoogleFonts.poppins(
+                                          color: primaryText))))
+                              .toList(),
+                          onChanged: (val) =>
+                              setState(() => _selectedRegistrationStatus = val),
+                          validator: (val) {
+                            if (val == null)
+                              return "Registration status is required.";
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Registration Date
+                        ListTile(
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 12),
+                          tileColor: primaryBackground,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(
+                                  color: secondaryText.withOpacity(0.2))),
+                          title: Text("Registration Date",
+                              style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w600,
+                                  color: primaryText)),
+                          subtitle: Text(
+                              _registrationDate == null
+                                  ? "Select Date"
+                                  : _registrationDate.toString().split(' ')[0],
+                              style: GoogleFonts.poppins(color: secondaryText)),
+                          trailing: const Icon(Icons.calendar_today,
+                              color: navBackgroundDark),
+                          onTap: () async {
+                            await _pickDate(
+                                context: context,
+                                currentValue: _registrationDate,
+                                onDatePicked: (d) =>
+                                    setState(() => _registrationDate = d));
+                          },
+                        ),
+                      ],
                     ),
                   ),
 
@@ -905,16 +1115,45 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                   SizedBox(
                     width: double.infinity,
                     height: 56,
-                    child: ElevatedButton(
-                      onPressed: _isSaving ? null : _saveHousehold,
-                      style: ElevatedButton.styleFrom(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        gradient: LinearGradient(
+                          colors: _isSaving
+                              ? [Colors.grey.shade400, Colors.grey.shade600]
+                              : [navBackground, navBackgroundDark],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: _isSaving
+                                ? Colors.transparent
+                                : navBackgroundDark.withOpacity(0.4),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: ElevatedButton(
+                        onPressed: _isSaving ? null : _saveHousehold,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: Colors.white,
+                          shadowColor: Colors.transparent,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8))),
-                      child: _isSaving
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text("SAVE HOUSEHOLD",
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                              borderRadius: BorderRadius.circular(8)),
+                          disabledBackgroundColor: Colors.transparent,
+                        ),
+                        child: _isSaving
+                            ? const CircularProgressIndicator(
+                                color: Colors.white)
+                            : Text("SAVE HOUSEHOLD",
+                                style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.2)),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 40),

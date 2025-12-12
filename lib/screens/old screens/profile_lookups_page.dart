@@ -39,9 +39,8 @@ class _ProfileLookupsState extends State<ProfileLookups> {
                   SizedBox(height: 10),
                   LookupTable<NationalityData>(
                     columns: ["Name"],
-                    items:
-                        lookupProvider
-                            .allNationalities, // A list of NationalData
+                    items: lookupProvider
+                        .allNationalities, // A list of NationalData
                     // Extract certain fields from each item
                     buildRow: (item) => [item.name],
                     onEdit: (item, newValues) {
@@ -54,28 +53,26 @@ class _ProfileLookupsState extends State<ProfileLookups> {
 
                       lookupProvider.updateNationality(updated);
                     },
-                    onDelete:
-                        (item) => lookupProvider.deleteNationality(
-                          item.nationality_id,
-                        ),
+                    onDelete: (item) => lookupProvider.deleteNationality(
+                      item.nationality_id,
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder:
-                            (_) => AddLookup(
-                              columns: ['Name'], // Columns for this table
-                              onInsert: (values) async {
-                                final companion = NationalitiesCompanion(
-                                  name: db.Value(values[0]),
-                                );
-                                await lookupProvider.addNationality(companion);
-                                setState(
-                                  () {},
-                                ); // refresh table // Refresh table
-                              },
-                            ),
+                        builder: (_) => AddLookup(
+                          columns: ['Name'], // Columns for this table
+                          onInsert: (values) async {
+                            final companion = NationalitiesCompanion(
+                              name: db.Value(values[0]),
+                            );
+                            await lookupProvider.addNationality(companion);
+                            setState(
+                              () {},
+                            ); // refresh table // Refresh table
+                          },
+                        ),
                       );
                     },
                     child: const Text("Add"),
@@ -94,27 +91,25 @@ class _ProfileLookupsState extends State<ProfileLookups> {
 
                       lookupProvider.updateEthnicity(updated);
                     },
-                    onDelete:
-                        (item) =>
-                            lookupProvider.deleteEthnicity(item.ethnicity_id),
+                    onDelete: (item) =>
+                        lookupProvider.deleteEthnicity(item.ethnicity_id),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder:
-                            (_) => AddLookup(
-                              columns: ['Name'], // Columns for this table
-                              onInsert: (values) async {
-                                final companion = EthnicitiesCompanion(
-                                  name: db.Value(values[0]),
-                                );
-                                await lookupProvider.addEthnicity(companion);
-                                setState(
-                                  () {},
-                                ); // refresh table // Refresh table
-                              },
-                            ),
+                        builder: (_) => AddLookup(
+                          columns: ['Name'], // Columns for this table
+                          onInsert: (values) async {
+                            final companion = EthnicitiesCompanion(
+                              name: db.Value(values[0]),
+                            );
+                            await lookupProvider.addEthnicity(companion);
+                            setState(
+                              () {},
+                            ); // refresh table // Refresh table
+                          },
+                        ),
                       );
                     },
                     child: const Text("Add"),
@@ -133,25 +128,23 @@ class _ProfileLookupsState extends State<ProfileLookups> {
 
                       lookupProvider.updateReligion(updated);
                     },
-                    onDelete:
-                        (item) =>
-                            lookupProvider.deleteReligion(item.religion_id),
+                    onDelete: (item) =>
+                        lookupProvider.deleteReligion(item.religion_id),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder:
-                            (_) => AddLookup(
-                              columns: ['Name'],
-                              onInsert: (values) async {
-                                final companion = ReligionsCompanion(
-                                  name: db.Value(values[0]),
-                                );
-                                await lookupProvider.addReligion(companion);
-                                setState(() {});
-                              },
-                            ),
+                        builder: (_) => AddLookup(
+                          columns: ['Name'],
+                          onInsert: (values) async {
+                            final companion = ReligionsCompanion(
+                              name: db.Value(values[0]),
+                            );
+                            await lookupProvider.addReligion(companion);
+                            setState(() {});
+                          },
+                        ),
                       );
                     },
                     child: const Text("Add"),
@@ -170,25 +163,23 @@ class _ProfileLookupsState extends State<ProfileLookups> {
 
                       lookupProvider.updateEducation(updated);
                     },
-                    onDelete:
-                        (item) =>
-                            lookupProvider.deleteEducation(item.education_id),
+                    onDelete: (item) =>
+                        lookupProvider.deleteEducation(item.education_id),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder:
-                            (_) => AddLookup(
-                              columns: ['Level'],
-                              onInsert: (values) async {
-                                final companion = EducationCompanion(
-                                  level: db.Value(values[0]),
-                                );
-                                await lookupProvider.addEducation(companion);
-                                setState(() {});
-                              },
-                            ),
+                        builder: (_) => AddLookup(
+                          columns: ['Level'],
+                          onInsert: (values) async {
+                            final companion = EducationCompanion(
+                              level: db.Value(values[0]),
+                            );
+                            await lookupProvider.addEducation(companion);
+                            setState(() {});
+                          },
+                        ),
                       );
                     },
                     child: const Text("Add"),
@@ -207,25 +198,23 @@ class _ProfileLookupsState extends State<ProfileLookups> {
 
                       lookupProvider.updateBloodType(updated);
                     },
-                    onDelete:
-                        (item) =>
-                            lookupProvider.deleteBloodType(item.blood_type_id),
+                    onDelete: (item) =>
+                        lookupProvider.deleteBloodType(item.blood_type_id),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder:
-                            (_) => AddLookup(
-                              columns: ['Type'],
-                              onInsert: (values) async {
-                                final companion = BloodTypesCompanion(
-                                  type: db.Value(values[0]),
-                                );
-                                await lookupProvider.addBloodType(companion);
-                                setState(() {});
-                              },
-                            ),
+                        builder: (_) => AddLookup(
+                          columns: ['Type'],
+                          onInsert: (values) async {
+                            final companion = BloodTypesCompanion(
+                              type: db.Value(values[0]),
+                            );
+                            await lookupProvider.addBloodType(companion);
+                            setState(() {});
+                          },
+                        ),
                       );
                     },
                     child: const Text("Add"),
@@ -244,28 +233,26 @@ class _ProfileLookupsState extends State<ProfileLookups> {
 
                       lookupProvider.updateMonthlyIncome(updated);
                     },
-                    onDelete:
-                        (item) => lookupProvider.deleteMonthlyIncome(
-                          item.monthly_income_id,
-                        ),
+                    onDelete: (item) => lookupProvider.deleteMonthlyIncome(
+                      item.monthly_income_id,
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder:
-                            (_) => AddLookup(
-                              columns: ['Range'],
-                              onInsert: (values) async {
-                                final companion = MonthlyIncomesCompanion(
-                                  range: db.Value(values[0]),
-                                );
-                                await lookupProvider.addMonthlyIncome(
-                                  companion,
-                                );
-                                setState(() {});
-                              },
-                            ),
+                        builder: (_) => AddLookup(
+                          columns: ['Range'],
+                          onInsert: (values) async {
+                            final companion = MonthlyIncomesCompanion(
+                              range: db.Value(values[0]),
+                            );
+                            await lookupProvider.addMonthlyIncome(
+                              companion,
+                            );
+                            setState(() {});
+                          },
+                        ),
                       );
                     },
                     child: const Text("Add"),
@@ -284,26 +271,24 @@ class _ProfileLookupsState extends State<ProfileLookups> {
 
                       lookupProvider.updateDailyIncome(updated);
                     },
-                    onDelete:
-                        (item) => lookupProvider.deleteDailyIncome(
-                          item.daily_income_id,
-                        ),
+                    onDelete: (item) => lookupProvider.deleteDailyIncome(
+                      item.daily_income_id,
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder:
-                            (_) => AddLookup(
-                              columns: ['Range'],
-                              onInsert: (values) async {
-                                final companion = DailyIncomesCompanion(
-                                  range: db.Value(values[0]),
-                                );
-                                await lookupProvider.addDailyIncome(companion);
-                                setState(() {});
-                              },
-                            ),
+                        builder: (_) => AddLookup(
+                          columns: ['Range'],
+                          onInsert: (values) async {
+                            final companion = DailyIncomesCompanion(
+                              range: db.Value(values[0]),
+                            );
+                            await lookupProvider.addDailyIncome(companion);
+                            setState(() {});
+                          },
+                        ),
                       );
                     },
                     child: const Text("Add"),

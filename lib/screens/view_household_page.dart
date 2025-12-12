@@ -7,6 +7,7 @@ import 'package:brims/screens/edit_household_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart'; // Added for consistent typography
 import '../database/tables/enums.dart';
 
 class ViewHouseholdPage extends StatefulWidget {
@@ -19,6 +20,17 @@ class ViewHouseholdPage extends StatefulWidget {
 }
 
 class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
+  // --- Consistent Color Palette ---
+  static const Color primaryBackground =
+      Color(0xFFF5F7FA); // Soft gray background
+  static const Color cardBackground = Color(0xFFFFFFFF); // White cards
+  static const Color navBackground = Color(0xFF40C4FF);
+  static const Color navBackgroundDark = Color(0xFF29B6F6); // Accent color
+  static const Color actionGreen = Color(0xFF00C853);
+  static const Color primaryText = Color(0xFF1A1A1A); // Near-black for content
+  static const Color secondaryText = Color(0xFF555555); // Secondary text/border
+  static const Color dividerColor = Color(0xFFE0E0E0); // Light divider
+
   final Map<int, String> _utilityDisplay = {};
 
   // List to store formatted member data
@@ -144,13 +156,15 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
 
     if (household == null) {
       return Scaffold(
-        backgroundColor: const Color(0xFF18181B),
+        backgroundColor: primaryBackground,
         appBar: AppBar(
-            title: const Text("Error"),
-            backgroundColor: const Color(0xFF18181B)),
-        body: const Center(
+            title:
+                Text("Error", style: GoogleFonts.poppins(color: Colors.white)),
+            backgroundColor: navBackgroundDark,
+            foregroundColor: Colors.white),
+        body: Center(
             child: Text("Household not found.",
-                style: TextStyle(color: Colors.white))),
+                style: GoogleFonts.poppins(color: primaryText))),
       );
     }
 
@@ -192,12 +206,22 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
         : "N/A";
 
     return Scaffold(
-      backgroundColor: const Color(0xFF18181B),
+      backgroundColor: primaryBackground,
       appBar: AppBar(
-        title: const Text("Household Details"),
+        title: Text("Household Details",
+            style: GoogleFonts.poppins(fontWeight: FontWeight.w700)),
         centerTitle: true,
-        backgroundColor: const Color(0xFF18181B),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [navBackground, navBackgroundDark],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         foregroundColor: Colors.white,
+        elevation: 2,
       ),
       body: Center(
         child: Container(
@@ -211,19 +235,19 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                 Center(
                   child: Column(
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 30,
-                        backgroundColor: Colors.white10,
-                        child:
-                            Icon(Icons.person, size: 30, color: Colors.white),
+                        backgroundColor: navBackgroundDark, // Blue Circle
+                        child: const Icon(Icons.group,
+                            size: 30, color: Colors.white),
                       ),
                       const SizedBox(height: 12),
                       Text(
                         household.head ?? "Unknown Head",
-                        style: const TextStyle(
+                        style: GoogleFonts.poppins(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white),
+                            color: primaryText),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 4),
@@ -231,15 +255,15 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.blueAccent.withOpacity(0.2),
+                          color: navBackground.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                              color: Colors.blueAccent.withOpacity(0.5)),
+                              color: navBackgroundDark.withOpacity(0.5)),
                         ),
                         child: Text(
                           _formatEnum(household.registration_status),
-                          style: const TextStyle(
-                              color: Colors.blueAccent,
+                          style: GoogleFonts.poppins(
+                              color: navBackgroundDark,
                               fontSize: 12,
                               fontWeight: FontWeight.bold),
                         ),
@@ -255,8 +279,8 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                   title: "Household Members",
                   children: [
                     if (_householdMembers.isEmpty)
-                      const Text("No members found.",
-                          style: TextStyle(color: Colors.white54))
+                      Text("No members found.",
+                          style: GoogleFonts.poppins(color: secondaryText))
                     else
                       ..._householdMembers.map((m) {
                         bool isHead = m['isHead'] == true;
@@ -266,22 +290,21 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                             children: [
                               Icon(isHead ? Icons.star : Icons.person_outline,
                                   size: 18,
-                                  color:
-                                      isHead ? Colors.amber : Colors.white54),
+                                  color: isHead ? Colors.amber : secondaryText),
                               const SizedBox(width: 12),
                               Text(m['name'],
-                                  style: TextStyle(
-                                      color: Colors.white,
+                                  style: GoogleFonts.poppins(
+                                      color: primaryText,
                                       fontWeight: isHead
                                           ? FontWeight.bold
                                           : FontWeight.w500,
                                       fontSize: 15)),
                               const Spacer(),
                               Text(m['role'],
-                                  style: TextStyle(
+                                  style: GoogleFonts.poppins(
                                       color: isHead
-                                          ? Colors.amber
-                                          : Colors.white54,
+                                          ? Colors.amber.shade700
+                                          : secondaryText,
                                       fontSize: 12,
                                       fontWeight: isHead
                                           ? FontWeight.w600
@@ -303,7 +326,7 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                         "Zone", address?.zone, "Street", address?.street),
                     const SizedBox(height: 12),
                     _buildRowPair("Block", address?.block, "Lot", address?.lot),
-                    const Divider(color: Colors.white24, height: 32),
+                    const Divider(color: dividerColor, height: 32),
                     _buildInfoRow("Household Type",
                         _formatEnum(household.household_type_id)),
                     _buildInfoRow("Building Type", buildingType ?? "N/A"),
@@ -344,12 +367,12 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("Age: ${femaleMortality?.age ?? 'N/A'}",
-                                  style:
-                                      const TextStyle(color: Colors.white54)),
+                                  style: GoogleFonts.poppins(
+                                      color: secondaryText, fontSize: 14)),
                               Text(
                                   "Cause: ${femaleMortality?.death_cause ?? 'N/A'}",
-                                  style:
-                                      const TextStyle(color: Colors.white54)),
+                                  style: GoogleFonts.poppins(
+                                      color: secondaryText, fontSize: 14)),
                             ]),
                       ),
                     _buildInfoRow("Child Mortality (<=5)",
@@ -361,18 +384,18 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("Age: ${childMortality?.age ?? 'N/A'}",
-                                  style:
-                                      const TextStyle(color: Colors.white54)),
+                                  style: GoogleFonts.poppins(
+                                      color: secondaryText, fontSize: 14)),
                               Text("Sex: ${_formatEnum(childMortality?.sex)}",
-                                  style:
-                                      const TextStyle(color: Colors.white54)),
+                                  style: GoogleFonts.poppins(
+                                      color: secondaryText, fontSize: 14)),
                               Text(
                                   "Cause: ${childMortality?.death_cause ?? 'N/A'}",
-                                  style:
-                                      const TextStyle(color: Colors.white54)),
+                                  style: GoogleFonts.poppins(
+                                      color: secondaryText, fontSize: 14)),
                             ]),
                       ),
-                    const SizedBox(height: 16),
+                    const Divider(color: dividerColor, height: 32),
                     _buildSectionHeader("Primary Needs"),
                     _buildInfoRow(
                         "Priority 1", needs.isNotEmpty ? needs[0].need : "N/A"),
@@ -380,7 +403,7 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                         "Priority 2", needs.length > 1 ? needs[1].need : "N/A"),
                     _buildInfoRow(
                         "Priority 3", needs.length > 2 ? needs[2].need : "N/A"),
-                    const SizedBox(height: 16),
+                    const Divider(color: dividerColor, height: 32),
                     _buildSectionHeader("Future Residency (5 Years)"),
                     _buildInfoRow("Intended Barangay",
                         futureResidency?.barangay ?? "N/A"),
@@ -391,7 +414,7 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
 
                 const SizedBox(height: 24),
 
-                // --- CARD 5: SURVEY INFO (MOVED TO BOTTOM) ---
+                // --- CARD 5: SURVEY INFO ---
                 _buildCard(
                   title: "Survey Info",
                   children: [
@@ -406,7 +429,7 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                     const SizedBox(height: 12),
                     _buildInfoRow(
                         "Barangay Position", _formatEnum(visit?.brgy_position)),
-                    const SizedBox(height: 12),
+                    const Divider(color: dividerColor, height: 32),
                     _buildSectionHeader("Registration"),
                     _buildInfoRow(
                         "Status", _formatEnum(household.registration_status)),
@@ -422,20 +445,31 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: () async {
+                          // DELETE Confirmation Dialog (Styled)
                           bool? confirm = await showDialog(
                             context: context,
                             builder: (ctx) => AlertDialog(
-                              title: const Text("Delete Household?"),
-                              content:
-                                  const Text("This action cannot be undone."),
+                              backgroundColor: cardBackground,
+                              title: Text("Delete Household?",
+                                  style: GoogleFonts.poppins(
+                                      color: primaryText,
+                                      fontWeight: FontWeight.bold)),
+                              content: Text("This action cannot be undone.",
+                                  style: GoogleFonts.poppins(
+                                      color: secondaryText)),
                               actions: [
                                 TextButton(
                                     onPressed: () => Navigator.pop(ctx, false),
-                                    child: const Text("Cancel")),
-                                TextButton(
+                                    child: Text("Cancel",
+                                        style: GoogleFonts.poppins(
+                                            color: navBackgroundDark))),
+                                ElevatedButton(
                                     onPressed: () => Navigator.pop(ctx, true),
-                                    child: const Text("Delete",
-                                        style: TextStyle(color: Colors.red))),
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red.shade600,
+                                        foregroundColor: Colors.white),
+                                    child: Text("Delete",
+                                        style: GoogleFonts.poppins())),
                               ],
                             ),
                           );
@@ -446,12 +480,16 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                           }
                         },
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.redAccent,
-                          side: const BorderSide(color: Colors.redAccent),
+                          foregroundColor: Colors.red.shade600,
+                          side: BorderSide(color: Colors.red.shade600),
                           padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
                         ),
                         icon: const Icon(Icons.delete_outline),
-                        label: const Text("Delete"),
+                        label: Text("Delete",
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.bold)),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -461,18 +499,23 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                           await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EditHouseholdPage(
-                                    householdId: widget.householdId)),
+                              builder: (context) => EditHouseholdPage(
+                                  householdId: widget.householdId),
+                            ),
                           );
                           if (mounted) await _loadData(); // REFRESH ON RETURN
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black,
+                          backgroundColor: navBackgroundDark,
+                          foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
                         ),
                         icon: const Icon(Icons.edit),
-                        label: const Text("Edit"),
+                        label: Text("Edit",
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ],
@@ -492,19 +535,25 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: cardBackground,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title.toUpperCase(),
-              style: const TextStyle(
-                  color: Colors.white70,
+              style: GoogleFonts.poppins(
+                  color: navBackgroundDark, // Use accent color for titles
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.1)),
-          const Divider(color: Colors.white24, height: 24),
+          const Divider(color: dividerColor, height: 24),
           ...children,
         ],
       ),
@@ -515,8 +564,8 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
     return Padding(
       padding: const EdgeInsets.only(top: 8, bottom: 8),
       child: Text(title,
-          style: const TextStyle(
-              color: Colors.blueAccent,
+          style: GoogleFonts.poppins(
+              color: navBackground, // Use primary blue for sub-headers
               fontWeight: FontWeight.w600,
               fontSize: 14)),
     );
@@ -531,11 +580,12 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
           SizedBox(
               width: 140,
               child: Text("$label:",
-                  style: TextStyle(color: Colors.grey[500], fontSize: 14))),
+                  style:
+                      GoogleFonts.poppins(color: secondaryText, fontSize: 14))),
           Expanded(
               child: Text(value.isEmpty ? "N/A" : value,
-                  style: const TextStyle(
-                      color: Colors.white,
+                  style: GoogleFonts.poppins(
+                      color: primaryText,
                       fontWeight: FontWeight.w500,
                       fontSize: 14))),
         ],
@@ -551,11 +601,11 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(label1,
-                style: TextStyle(color: Colors.grey[500], fontSize: 12)),
+                style: GoogleFonts.poppins(color: secondaryText, fontSize: 12)),
             const SizedBox(height: 2),
             Text(value1 ?? "N/A",
-                style: const TextStyle(
-                    color: Colors.white,
+                style: GoogleFonts.poppins(
+                    color: primaryText,
                     fontWeight: FontWeight.w500,
                     fontSize: 14)),
           ]),
@@ -565,11 +615,11 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(label2,
-                style: TextStyle(color: Colors.grey[500], fontSize: 12)),
+                style: GoogleFonts.poppins(color: secondaryText, fontSize: 12)),
             const SizedBox(height: 2),
             Text(value2 ?? "N/A",
-                style: const TextStyle(
-                    color: Colors.white,
+                style: GoogleFonts.poppins(
+                    color: primaryText,
                     fontWeight: FontWeight.w500,
                     fontSize: 14)),
           ]),

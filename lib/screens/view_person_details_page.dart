@@ -7,6 +7,8 @@ import 'package:brims/screens/view_household_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../database/tables/enums.dart';
 
 class ViewPersonDetailsPage extends StatefulWidget {
   final int personId;
@@ -18,6 +20,17 @@ class ViewPersonDetailsPage extends StatefulWidget {
 }
 
 class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
+  // --- Consistent Color Palette ---
+  static const Color primaryBackground =
+      Color(0xFFF5F7FA); // Soft gray background (for Scaffold)
+  static const Color cardBackground = Color(0xFFFFFFFF); // White cards
+  static const Color navBackground = Color(0xFF40C4FF);
+  static const Color navBackgroundDark = Color(0xFF29B6F6); // Accent color
+  static const Color actionGreen = Color(0xFF00C853);
+  static const Color primaryText = Color(0xFF1A1A1A); // Near-black for content
+  static const Color secondaryText = Color(0xFF555555); // Secondary text/border
+  static const Color dividerColor = Color(0xFFE0E0E0); // Light divider
+
   bool _isLoading = true;
 
   @override
@@ -73,21 +86,24 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
     final data = personProvider.selectedPersonDetails;
 
     if (_isLoading) {
-      return const Scaffold(
-        backgroundColor: Color(0xFF18181B),
-        body: Center(child: CircularProgressIndicator()),
+      return Scaffold(
+        backgroundColor: primaryBackground,
+        body:
+            Center(child: CircularProgressIndicator(color: navBackgroundDark)),
       );
     }
 
     if (data.isEmpty || data['person'] == null) {
       return Scaffold(
-        backgroundColor: const Color(0xFF18181B),
+        backgroundColor: primaryBackground,
         appBar: AppBar(
-            backgroundColor: const Color(0xFF18181B),
+            title:
+                Text("Error", style: GoogleFonts.poppins(color: Colors.white)),
+            backgroundColor: navBackgroundDark,
             foregroundColor: Colors.white),
-        body: const Center(
+        body: Center(
             child: Text("Person not found.",
-                style: TextStyle(color: Colors.white))),
+                style: GoogleFonts.poppins(color: primaryText))),
       );
     }
 
@@ -103,7 +119,7 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
     final EnrolledData? enrolled = data['enrolled'];
     final CTCRecordData? ctc = data['ctc'];
 
-    // Singular Data Class for Registered Senior (Removed Insurance)
+    // Singular Data Class for Registered Senior
     final RegisteredSeniorData? senior = data['senior'];
 
     // Gadgets List (Singular GadgetData)
@@ -143,12 +159,22 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFF18181B),
+      backgroundColor: primaryBackground,
       appBar: AppBar(
-        title: const Text("Person Profile"),
+        title: Text("Person Profile",
+            style: GoogleFonts.poppins(fontWeight: FontWeight.w700)),
         centerTitle: true,
-        backgroundColor: const Color(0xFF18181B),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [navBackground, navBackgroundDark],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         foregroundColor: Colors.white,
+        elevation: 2,
       ),
       body: Center(
         child: Container(
@@ -162,19 +188,27 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
                 Center(
                   child: Column(
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 40,
-                        backgroundColor: Colors.white10,
-                        child:
-                            Icon(Icons.person, size: 40, color: Colors.white),
+                        backgroundColor: navBackgroundDark,
+                        child: const Icon(Icons.person,
+                            size: 40, color: Colors.white),
                       ),
                       const SizedBox(height: 16),
                       Text(
                         "${person.first_name} ${person.last_name}",
-                        style: const TextStyle(
+                        style: GoogleFonts.poppins(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white),
+                            color: primaryText),
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        "${person.middle_name ?? ''} ${person.suffix ?? ''}",
+                        style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: secondaryText),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 8),
@@ -182,15 +216,16 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.2),
+                          color: navBackground.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
-                          border:
-                              Border.all(color: Colors.green.withOpacity(0.5)),
+                          border: Border.all(
+                              color: navBackgroundDark.withOpacity(0.5)),
                         ),
                         child: Text(
                           _formatEnum(person.registration_status),
-                          style: const TextStyle(
-                              color: Colors.greenAccent,
+                          style: GoogleFonts.poppins(
+                              color: navBackgroundDark,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -203,24 +238,22 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
                 _buildCard(
                   title: "Personal & Residency",
                   children: [
-                    _buildRowPair(
-                        "Full Name",
-                        "${person.first_name} ${person.middle_name ?? ''} ${person.last_name} ${person.suffix ?? ''}",
-                        "Age",
-                        "${person.age ?? 'N/A'}"),
-                    const SizedBox(height: 12),
-                    _buildRowPair("Sex", _formatEnum(person.sex),
-                        "Civil Status", _formatEnum(person.civil_status)),
+                    _buildRowPair("Age", "${person.age ?? 'N/A'}", "Sex",
+                        _formatEnum(person.sex)),
                     const SizedBox(height: 12),
                     _buildRowPair("Birth Date", _formatDate(person.birth_date),
                         "Birth Place", person.birth_place),
                     const SizedBox(height: 12),
-                    if (person.registration_place != null)
-                      _buildInfoRow(
-                          "Place of Registration", person.registration_place!),
-                    const Divider(color: Colors.white24, height: 32),
+                    _buildRowPair("Civil Status",
+                        _formatEnum(person.civil_status), "Religion", religion),
+                    const SizedBox(height: 12),
+                    _buildRowPair(
+                        "Nationality", nationality, "Ethnicity", ethnicity),
+                    const SizedBox(height: 12),
+                    _buildInfoRow("Blood Type", bloodType),
+                    const Divider(color: dividerColor, height: 32),
 
-                    // Unconditional Residency Fields
+                    // Residency Fields
                     _buildRowPair(
                         "Residency Status",
                         _formatEnum(person.residency),
@@ -230,12 +263,9 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
                         padding: const EdgeInsets.only(top: 12),
                         child: _buildInfoRow("Transient Type",
                             _formatEnum(person.transient_type))),
-
-                    const SizedBox(height: 12),
-                    _buildInfoRow("Nationality", nationality),
-                    _buildInfoRow("Ethnicity", ethnicity),
-                    _buildInfoRow("Religion", religion),
-                    _buildInfoRow("Blood Type", bloodType),
+                    if (person.registration_place != null)
+                      _buildInfoRow(
+                          "Place of Registration", person.registration_place!),
                   ],
                 ),
 
@@ -257,31 +287,32 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
                           SizedBox(
                               width: 140,
                               child: Text("Household:",
-                                  style: TextStyle(
-                                      color: Colors.grey[500], fontSize: 14))),
+                                  style: GoogleFonts.poppins(
+                                      color: secondaryText, fontSize: 14))),
                           // Clickable Household Link
                           Expanded(
                             child: householdMember != null
                                 ? InkWell(
                                     onTap: () {
                                       Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) => ViewHouseholdPage(
-                                                  householdId: householdMember
-                                                      .household_id)));
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => ViewHouseholdPage(
+                                                householdId: householdMember
+                                                    .household_id)),
+                                      );
                                     },
                                     child: Text(
                                         "Household #${householdMember.household_id} (View)",
-                                        style: const TextStyle(
-                                            color: Colors.blueAccent,
+                                        style: GoogleFonts.poppins(
+                                            color: navBackgroundDark,
                                             decoration:
                                                 TextDecoration.underline,
                                             fontWeight: FontWeight.bold)),
                                   )
-                                : const Text("Not assigned",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 14)),
+                                : Text("Not assigned",
+                                    style: GoogleFonts.poppins(
+                                        color: primaryText, fontSize: 14)),
                           ),
                         ],
                       ),
@@ -307,14 +338,14 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
                         padding: const EdgeInsets.only(left: 140),
                         child: Text(
                           "${_formatEnum(occupation.occupation_status)} (${_formatEnum(occupation.occupation_type)})",
-                          style:
-                              TextStyle(color: Colors.grey[400], fontSize: 12),
+                          style: GoogleFonts.poppins(
+                              color: secondaryText, fontSize: 12),
                         ),
                       ),
                     const SizedBox(height: 12),
                     _buildRowPair("Monthly Income", monthlyIncome,
                         "Daily Income", dailyIncome),
-                    const Divider(color: Colors.white24, height: 32),
+                    const Divider(color: dividerColor, height: 32),
 
                     _buildInfoRow("Highest Education", education),
                     _buildInfoRow("Currently Enrolled",
@@ -323,11 +354,10 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
                       _buildInfoRow("School", enrolled.school),
 
                     const SizedBox(height: 12),
-                    // Use _formatBool for "N/A" support
                     _buildRowPair("Literate", _formatBool(person.literate),
                         "OFW", _formatBool(person.ofw)),
 
-                    // --- UPDATED SENIOR LOGIC ---
+                    // --- SENIOR LOGIC ---
                     _buildRowPair(
                         "Solo Parent",
                         _formatEnum(person.solo_parent),
@@ -385,20 +415,32 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: () async {
+                          // DELETE Confirmation Dialog (Styled)
                           bool? confirm = await showDialog(
                             context: context,
                             builder: (ctx) => AlertDialog(
-                              title: const Text("Delete Person?"),
-                              content: const Text(
-                                  "This action cannot be undone. They will be removed from any associated household."),
+                              backgroundColor: cardBackground,
+                              title: Text("Delete Person?",
+                                  style: GoogleFonts.poppins(
+                                      color: primaryText,
+                                      fontWeight: FontWeight.bold)),
+                              content: Text(
+                                  "This action cannot be undone. They will be removed from any associated household.",
+                                  style: GoogleFonts.poppins(
+                                      color: secondaryText)),
                               actions: [
                                 TextButton(
                                     onPressed: () => Navigator.pop(ctx, false),
-                                    child: const Text("Cancel")),
-                                TextButton(
+                                    child: Text("Cancel",
+                                        style: GoogleFonts.poppins(
+                                            color: navBackgroundDark))),
+                                ElevatedButton(
                                     onPressed: () => Navigator.pop(ctx, true),
-                                    child: const Text("Delete",
-                                        style: TextStyle(color: Colors.red))),
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red.shade600,
+                                        foregroundColor: Colors.white),
+                                    child: Text("Delete",
+                                        style: GoogleFonts.poppins())),
                               ],
                             ),
                           );
@@ -415,12 +457,16 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
                           }
                         },
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.redAccent,
-                          side: const BorderSide(color: Colors.redAccent),
+                          foregroundColor: Colors.red.shade600,
+                          side: BorderSide(color: Colors.red.shade600),
                           padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
                         ),
                         icon: const Icon(Icons.delete_outline),
-                        label: const Text("Delete"),
+                        label: Text("Delete",
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.bold)),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -430,19 +476,24 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    EditPersonPage(personId: widget.personId)),
+                              builder: (context) =>
+                                  EditPersonPage(personId: widget.personId),
+                            ),
                           ).then((_) {
                             _refreshData(); // Refresh details on return
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black,
+                          backgroundColor: navBackgroundDark,
+                          foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
                         ),
                         icon: const Icon(Icons.edit),
-                        label: const Text("Edit"),
+                        label: Text("Edit",
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ],
@@ -462,16 +513,23 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white10)),
+        color: cardBackground, // White card background
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(title.toUpperCase(),
-            style: const TextStyle(
-                color: Colors.white70,
+            style: GoogleFonts.poppins(
+                color: navBackgroundDark, // Accent color for titles
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.1)),
-        const Divider(color: Colors.white24, height: 24),
+        const Divider(color: dividerColor, height: 24),
         ...children,
       ]),
     );
@@ -481,8 +539,8 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(title,
-          style: const TextStyle(
-              color: Colors.blueAccent,
+          style: GoogleFonts.poppins(
+              color: navBackground, // Primary blue for sub-headers
               fontWeight: FontWeight.w600,
               fontSize: 13)),
     );
@@ -495,11 +553,13 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
         SizedBox(
             width: 140,
             child: Text("$label:",
-                style: TextStyle(color: Colors.grey[500], fontSize: 14))),
+                style: GoogleFonts.poppins(
+                    color: secondaryText,
+                    fontSize: 14))), // Secondary text for label
         Expanded(
             child: Text(value.isEmpty ? "N/A" : value,
-                style: const TextStyle(
-                    color: Colors.white,
+                style: GoogleFonts.poppins(
+                    color: primaryText, // Primary text for value
                     fontWeight: FontWeight.w500,
                     fontSize: 14))),
       ]),
@@ -512,11 +572,14 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
       Expanded(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label1, style: TextStyle(color: Colors.grey[500], fontSize: 12)),
+        Text(label1,
+            style: GoogleFonts.poppins(
+                color: secondaryText,
+                fontSize: 12)), // Secondary text for label
         const SizedBox(height: 2),
         Text(value1 ?? "N/A",
-            style: const TextStyle(
-                color: Colors.white,
+            style: GoogleFonts.poppins(
+                color: primaryText, // Primary text for value
                 fontWeight: FontWeight.w500,
                 fontSize: 14)),
       ])),
@@ -524,11 +587,14 @@ class _ViewPersonDetailsPageState extends State<ViewPersonDetailsPage> {
       Expanded(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label2, style: TextStyle(color: Colors.grey[500], fontSize: 12)),
+        Text(label2,
+            style: GoogleFonts.poppins(
+                color: secondaryText,
+                fontSize: 12)), // Secondary text for label
         const SizedBox(height: 2),
         Text(value2 ?? "N/A",
-            style: const TextStyle(
-                color: Colors.white,
+            style: GoogleFonts.poppins(
+                color: primaryText, // Primary text for value
                 fontWeight: FontWeight.w500,
                 fontSize: 14)),
       ])),
