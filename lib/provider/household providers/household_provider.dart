@@ -1,4 +1,6 @@
 import 'package:brims/database/app_db.dart';
+import 'package:brims/models/household_models.dart';
+import 'package:brims/models/profile_filter_options.dart';
 import 'package:brims/repository/household%20repositories/household_repository.dart';
 import 'package:drift/drift.dart'; // Needed for Companions
 import 'package:flutter/material.dart';
@@ -12,6 +14,11 @@ class HouseholdProvider extends ChangeNotifier {
 
   List<HouseholdData> _currentHouseholds = [];
   List<HouseholdData> get currentHouseholds => _currentHouseholds;
+
+  // List variable to store state
+  List<HouseholdRelationship> _allHouseholdRelationships = [];
+  List<HouseholdRelationship> get allHouseholdRelationships =>
+      _allHouseholdRelationships;
 
   getAllHouseholds() async {
     _allHouseholds = await _lookupRepository.allHouseholds();
@@ -302,9 +309,118 @@ class HouseholdProvider extends ChangeNotifier {
     getAllHouseholdMembers();
   }
 
+  // Fetcher
+  Future<void> getAllHouseholdRelationships() async {
+    _allHouseholdRelationships =
+        await _lookupRepository.getAllHouseholdRelationships();
+    notifyListeners();
+  }
+
+  // Update Function
+  Future<void> updateHouseholdRelationship(
+      HouseholdRelationshipsCompanion hrc) async {
+    await _lookupRepository.updateHouseholdRelationship(hrc);
+    await getAllHouseholdRelationships(); // Refresh list after update
+  }
+
   Future<void> addHouseholdRelationship(
     HouseholdRelationshipsCompanion hrc,
   ) async {
     await _lookupRepository.addHouseholdRelationship(hrc);
+    await getAllHouseholdRelationships(); // Refresh list after update
+  }
+
+  // Delete Function
+  Future<void> deleteHouseholdRelationship(int id) async {
+    await _lookupRepository.deleteHouseholdRelationship(id);
+    await getAllHouseholdRelationships(); // Refresh list after delete
+  }
+
+  final HouseholdRepository _tableRepository = HouseholdRepository();
+
+  // --- Table State ---
+  List<HouseholdTableRow> _tableHouseholds = [];
+  int _totalRows = 0;
+  bool _isTableLoading = false;
+
+  int _currentPageIndex = 0;
+  int _rowsPerPage = 10;
+  String? _searchQuery;
+
+  HouseholdSortColumn _sortColumn = HouseholdSortColumn.none;
+  SortDirection _sortDirection = SortDirection.asc;
+  HouseholdFilterOptions _filters = HouseholdFilterOptions();
+
+  // --- Getters ---
+  List<HouseholdTableRow> get tableHouseholds => _tableHouseholds;
+  int get totalRows => _totalRows;
+  bool get isTableLoading => _isTableLoading;
+  int get currentPageIndex => _currentPageIndex;
+  int get rowsPerPage => _rowsPerPage;
+  HouseholdSortColumn get sortColumn => _sortColumn;
+  SortDirection get sortDirection => _sortDirection;
+  HouseholdFilterOptions get filters => _filters;
+
+  // --- Logic ---
+
+  Future<void> loadHouseholdTable() async {
+    _isTableLoading = true;
+    notifyListeners();
+
+    _tableHouseholds = await _tableRepository.getHouseholdTableData(
+      page: _currentPageIndex,
+      limit: _rowsPerPage,
+      searchQuery: _searchQuery,
+      filters: _filters,
+      sortColumn: _sortColumn,
+      sortDirection: _sortDirection,
+    );
+
+    _totalRows = await _tableRepository.getTotalHouseholdCount(
+      searchQuery: _searchQuery,
+      filters: _filters,
+    );
+
+    _isTableLoading = false;
+    notifyListeners();
+  }
+
+  void onPageChanged(int firstRowIndex) {
+    _currentPageIndex = firstRowIndex ~/ _rowsPerPage;
+    loadHouseholdTable();
+  }
+
+  void onRowsPerPageChanged(int newRowsPerPage) {
+    _rowsPerPage = newRowsPerPage;
+    _currentPageIndex = 0;
+    loadHouseholdTable();
+  }
+
+  void search(String query) {
+    _searchQuery = query;
+    _currentPageIndex = 0;
+    loadHouseholdTable();
+  }
+
+  void sort(HouseholdSortColumn column) {
+    if (_sortColumn != column) {
+      _sortColumn = column;
+      _sortDirection = SortDirection.asc;
+    } else {
+      // Toggle: Asc -> Desc -> None
+      if (_sortDirection == SortDirection.asc) {
+        _sortDirection = SortDirection.desc;
+      } else {
+        _sortColumn = HouseholdSortColumn.none;
+        _sortDirection = SortDirection.asc;
+      }
+    }
+    loadHouseholdTable();
+  }
+
+  void updateFilters(HouseholdFilterOptions newFilters) {
+    _filters = newFilters;
+    _currentPageIndex = 0;
+    loadHouseholdTable();
   }
 }

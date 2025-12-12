@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:brims/database/app_db.dart';
 import 'package:brims/locator.dart';
+import 'package:brims/models/household_models.dart';
+import 'package:brims/models/profile_filter_options.dart';
 import 'package:brims/repository/profiling%20repositories/person_repository.dart';
 import 'package:drift/drift.dart';
 
@@ -468,5 +470,174 @@ class HouseholdRepository {
     HouseholdRelationshipsCompanion hrc,
   ) async {
     await db.into(db.householdRelationships).insert(hrc);
+  }
+
+  // Update an existing relationship
+  Future<void> updateHouseholdRelationship(
+      HouseholdRelationshipsCompanion hrc) async {
+    await (db.update(db.householdRelationships)
+          ..where((t) => t.household_relationship_id
+              .equals(hrc.household_relationship_id.value)))
+        .write(hrc);
+  }
+
+  // Delete a relationship (Useful if a user sets "Relation" back to empty/null)
+  Future<void> deleteHouseholdRelationship(int id) async {
+    await (db.delete(db.householdRelationships)
+          ..where((t) => t.household_relationship_id.equals(id)))
+        .go();
+  }
+
+  // Fetch all relationships (Required for Edit Page to load existing data)
+  Future<List<HouseholdRelationship>> getAllHouseholdRelationships() async {
+    return await db.select(db.householdRelationships).get();
+  }
+
+  // --- QUERY BUILDER ---
+  JoinedSelectStatement _buildQuery(
+    String? searchQuery,
+    HouseholdFilterOptions filters,
+  ) {
+    // 1. Base Join
+    final query = db.select(db.households).join([
+      leftOuterJoin(
+        db.addresses,
+        db.addresses.address_id.equalsExp(db.households.address_id),
+      ),
+      leftOuterJoin(
+        db.buildingTypes,
+        db.buildingTypes.building_type_id
+            .equalsExp(db.households.building_type_id),
+      ),
+    ]);
+
+    // 2. Search Filter (Head Name)
+    if (searchQuery != null && searchQuery.isNotEmpty) {
+      query.where(db.households.head.contains(searchQuery));
+    }
+
+    // 3. Apply Filters
+    if (filters.householdTypes.isNotEmpty) {
+      query.where(db.households.household_type_id.isIn(
+        filters.householdTypes.map((e) => e.name),
+      ));
+    }
+    if (filters.ownershipTypes.isNotEmpty) {
+      query.where(db.households.ownership_type_id.isIn(
+        filters.ownershipTypes.map((e) => e.name),
+      ));
+    }
+    if (filters.buildingTypeIds.isNotEmpty) {
+      query.where(db.households.building_type_id.isIn(filters.buildingTypeIds));
+    }
+
+    return query;
+  }
+
+  // --- GET DATA ---
+  Future<List<HouseholdTableRow>> getHouseholdTableData({
+    int page = 0,
+    int limit = 10,
+    String? searchQuery,
+    required HouseholdFilterOptions filters,
+    HouseholdSortColumn sortColumn = HouseholdSortColumn.none,
+    SortDirection sortDirection = SortDirection.asc,
+  }) async {
+    try {
+      final joinedQuery = _buildQuery(searchQuery, filters);
+
+      // --- SORTING ---
+      OrderingMode mode = sortDirection == SortDirection.asc
+          ? OrderingMode.asc
+          : OrderingMode.desc;
+
+      if (sortColumn != HouseholdSortColumn.none) {
+        Expression? sortExpr;
+
+        switch (sortColumn) {
+          case HouseholdSortColumn.head:
+            sortExpr = db.households.head;
+            break;
+          case HouseholdSortColumn.street:
+            sortExpr = db.addresses.street;
+            break;
+          case HouseholdSortColumn.zone:
+            sortExpr = db.addresses.zone;
+            break;
+          case HouseholdSortColumn.block:
+            sortExpr = db.addresses.block;
+            break;
+          case HouseholdSortColumn.lot:
+            sortExpr = db.addresses.lot;
+            break;
+          case HouseholdSortColumn.members:
+            sortExpr = db.households.household_members_num;
+            break;
+          case HouseholdSortColumn.householdType:
+            sortExpr = db.households.household_type_id;
+            break;
+          case HouseholdSortColumn.ownershipType:
+            sortExpr = db.households.ownership_type_id;
+            break;
+          case HouseholdSortColumn.buildingType:
+            sortExpr = db.buildingTypes.type;
+            break;
+          default:
+            break;
+        }
+
+        if (sortExpr != null) {
+          joinedQuery.orderBy([OrderingTerm(expression: sortExpr, mode: mode)]);
+        }
+      }
+
+      // --- PAGINATION ---
+      joinedQuery.limit(limit, offset: page * limit);
+
+      final rows = await joinedQuery.get();
+
+      // --- MAPPING ---
+      return rows.map((row) {
+        final household = row.readTable(db.households);
+        final address = row.readTableOrNull(db.addresses);
+        final bType = row.readTableOrNull(db.buildingTypes);
+
+        return HouseholdTableRow(
+          householdId: household.household_id,
+          headName: household.head ?? 'N/A',
+          street: address?.street ?? 'N/A',
+          zone: address?.zone ?? 'N/A',
+          block: address?.block ?? 'N/A',
+          lot: address?.lot ?? 'N/A',
+          memberCount: household.household_members_num ?? 0,
+
+          // Dynamic fields
+          householdType: household.household_type_id?.name, // Enum to String
+          ownershipType: household.ownership_type_id?.name, // Enum to String
+          buildingType: bType?.type,
+        );
+      }).toList();
+    } catch (e) {
+      log("Error fetching household table: $e");
+      return [];
+    }
+  }
+
+  // --- COUNT (For Paginator) ---
+  Future<int> getTotalHouseholdCount({
+    String? searchQuery,
+    required HouseholdFilterOptions filters,
+  }) async {
+    final baseQuery = _buildQuery(searchQuery, filters);
+
+    final countExp = db.households.household_id.count();
+
+    // 1. Add the column (returns void)
+    baseQuery.addColumns([countExp]);
+
+    // 2. Execute the query
+    final result = await baseQuery.map((row) => row.read(countExp)).getSingle();
+
+    return result ?? 0;
   }
 }

@@ -1,6 +1,10 @@
 import 'package:brims/database/app_db.dart';
+import 'package:brims/models/household_models.dart';
+import 'package:brims/models/profile_filter_options.dart';
+import 'package:brims/provider/household%20providers/household_lookup_provider.dart';
 import 'package:brims/provider/household%20providers/household_provider.dart';
 import 'package:brims/screens/add_household_page.dart';
+import 'package:brims/screens/components/household_filter_dialog.dart';
 import 'package:brims/screens/view_household_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,247 +17,265 @@ class HouseholdsPage extends StatefulWidget {
 }
 
 class _HouseholdsPageState extends State<HouseholdsPage> {
-  TextEditingController _searchController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
-    // Fetch data when page loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final provider = context.read<HouseholdProvider>();
-      provider.getAllHouseholds();
-      provider.getAllAddresses();
+      // Load table data and lookups
+      context.read<HouseholdProvider>().loadHouseholdTable();
+      context.read<HouseholdLookupProvider>().getAllBuildingTypes();
     });
   }
 
   @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  // Helper to find address object by ID from the loaded list
-  AddressData? _getAddress(int? addressId, List<AddressData> addresses) {
-    if (addressId == null) return null;
-    try {
-      return addresses.firstWhere((a) => a.address_id == addressId);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final householdProvider = context.watch<HouseholdProvider>();
-    final households = householdProvider.allHouseholds;
-    final addresses = householdProvider.allAddresses;
+    final provider = context.watch<HouseholdProvider>();
 
-    // Filter logic (Basic search by Head Name)
-    final filteredHouseholds = households.where((h) {
-      final query = _searchController.text.toLowerCase();
-      final head = h.head?.toLowerCase() ?? '';
-      return head.contains(query);
-    }).toList();
+    // --- Define Columns ---
+    List<DataColumn> columns = [
+      DataColumn(
+        label: const Text("Head of Household"),
+        onSort: (index, _) => provider.sort(HouseholdSortColumn.head),
+      ),
+      DataColumn(
+        label: const Text("Street"),
+        onSort: (index, _) => provider.sort(HouseholdSortColumn.street),
+      ),
+      DataColumn(
+        label: const Text("Zone"),
+        onSort: (index, _) => provider.sort(HouseholdSortColumn.zone),
+      ),
+      DataColumn(
+        label: const Text("Block"),
+        onSort: (index, _) => provider.sort(HouseholdSortColumn.block),
+      ),
+      DataColumn(
+        label: const Text("Lot"),
+        onSort: (index, _) => provider.sort(HouseholdSortColumn.lot),
+      ),
+      DataColumn(
+        label: const Text("Members"),
+        numeric: true,
+        onSort: (index, _) => provider.sort(HouseholdSortColumn.members),
+      ),
+    ];
+
+    // --- Dynamic Columns based on Filters ---
+    if (provider.filters.householdTypes.isNotEmpty) {
+      columns.add(DataColumn(
+        label: const Text("Household Type"),
+        onSort: (index, _) => provider.sort(HouseholdSortColumn.householdType),
+      ));
+    }
+    if (provider.filters.ownershipTypes.isNotEmpty) {
+      columns.add(DataColumn(
+        label: const Text("Ownership"),
+        onSort: (index, _) => provider.sort(HouseholdSortColumn.ownershipType),
+      ));
+    }
+    if (provider.filters.buildingTypeIds.isNotEmpty) {
+      columns.add(DataColumn(
+        label: const Text("Building Type"),
+        onSort: (index, _) => provider.sort(HouseholdSortColumn.buildingType),
+      ));
+    }
 
     return Scaffold(
-      // Dark background to match the image style
-      backgroundColor: const Color(0xFF18181B),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // -------------------------
-            // 1. Header & Search
-            // -------------------------
-            Text(
-              "Household Profiles",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _searchController,
-              onChanged: (value) => setState(() {}),
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: "Search by Household Head...",
-                hintStyle: TextStyle(color: Colors.grey[600]),
-                prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
-                filled: true,
-                fillColor: const Color(0xFF27272A), // Slightly lighter dark
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // -------------------------
-            // 2. Table Headers
-            // -------------------------
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.grey, width: 0.5),
-                ),
-              ),
-              child: Row(
-                children: [
-                  _buildHeaderCell("Household Head", flex: 3),
-                  _buildHeaderCell("Street", flex: 2),
-                  _buildHeaderCell("Zone", flex: 1),
-                  _buildHeaderCell("Block", flex: 1),
-                  _buildHeaderCell("Lot", flex: 1),
-                  _buildHeaderCell("Members", flex: 1, align: TextAlign.center),
-                  const SizedBox(width: 40), // Spacing for arrow icon
-                ],
-              ),
-            ),
-
-            // -------------------------
-            // 3. List Content or Empty State
-            // -------------------------
-            Expanded(
-              child: filteredHouseholds.isEmpty
-                  ? _buildEmptyState()
-                  : ListView.builder(
-                      itemCount: filteredHouseholds.length,
-                      itemBuilder: (context, index) {
-                        final household = filteredHouseholds[index];
-                        final address = _getAddress(
-                          household.address_id,
-                          addresses,
-                        );
-
-                        return _buildHouseholdRow(
-                          context,
-                          household,
-                          address,
-                        );
-                      },
-                    ),
-            ),
-          ],
-        ),
-      ),
-
-      // -------------------------
-      // 4. Floating Action Button
-      // -------------------------
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AddHouseholdPage()),
-          );
-        },
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        icon: const Icon(Icons.add),
-        label: const Text("Add Household"),
-      ),
-    );
-  }
-
-  // Widget for Table Headers
-  Widget _buildHeaderCell(
-    String title, {
-    int flex = 1,
-    TextAlign align = TextAlign.left,
-  }) {
-    return Expanded(
-      flex: flex,
-      child: Text(
-        title,
-        textAlign: align,
-        style: TextStyle(
-          color: Colors.grey[400],
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
-        ),
-      ),
-    );
-  }
-
-  // Widget for Empty State
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: Column(
         children: [
-          Icon(Icons.folder_open, size: 64, color: Colors.grey[700]),
-          const SizedBox(height: 16),
-          Text(
-            "No households recorded yet",
-            style: TextStyle(color: Colors.grey[500], fontSize: 18),
+          // --- Top Bar ---
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      hintText: "Search by Head Name...",
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (val) => provider.search(val),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) => HouseholdFilterDialog(
+                        currentFilters: provider.filters,
+                        onApply: (newFilters) =>
+                            provider.updateFilters(newFilters),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.filter_list),
+                  label: const Text("Filters"),
+                ),
+                const SizedBox(width: 10),
+                // Add Button here for convenience
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const AddHouseholdPage()),
+                    ).then((val) {
+                      if (val == true || context.mounted) {
+                        provider.loadHouseholdTable();
+                      }
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                  ),
+                  icon: const Icon(Icons.add),
+                  label: const Text("Add"),
+                ),
+              ],
+            ),
+          ),
+
+          // --- Table ---
+          Expanded(
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: PaginatedDataTable(
+                    key: ValueKey(provider.currentPageIndex), // Force refresh
+                    header: const Text("Households Registry"),
+                    showCheckboxColumn: false,
+                    rowsPerPage: provider.rowsPerPage,
+                    availableRowsPerPage: const [10, 25, 50],
+                    onRowsPerPageChanged: (val) =>
+                        provider.onRowsPerPageChanged(val ?? 10),
+                    onPageChanged: (idx) => provider.onPageChanged(idx),
+                    sortColumnIndex: _getSortIndex(provider.sortColumn),
+                    sortAscending: provider.sortDirection == SortDirection.asc,
+                    columns: columns,
+                    source: HouseholdDataSource(
+                      context: context,
+                      households: provider.tableHouseholds,
+                      totalCount: provider.totalRows,
+                      currentPage: provider.currentPageIndex,
+                      rowsPerPage: provider.rowsPerPage,
+                      filters: provider.filters,
+                    ),
+                  ),
+                ),
+                if (provider.isTableLoading)
+                  Positioned.fill(
+                    child: Container(
+                      color: Colors.white.withOpacity(0.5),
+                      child: const Center(child: CircularProgressIndicator()),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  // Widget for a Single Data Row
-  Widget _buildHouseholdRow(
-    BuildContext context,
-    HouseholdData household,
-    AddressData? address,
-  ) {
-    return InkWell(
-      onTap: () {
-        // Navigate to Details Page
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                ViewHouseholdPage(householdId: household.household_id),
-          ),
-        );
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-        decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: Color(0xFF3F3F46), width: 0.5),
-          ),
-        ),
-        child: Row(
-          children: [
-            _buildDataCell(household.head ?? "N/A", flex: 3),
-            _buildDataCell(address?.street ?? "N/A", flex: 2),
-            _buildDataCell(address?.zone ?? "N/A", flex: 1),
-            _buildDataCell(address?.block ?? "N/A", flex: 1),
-            _buildDataCell(address?.lot ?? "N/A", flex: 1),
-            _buildDataCell(
-              (household.household_members_num ?? 0).toString(),
-              flex: 1,
-              align: TextAlign.center,
+  // Helper to map Enum to Column Index for UI highlighting
+  int? _getSortIndex(HouseholdSortColumn col) {
+    switch (col) {
+      case HouseholdSortColumn.head:
+        return 0;
+      case HouseholdSortColumn.street:
+        return 1;
+      case HouseholdSortColumn.zone:
+        return 2;
+      case HouseholdSortColumn.block:
+        return 3;
+      case HouseholdSortColumn.lot:
+        return 4;
+      case HouseholdSortColumn.members:
+        return 5;
+      case HouseholdSortColumn.householdType:
+        return 6; // Dynamic, simplistic mapping
+      case HouseholdSortColumn.ownershipType:
+        return 7;
+      case HouseholdSortColumn.buildingType:
+        return 8;
+      default:
+        return null;
+    }
+  }
+}
+
+class HouseholdDataSource extends DataTableSource {
+  final BuildContext context;
+  final List<HouseholdTableRow> households;
+  final int totalCount;
+  final int currentPage;
+  final int rowsPerPage;
+  final HouseholdFilterOptions filters;
+
+  HouseholdDataSource({
+    required this.context,
+    required this.households,
+    required this.totalCount,
+    required this.currentPage,
+    required this.rowsPerPage,
+    required this.filters,
+  });
+
+  @override
+  DataRow? getRow(int index) {
+    final int startIndex = currentPage * rowsPerPage;
+    final int localIndex = index - startIndex;
+
+    if (localIndex < 0 || localIndex >= households.length) return null;
+
+    final row = households[localIndex];
+
+    List<DataCell> cells = [
+      DataCell(Text(row.headName)),
+      DataCell(Text(row.street)),
+      DataCell(Text(row.zone)),
+      DataCell(Text(row.block)),
+      DataCell(Text(row.lot)),
+      DataCell(Text(row.memberCount.toString())),
+    ];
+
+    // Dynamic Cells (Must match order in Main Widget)
+    if (filters.householdTypes.isNotEmpty) {
+      cells.add(DataCell(Text(row.householdType ?? 'N/A')));
+    }
+    if (filters.ownershipTypes.isNotEmpty) {
+      cells.add(DataCell(Text(row.ownershipType ?? 'N/A')));
+    }
+    if (filters.buildingTypeIds.isNotEmpty) {
+      cells.add(DataCell(Text(row.buildingType ?? 'N/A')));
+    }
+
+    return DataRow(
+      onSelectChanged: (selected) {
+        if (selected == true) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ViewHouseholdPage(householdId: row.householdId),
             ),
-            const Icon(Icons.chevron_right, color: Colors.grey),
-          ],
-        ),
-      ),
+          ).then((_) {
+            if (context.mounted) {
+              context.read<HouseholdProvider>().loadHouseholdTable();
+            }
+          });
+        }
+      },
+      cells: cells,
     );
   }
 
-  Widget _buildDataCell(
-    String text, {
-    int flex = 1,
-    TextAlign align = TextAlign.left,
-  }) {
-    return Expanded(
-      flex: flex,
-      child: Text(
-        text,
-        textAlign: align,
-        style: const TextStyle(color: Colors.white, fontSize: 14),
-        overflow: TextOverflow.ellipsis,
-      ),
-    );
-  }
+  @override
+  bool get isRowCountApproximate => false;
+  @override
+  int get rowCount => totalCount;
+  @override
+  int get selectedRowCount => 0;
 }

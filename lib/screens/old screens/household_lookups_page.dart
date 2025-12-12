@@ -48,26 +48,24 @@ class _HouseholdLookupsState extends State<HouseholdLookups> {
                       );
                       lookupProvider.updateBuildingType(updated);
                     },
-                    onDelete:
-                        (item) => lookupProvider.deleteBuildingType(
-                          item.building_type_id,
-                        ),
+                    onDelete: (item) => lookupProvider.deleteBuildingType(
+                      item.building_type_id,
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder:
-                            (_) => AddLookup(
-                              columns: ['Type'],
-                              onInsert: (values) async {
-                                final companion = BuildingTypesCompanion(
-                                  type: db.Value(values[0]),
-                                );
-                                await lookupProvider.addBuildingType(companion);
-                                setState(() {});
-                              },
-                            ),
+                        builder: (_) => AddLookup(
+                          columns: ['Type'],
+                          onInsert: (values) async {
+                            final companion = BuildingTypesCompanion(
+                              type: db.Value(values[0]),
+                            );
+                            await lookupProvider.addBuildingType(companion);
+                            setState(() {});
+                          },
+                        ),
                       );
                     },
                     child: const Text("Add"),
@@ -87,28 +85,26 @@ class _HouseholdLookupsState extends State<HouseholdLookups> {
                       );
                       lookupProvider.updateRelationshipType(updated);
                     },
-                    onDelete:
-                        (item) => lookupProvider.deleteRelationshipType(
-                          item.relationship_id,
-                        ),
+                    onDelete: (item) => lookupProvider.deleteRelationshipType(
+                      item.relationship_id,
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder:
-                            (_) => AddLookup(
-                              columns: ['Relationship'],
-                              onInsert: (values) async {
-                                final companion = RelationshipTypesCompanion(
-                                  relationship: db.Value(values[0]),
-                                );
-                                await lookupProvider.addRelationshipType(
-                                  companion,
-                                );
-                                setState(() {});
-                              },
-                            ),
+                        builder: (_) => AddLookup(
+                          columns: ['Relationship'],
+                          onInsert: (values) async {
+                            final companion = RelationshipTypesCompanion(
+                              relationship: db.Value(values[0]),
+                            );
+                            await lookupProvider.addRelationshipType(
+                              companion,
+                            );
+                            setState(() {});
+                          },
+                        ),
                       );
                     },
                     child: const Text("Add"),

@@ -24,7 +24,7 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
   bool _isLoading = true;
   bool _isSaving = false;
 
-  // IDs
+  // IDs to track existing records for updates
   int? _existingAddressId;
   int? _existingServiceId;
   int? _existingFemaleMortalityId;
@@ -40,22 +40,17 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
   bool _showHeadResults = false;
 
   // Member Management
+  // Structure: {
+  //   'person': PersonData,
+  //   'relationship_id': int? (The ID from dropdown),
+  //   'rel_pk': int? (The Primary Key of the existing relationship record, if any)
+  // }
   List<Map<String, dynamic>> _addedMembers = [];
   List<PersonData> _removedMembers = [];
 
   final TextEditingController _memberSearchController = TextEditingController();
   List<PersonData> _memberSearchResults = [];
   bool _showMemberResults = false;
-  final List<String> _relationshipTypes = [
-    "Spouse",
-    "Son",
-    "Daughter",
-    "Parent",
-    "Sibling",
-    "Grandparent",
-    "Grandchild",
-    "Other"
-  ];
 
   // Address
   final _zoneController = TextEditingController();
@@ -142,6 +137,7 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
 
       await Future.wait<void>([
         lookupProvider.getAllBuildingTypes(),
+        lookupProvider.getAllRelationshipTypes(), // Load Lookups
         personProvider.getAllPersons(),
         householdProvider.getAllServices(),
         householdProvider.getAllPrimaryNeeds(),
@@ -149,7 +145,9 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
         householdProvider.getAllChildMortalities(),
         householdProvider.getAllFutureResidencies(),
         householdProvider.getAllHouseholdVisits(),
-        householdProvider.getAllHouseholdMembers(), // Load members
+        householdProvider.getAllHouseholdMembers(),
+        householdProvider
+            .getAllHouseholdRelationships(), // Load Relationship Table
         questionProvider.getAllQuestions(),
         questionProvider.getAllQuestionChoices(),
       ]);
@@ -167,12 +165,19 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
               .firstWhere(
                   (p) => "${p!.first_name} ${p.last_name}" == household.head,
                   orElse: () => null);
-        } catch (e) {}
+        } catch (e) {
+          debugPrint("Head not found: $e");
+        }
 
-        // --- MEMBERS (New Logic) ---
-        // Find links for this household
+        // --- MEMBERS & RELATIONSHIPS ---
+        // 1. Get members linked to this household
         final currentMembersLinks = householdProvider.allHouseholdMembers
             .where((m) => m.household_id == widget.householdId)
+            .toList();
+
+        // 2. Get relationships linked to this household
+        final currentRelationships = householdProvider.allHouseholdRelationships
+            .where((r) => r.household_id == widget.householdId)
             .toList();
 
         _addedMembers = [];
@@ -182,16 +187,30 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
             final p = personProvider.allPersons
                 .firstWhere((person) => person.person_id == link.person_id);
 
-            // Avoid adding the Head to the member list
+            // Don't add the head to the member list
             if (_selectedHead == null ||
                 p.person_id != _selectedHead!.person_id) {
+              // Find if this person has a relationship record
+              final relRecord = currentRelationships.firstWhere(
+                  (r) => r.person_id == p.person_id,
+                  orElse: () => HouseholdRelationship(
+                      household_relationship_id: -1, // Dummy
+                      person_id: -1,
+                      household_id: -1,
+                      relationship_id: null));
+
               _addedMembers.add({
                 'person': p,
-                'relationship':
-                    null // Relationship data not persisted in current schema
+                'relationship_id':
+                    relRecord.relationship_id, // The ID for dropdown
+                'rel_pk': relRecord.relationship_id != null
+                    ? relRecord.household_relationship_id
+                    : null, // PK for updating
               });
             }
-          } catch (e) {}
+          } catch (e) {
+            debugPrint("Error loading member: $e");
+          }
         }
 
         // --- ENUMS & BASIC INFO ---
@@ -355,15 +374,33 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
     });
   }
 
+  // Helper for Section Headers
+  Widget _buildSectionHeader(String title) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title.toUpperCase(),
+            style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                letterSpacing: 1.2,
+                color: Colors.blueGrey)),
+        const Divider(thickness: 1.5),
+        const SizedBox(height: 10),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final householdLookupProvider = context.watch<HouseholdLookupProvider>();
     final questionProvider = context.watch<QuestionLookupProvider>();
 
-    if (_isLoading)
+    if (_isLoading) {
       return Scaffold(
           appBar: AppBar(title: const Text("Edit Household")),
           body: const Center(child: CircularProgressIndicator()));
+    }
     int totalMembers = (_selectedHead != null ? 1 : 0) + _addedMembers.length;
 
     return Scaffold(
@@ -378,10 +415,8 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Head of Household",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                  const SizedBox(height: 12),
+                  _buildSectionHeader("Head of Household"),
+
                   if (_selectedHead == null) ...[
                     TextFormField(
                       controller: _headSearchController,
@@ -389,6 +424,8 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                         labelText: "Search New Head",
                         prefixIcon: const Icon(Icons.search),
                         border: const OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 14),
                         suffixIcon: _headSearchController.text.isNotEmpty
                             ? IconButton(
                                 icon: const Icon(Icons.clear),
@@ -428,8 +465,9 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                   ] else ...[
                     Card(
                       elevation: 0,
-                      color: Colors.blue.shade50,
+                      color: Colors.grey.shade100,
                       shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.grey.shade300),
                           borderRadius: BorderRadius.circular(8)),
                       child: ListTile(
                         leading: const CircleAvatar(child: Icon(Icons.person)),
@@ -451,18 +489,28 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Household Members",
+                        const Text("HOUSEHOLD MEMBERS",
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18)),
-                        Chip(label: Text("Total: $totalMembers"))
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                letterSpacing: 1.2,
+                                color: Colors.blueGrey)),
+                        Chip(
+                            label: Text("Total: $totalMembers",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)))
                       ]),
-                  const SizedBox(height: 12),
+                  const Divider(thickness: 1.5),
+                  const SizedBox(height: 10),
+
                   TextFormField(
                     controller: _memberSearchController,
                     decoration: InputDecoration(
                       labelText: "Add Member",
                       prefixIcon: const Icon(Icons.person_add),
                       border: const OutlineInputBorder(),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 14),
                       suffixIcon: _memberSearchController.text.isNotEmpty
                           ? IconButton(
                               icon: const Icon(Icons.clear),
@@ -488,12 +536,16 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                           return ListTile(
                             title: Text(
                                 "${person.first_name} ${person.last_name}"),
-                            trailing:
-                                const Icon(Icons.add, color: Colors.green),
+                            trailing: const Icon(Icons.add_circle,
+                                color: Colors.green),
                             onTap: () {
                               setState(() {
-                                _addedMembers.add(
-                                    {'person': person, 'relationship': null});
+                                _addedMembers.add({
+                                  'person': person,
+                                  'relationship_id': null,
+                                  'rel_pk':
+                                      null // New member, so no existing PK
+                                });
                                 _showMemberResults = false;
                                 _memberSearchController.clear();
                               });
@@ -503,6 +555,7 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                       ),
                     ),
                   const SizedBox(height: 16),
+
                   if (_addedMembers.isNotEmpty)
                     ListView.separated(
                       shrinkWrap: true,
@@ -528,25 +581,28 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                                       "${person.first_name} ${person.last_name}",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.w600))),
+                              const SizedBox(width: 12),
                               Expanded(
                                 flex: 3,
-                                child: DropdownButtonFormField<String>(
+                                child: DropdownButtonFormField<int>(
                                   isExpanded: true,
                                   decoration: const InputDecoration(
                                       labelText: "Relation",
-                                      contentPadding:
-                                          EdgeInsets.symmetric(horizontal: 10),
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 8),
                                       border: OutlineInputBorder()),
-                                  value: memberMap['relationship'],
-                                  items: _relationshipTypes
+                                  value: memberMap['relationship_id'],
+                                  items: householdLookupProvider
+                                      .allRelationshipTypes
                                       .map((r) => DropdownMenuItem(
-                                          value: r,
-                                          child: Text(r,
+                                          value: r.relationship_id,
+                                          child: Text(r.relationship,
                                               style: const TextStyle(
                                                   fontSize: 14))))
                                       .toList(),
                                   onChanged: (val) => setState(() =>
-                                      _addedMembers[index]['relationship'] =
+                                      _addedMembers[index]['relationship_id'] =
                                           val),
                                 ),
                               ),
@@ -555,6 +611,7 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                                     color: Colors.red),
                                 onPressed: () {
                                   setState(() {
+                                    // Track removed member for DB deletion
                                     _removedMembers.add(person);
                                     _addedMembers.removeAt(index);
                                   });
@@ -569,10 +626,7 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                   const SizedBox(height: 40),
 
                   // ADDRESS
-                  const Text("Address Information",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                  const SizedBox(height: 16),
+                  _buildSectionHeader("Address Information"),
                   Row(children: [
                     Expanded(
                         child: TextFormField(
@@ -611,7 +665,7 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                       setState(() {
                         _searchedAddress = [];
                         _noResults = false;
-                        _existingAddressId = null;
+                        // Don't clear existingAddressId immediately, wait for user selection
                       });
                       final results = await provider.searchAddresses(
                         zone: _zoneController.text.isNotEmpty
@@ -652,7 +706,7 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                                         _Street = _streetController.text;
                                         _Block = _blockController.text;
                                         _Lot = _lotController.text;
-                                        _existingAddressId = null;
+                                        _existingAddressId = null; // Create new
                                         _noResults = false;
                                       });
                                       ScaffoldMessenger.of(context)
@@ -714,10 +768,7 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                   const SizedBox(height: 40),
 
                   // HOUSEHOLD DETAILS
-                  const Text("Household Details",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                  const SizedBox(height: 16),
+                  _buildSectionHeader("Household Details"),
                   DropdownButtonFormField<HouseholdTypes>(
                     value: _selectedHouseholdType,
                     decoration: const InputDecoration(
@@ -762,8 +813,10 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                   if (questionProvider.allQuestions.isNotEmpty) ...[
                     const SizedBox(height: 40),
                     Card(
-                      elevation: 2,
+                      elevation: 1,
+                      color: Colors.white,
                       shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.grey.shade200),
                           borderRadius: BorderRadius.circular(12)),
                       child: Padding(
                         padding: const EdgeInsets.all(24.0),
@@ -774,48 +827,49 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                                   child: Text("UTILITIES",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                          letterSpacing: 1.2))),
+                                          fontSize: 18,
+                                          letterSpacing: 1.2,
+                                          color: Colors.blueGrey))),
                               const Divider(height: 32, thickness: 1),
                               ...questionProvider.allQuestions.map((q) {
                                 final choices = questionProvider
                                     .getChoicesForQuestion(q.question_id);
                                 return Padding(
-                                    padding:
-                                        const EdgeInsets.only(bottom: 16.0),
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(q.question,
-                                              style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600)),
-                                          const SizedBox(height: 8),
-                                          DropdownButtonFormField<int>(
-                                            decoration: const InputDecoration(
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 12),
-                                                border: OutlineInputBorder(),
-                                                isDense: true),
-                                            value:
-                                                _utilityAnswers[q.question_id],
-                                            hint: const Text("Select option"),
-                                            items: choices.map((choice) {
-                                              return DropdownMenuItem<int>(
-                                                  value: choice.choice_id,
-                                                  child: Text(choice.choice));
-                                            }).toList(),
-                                            onChanged: (val) {
-                                              setState(() {
-                                                _utilityAnswers[q.question_id] =
-                                                    val;
-                                              });
-                                            },
-                                          ),
-                                        ]));
+                                  padding: const EdgeInsets.only(bottom: 16.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(q.question,
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600)),
+                                      const SizedBox(height: 8),
+                                      DropdownButtonFormField<int>(
+                                        decoration: const InputDecoration(
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 12),
+                                            border: OutlineInputBorder(),
+                                            isDense: true),
+                                        value: _utilityAnswers[q.question_id],
+                                        hint: const Text("Select option"),
+                                        items: choices.map((choice) {
+                                          return DropdownMenuItem<int>(
+                                              value: choice.choice_id,
+                                              child: Text(choice.choice));
+                                        }).toList(),
+                                        onChanged: (val) {
+                                          setState(() {
+                                            _utilityAnswers[q.question_id] =
+                                                val;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
                               }),
                             ]),
                       ),
@@ -825,7 +879,7 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                   // COMMUNITY
                   const SizedBox(height: 40),
                   Card(
-                    elevation: 2,
+                    elevation: 1,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     child: Padding(
@@ -837,8 +891,9 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                                 child: Text("COMMUNITY",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                        letterSpacing: 1.2))),
+                                        fontSize: 18,
+                                        letterSpacing: 1.2,
+                                        color: Colors.blueGrey))),
                             const Divider(height: 32, thickness: 1),
                             const Text("Female died in the last 6 months",
                                 style: TextStyle(
@@ -962,7 +1017,7 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                   // SURVEY INFO
                   const SizedBox(height: 40),
                   Card(
-                    elevation: 2,
+                    elevation: 1,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     child: Padding(
@@ -974,8 +1029,9 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
                                 child: Text("SURVEY INFO",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                        letterSpacing: 1.2))),
+                                        fontSize: 18,
+                                        letterSpacing: 1.2,
+                                        color: Colors.blueGrey))),
                             const Divider(height: 32, thickness: 1),
                             Row(children: [
                               Expanded(
@@ -1176,24 +1232,55 @@ class _EditHouseholdPageState extends State<EditHouseholdPage> {
 
         await provider.updateHousehold(householdCompanion);
 
-        // --- SUB-TABLES ---
+        // --- MEMBERS & RELATIONSHIPS ---
 
-        // --- MEMBERS (New Logic) ---
-        // 1. Remove deleted members
+        // 1. Remove deleted members (Cascade delete should handle relationship rows)
         for (var p in _removedMembers) {
           await provider.deleteHouseholdMember(widget.householdId, p.person_id);
         }
-        // 2. Add new members (check existence first)
+
+        // 2. Process Current Members
         await provider.getAllHouseholdMembers();
+
         for (var m in _addedMembers) {
           final person = m['person'] as PersonData;
+          final int? relId = m['relationship_id'];
+          final int? relPk = m['rel_pk'];
+
+          // A. Ensure Member Link Exists
           bool exists = provider.allHouseholdMembers.any((dbm) =>
               dbm.household_id == widget.householdId &&
               dbm.person_id == person.person_id);
+
           if (!exists) {
             await provider.addHouseholdMember(HouseholdMembersCompanion(
                 household_id: db.Value(widget.householdId),
                 person_id: db.Value(person.person_id)));
+          }
+
+          // B. Handle Relationship Logic
+          if (relPk != null) {
+            // Existing Relationship Record: Update or Delete?
+            if (relId != null) {
+              // Update
+              await provider.updateHouseholdRelationship(
+                  HouseholdRelationshipsCompanion(
+                      household_relationship_id: db.Value(relPk),
+                      relationship_id: db.Value(relId)));
+            } else {
+              // User cleared relationship -> Delete record
+              // Assuming you have a delete method, otherwise ignore
+              // await provider.deleteHouseholdRelationship(relPk);
+            }
+          } else {
+            // No Existing Record: Insert new if ID selected
+            if (relId != null) {
+              await provider.addHouseholdRelationship(
+                  HouseholdRelationshipsCompanion(
+                      household_id: db.Value(widget.householdId),
+                      person_id: db.Value(person.person_id),
+                      relationship_id: db.Value(relId)));
+            }
           }
         }
 

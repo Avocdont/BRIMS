@@ -27,21 +27,11 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
   List<PersonData> _headSearchResults = [];
   bool _showHeadResults = false;
 
+  // Stores: {'person': PersonData, 'relationship_id': int?}
   List<Map<String, dynamic>> _addedMembers = [];
   final TextEditingController _memberSearchController = TextEditingController();
   List<PersonData> _memberSearchResults = [];
   bool _showMemberResults = false;
-
-  final List<String> _relationshipTypes = [
-    "Spouse",
-    "Son",
-    "Daughter",
-    "Parent",
-    "Sibling",
-    "Grandparent",
-    "Grandchild",
-    "Other"
-  ];
 
   // --- 2. ADDRESS ---
   int? _addressId;
@@ -96,8 +86,12 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HouseholdLookupProvider>().getAllBuildingTypes();
       context.read<PersonProvider>().getAllPersons();
+
+      final lookupProvider = context.read<HouseholdLookupProvider>();
+      lookupProvider.getAllBuildingTypes();
+      // Load relationship types from DB
+      lookupProvider.getAllRelationshipTypes();
 
       final qProvider = context.read<QuestionLookupProvider>();
       qProvider.getAllQuestions();
@@ -306,8 +300,11 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                                 color: Colors.green),
                             onTap: () {
                               setState(() {
-                                _addedMembers.add(
-                                    {'person': person, 'relationship': null});
+                                // Initialize relationship_id as null
+                                _addedMembers.add({
+                                  'person': person,
+                                  'relationship_id': null
+                                });
                                 _showMemberResults = false;
                                 _memberSearchController.clear();
                               });
@@ -348,23 +345,27 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                               const SizedBox(width: 12),
                               Expanded(
                                 flex: 3,
-                                child: DropdownButtonFormField<String>(
+                                child: DropdownButtonFormField<int>(
                                   isExpanded: true,
                                   decoration: const InputDecoration(
                                       labelText: "Relation",
                                       contentPadding:
                                           EdgeInsets.symmetric(horizontal: 10),
                                       border: OutlineInputBorder()),
-                                  value: memberMap['relationship'],
-                                  items: _relationshipTypes
-                                      .map((r) => DropdownMenuItem(
-                                          value: r,
-                                          child: Text(r,
+                                  value: memberMap['relationship_id'],
+                                  // POPULATE FROM DB LOOKUP
+                                  items: householdLookupProvider
+                                      .allRelationshipTypes
+                                      .map((r) => DropdownMenuItem<int>(
+                                          value: r.relationship_id,
+                                          child: Text(
+                                              r
+                                                  .relationship, // Adjust property name if needed
                                               style: const TextStyle(
                                                   fontSize: 14))))
                                       .toList(),
                                   onChanged: (val) => setState(() =>
-                                      _addedMembers[index]['relationship'] =
+                                      _addedMembers[index]['relationship_id'] =
                                           val),
                                 ),
                               ),
@@ -390,7 +391,6 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                   const SizedBox(height: 16),
 
-                  // Address Inputs and Search Logic
                   Row(children: [
                     Expanded(
                         child: TextFormField(
@@ -577,7 +577,7 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                   ),
 
                   // --------------------------------------------------------
-                  // 3. UTILITIES (Dynamic Questions) - MOVED HERE
+                  // 3. UTILITIES (Dynamic Questions)
                   // --------------------------------------------------------
                   if (questionProvider.allQuestions.isNotEmpty) ...[
                     const SizedBox(height: 40),
@@ -995,17 +995,34 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
 
       final newHouseholdId = await provider.addHousehold(householdCompanion);
 
-      // 3. Link Members
+      // 3. Link Members & Relationships
+      // A. Link Head (No explicit relationship type for head in UI, so just Member)
       await provider.addHouseholdMember(HouseholdMembersCompanion(
         person_id: db.Value(_selectedHead!.person_id),
         household_id: db.Value(newHouseholdId),
       ));
+
+      // B. Link Other Members + Their Relationships
       for (var member in _addedMembers) {
         final person = member['person'] as PersonData;
+        final relationId = member['relationship_id'] as int?;
+
+        // 1. Add to Members Table
         await provider.addHouseholdMember(HouseholdMembersCompanion(
           person_id: db.Value(person.person_id),
           household_id: db.Value(newHouseholdId),
         ));
+
+        // 2. Add to Relationships Table (NEW)
+        if (relationId != null) {
+          // ENSURE THIS METHOD EXISTS IN YOUR PROVIDER
+          await provider
+              .addHouseholdRelationship(HouseholdRelationshipsCompanion(
+            person_id: db.Value(person.person_id),
+            household_id: db.Value(newHouseholdId),
+            relationship_id: db.Value(relationId),
+          ));
+        }
       }
 
       // 4. Save Sub-tables
@@ -1021,17 +1038,17 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
         await provider.addPrimaryNeed(PrimaryNeedsCompanion(
             household_id: db.Value(newHouseholdId),
             need: db.Value(_need1Controller.text),
-            priority: const db.Value(1)));
+            priority: db.Value(1)));
       if (_need2Controller.text.isNotEmpty)
         await provider.addPrimaryNeed(PrimaryNeedsCompanion(
             household_id: db.Value(newHouseholdId),
             need: db.Value(_need2Controller.text),
-            priority: const db.Value(2)));
+            priority: db.Value(2)));
       if (_need3Controller.text.isNotEmpty)
         await provider.addPrimaryNeed(PrimaryNeedsCompanion(
             household_id: db.Value(newHouseholdId),
             need: db.Value(_need3Controller.text),
-            priority: const db.Value(3)));
+            priority: db.Value(3)));
 
       if (hasFm) {
         await provider.addFemaleMortality(FemaleMortalitiesCompanion(
