@@ -41,4 +41,13 @@ class PersonProvider extends ChangeNotifier {
     await _personRepository.deletePerson(id);
     getAllPersons();
   }
+
+  // Variable to hold selected person details
+  Map<String, dynamic> _selectedPersonDetails = {};
+  Map<String, dynamic> get selectedPersonDetails => _selectedPersonDetails;
+
+  Future<void> loadPersonDetails(int id) async {
+    _selectedPersonDetails = await _personRepository.getFullPersonDetails(id);
+    notifyListeners();
+  }
 }

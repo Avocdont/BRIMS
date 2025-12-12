@@ -20,7 +20,8 @@ class ContactInfoRepository {
   getEmailByID(int id) async {
     try {
       return await (db.select(db.emails)
-        ..where((email) => email.email_id.equals(id))).getSingle();
+            ..where((email) => email.email_id.equals(id)))
+          .getSingle();
     } catch (e) {
       log(e.toString());
     }
@@ -47,7 +48,8 @@ class ContactInfoRepository {
   deleteEmail(int id) async {
     try {
       return await (db.delete(db.emails)
-        ..where((email) => email.email_id.equals(id))).go();
+            ..where((email) => email.email_id.equals(id)))
+          .go();
     } catch (e) {
       log(e.toString());
     }
@@ -67,9 +69,11 @@ class ContactInfoRepository {
 
   getPhoneNumberByID(int id) async {
     try {
-      return await (db.select(db.phoneNumbers)..where(
-        (phoneNumber) => phoneNumber.phone_number_id.equals(id),
-      )).getSingle();
+      return await (db.select(db.phoneNumbers)
+            ..where(
+              (phoneNumber) => phoneNumber.phone_number_id.equals(id),
+            ))
+          .getSingle();
     } catch (e) {
       log(e.toString());
     }
@@ -96,7 +100,8 @@ class ContactInfoRepository {
   deletePhoneNumber(int id) async {
     try {
       return await (db.delete(db.phoneNumbers)
-        ..where((phoneNumber) => phoneNumber.phone_number_id.equals(id))).go();
+            ..where((phoneNumber) => phoneNumber.phone_number_id.equals(id)))
+          .go();
     } catch (e) {
       log(e.toString());
     }
@@ -117,7 +122,8 @@ class ContactInfoRepository {
   getGadgetByID(int id) async {
     try {
       return await (db.select(db.gadgets)
-        ..where((gadget) => gadget.gadget_id.equals(id))).getSingle();
+            ..where((gadget) => gadget.gadget_id.equals(id)))
+          .getSingle();
     } catch (e) {
       log(e.toString());
     }
@@ -144,9 +150,22 @@ class ContactInfoRepository {
   deleteGadget(int id) async {
     try {
       return await (db.delete(db.gadgets)
-        ..where((gadget) => gadget.gadget_id.equals(id))).go();
+            ..where((gadget) => gadget.gadget_id.equals(id)))
+          .go();
     } catch (e) {
       log(e.toString());
+    }
+  }
+
+  // NEW: Delete all gadgets for a specific person (used for resetting/syncing)
+  Future<int> deleteGadgetsByPersonId(int personId) async {
+    try {
+      return await (db.delete(db.gadgets)
+            ..where((tbl) => tbl.person_id.equals(personId)))
+          .go();
+    } catch (e) {
+      log(e.toString());
+      return 0;
     }
   }
 }

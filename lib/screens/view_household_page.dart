@@ -1,6 +1,7 @@
 import 'package:brims/database/app_db.dart';
 import 'package:brims/provider/household%20providers/household_lookup_provider.dart';
 import 'package:brims/provider/household%20providers/household_provider.dart';
+import 'package:brims/provider/lookup%20providers/question_lookup_provider.dart';
 import 'package:brims/screens/edit_household_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,19 +18,52 @@ class ViewHouseholdPage extends StatefulWidget {
 }
 
 class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
+  // Map to store QuestionID -> Answer Text for display
+  final Map<int, String> _utilityDisplay = {};
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final provider = context.read<HouseholdProvider>();
-      provider.getAllAddresses();
-      provider.getAllServices();
-      provider.getAllPrimaryNeeds();
-      provider.getAllFemaleMortalities();
-      provider.getAllChildMortalities();
-      provider.getAllFutureResidencies();
-      provider.getAllHouseholdVisits();
+      _loadData();
     });
+  }
+
+  Future<void> _loadData() async {
+    final provider = context.read<HouseholdProvider>();
+    final qProvider = context.read<QuestionLookupProvider>();
+
+    // FIXED: Added <void> to Future.wait to fix the type error
+    await Future.wait<void>([
+      provider.getAllHouseholds(),
+      provider.getAllAddresses(),
+      provider.getAllServices(),
+      provider.getAllPrimaryNeeds(),
+      provider.getAllFemaleMortalities(),
+      provider.getAllChildMortalities(),
+      provider.getAllFutureResidencies(),
+      provider.getAllHouseholdVisits(),
+      qProvider.getAllQuestions(),
+      qProvider.getAllQuestionChoices(),
+    ]);
+
+    // Fetch Utilities Answers for this household
+    final answers = await qProvider.getHouseholdResponses(widget.householdId);
+
+    // Process answers into a display map
+    for (var ans in answers) {
+      // Find the choice text based on choice_id
+      try {
+        final choice = qProvider.allQuestionChoices
+            .firstWhere((c) => c.choice_id == ans.choice_id);
+        _utilityDisplay[ans.question_id] = choice.choice;
+      } catch (e) {
+        // Choice ID not found
+      }
+    }
+
+    // Trigger rebuild to show answers
+    if (mounted) setState(() {});
   }
 
   String _formatEnum(Object? enumValue) {
@@ -50,6 +84,7 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
   Widget build(BuildContext context) {
     final householdProvider = context.watch<HouseholdProvider>();
     final lookupProvider = context.watch<HouseholdLookupProvider>();
+    final questionProvider = context.watch<QuestionLookupProvider>();
 
     // 1. Fetch Household (Safe)
     HouseholdData? household;
@@ -65,15 +100,11 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
       return Scaffold(
         backgroundColor: const Color(0xFF18181B),
         appBar: AppBar(
-          title: const Text("Error"),
-          backgroundColor: const Color(0xFF18181B),
-        ),
+            title: const Text("Error"),
+            backgroundColor: const Color(0xFF18181B)),
         body: const Center(
-          child: Text(
-            "Household not found.",
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
+            child: Text("Household not found.",
+                style: TextStyle(color: Colors.white))),
       );
     }
 
@@ -126,51 +157,41 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ------------------------------------------------
-                // HEAD & BASIC STATUS
-                // ------------------------------------------------
+                // HEADER
                 Center(
                   child: Column(
                     children: [
                       const CircleAvatar(
                         radius: 30,
                         backgroundColor: Colors.white10,
-                        child: Icon(
-                          Icons.person,
-                          size: 30,
-                          color: Colors.white,
-                        ),
+                        child:
+                            Icon(Icons.person, size: 30, color: Colors.white),
                       ),
                       const SizedBox(height: 12),
                       Text(
                         household.head ?? "Unknown Head",
                         style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 4),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
+                            horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.blueAccent.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: Colors.blueAccent.withOpacity(0.5),
-                          ),
+                              color: Colors.blueAccent.withOpacity(0.5)),
                         ),
                         child: Text(
                           _formatEnum(household.registration_status),
                           style: const TextStyle(
-                            color: Colors.blueAccent,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
+                              color: Colors.blueAccent,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                     ],
@@ -179,136 +200,103 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
 
                 const SizedBox(height: 32),
 
-                // ------------------------------------------------
                 // CARD 1: ADDRESS & DETAILS
-                // ------------------------------------------------
                 _buildCard(
                   title: "Address & Classification",
                   children: [
                     _buildRowPair(
-                      "Zone",
-                      address?.zone,
-                      "Street",
-                      address?.street,
-                    ),
+                        "Zone", address?.zone, "Street", address?.street),
                     const SizedBox(height: 12),
                     _buildRowPair("Block", address?.block, "Lot", address?.lot),
                     const Divider(color: Colors.white24, height: 32),
-
-                    // FIXED: Passed Enum directly (removed _safeEnum)
-                    _buildInfoRow(
-                      "Household Type",
-                      _formatEnum(household.household_type_id),
-                    ),
-
+                    _buildInfoRow("Household Type",
+                        _formatEnum(household.household_type_id)),
                     _buildInfoRow("Building Type", buildingType ?? "N/A"),
-
-                    // FIXED: Passed Enum directly (removed _safeEnum)
-                    _buildInfoRow(
-                      "Ownership Type",
-                      _formatEnum(household.ownership_type_id),
-                    ),
-
-                    _buildInfoRow(
-                      "Members Count",
-                      household.household_members_num?.toString() ?? "0",
-                    ),
+                    _buildInfoRow("Ownership Type",
+                        _formatEnum(household.ownership_type_id)),
+                    _buildInfoRow("Members Count",
+                        household.household_members_num?.toString() ?? "0"),
                   ],
                 ),
 
                 const SizedBox(height: 24),
 
-                // ------------------------------------------------
+                // CARD: UTILITIES (Dynamic)
+                if (questionProvider.allQuestions.isNotEmpty) ...[
+                  _buildCard(
+                    title: "Utilities",
+                    children: [
+                      ...questionProvider.allQuestions.map((q) {
+                        String answer = _utilityDisplay[q.question_id] ?? "N/A";
+                        return _buildInfoRow(q.question, answer);
+                      }),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                ],
+
                 // CARD 2: COMMUNITY
-                // ------------------------------------------------
                 _buildCard(
                   title: "Community",
                   children: [
-                    // A. Mortality
                     _buildSectionHeader("Mortality (Last 6 Months)"),
-                    _buildInfoRow(
-                      "Female Mortality",
-                      household.female_mortality == true ? "Yes" : "No",
-                    ),
+                    _buildInfoRow("Female Mortality",
+                        household.female_mortality == true ? "Yes" : "No"),
                     if (household.female_mortality == true)
                       Padding(
                         padding: const EdgeInsets.only(left: 16, bottom: 8),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Age: ${femaleMortality?.age ?? 'N/A'}",
-                              style: const TextStyle(color: Colors.white54),
-                            ),
-                            Text(
-                              "Cause: ${femaleMortality?.death_cause ?? 'N/A'}",
-                              style: const TextStyle(color: Colors.white54),
-                            ),
-                          ],
-                        ),
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Age: ${femaleMortality?.age ?? 'N/A'}",
+                                  style:
+                                      const TextStyle(color: Colors.white54)),
+                              Text(
+                                  "Cause: ${femaleMortality?.death_cause ?? 'N/A'}",
+                                  style:
+                                      const TextStyle(color: Colors.white54)),
+                            ]),
                       ),
-
-                    _buildInfoRow(
-                      "Child Mortality (0–5 yrs)",
-                      household.child_mortality == true ? "Yes" : "No",
-                    ),
+                    _buildInfoRow("Child Mortality (<=5)",
+                        household.child_mortality == true ? "Yes" : "No"),
                     if (household.child_mortality == true)
                       Padding(
                         padding: const EdgeInsets.only(left: 16, bottom: 8),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Age: ${childMortality?.age ?? 'N/A'}",
-                              style: const TextStyle(color: Colors.white54),
-                            ),
-                            Text(
-                              "Sex: ${_formatEnum(childMortality?.sex)}",
-                              style: const TextStyle(color: Colors.white54),
-                            ),
-                            Text(
-                              "Cause: ${childMortality?.death_cause ?? 'N/A'}",
-                              style: const TextStyle(color: Colors.white54),
-                            ),
-                          ],
-                        ),
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Age: ${childMortality?.age ?? 'N/A'}",
+                                  style:
+                                      const TextStyle(color: Colors.white54)),
+                              Text("Sex: ${_formatEnum(childMortality?.sex)}",
+                                  style:
+                                      const TextStyle(color: Colors.white54)),
+                              Text(
+                                  "Cause: ${childMortality?.death_cause ?? 'N/A'}",
+                                  style:
+                                      const TextStyle(color: Colors.white54)),
+                            ]),
                       ),
-
                     const SizedBox(height: 16),
-                    // B. Primary Needs
                     _buildSectionHeader("Primary Needs"),
                     _buildInfoRow(
-                      "Priority 1",
-                      needs.length > 0 ? needs[0].need : "N/A",
-                    ),
+                        "Priority 1", needs.length > 0 ? needs[0].need : "N/A"),
                     _buildInfoRow(
-                      "Priority 2",
-                      needs.length > 1 ? needs[1].need : "N/A",
-                    ),
+                        "Priority 2", needs.length > 1 ? needs[1].need : "N/A"),
                     _buildInfoRow(
-                      "Priority 3",
-                      needs.length > 2 ? needs[2].need : "N/A",
-                    ),
-
+                        "Priority 3", needs.length > 2 ? needs[2].need : "N/A"),
                     const SizedBox(height: 16),
-                    // C. Residency
                     _buildSectionHeader("Future Residency (5 Years)"),
-                    _buildInfoRow(
-                      "Intended Barangay",
-                      futureResidency?.barangay ?? "N/A",
-                    ),
-                    _buildInfoRow(
-                      "Intended Municipality",
-                      futureResidency?.municipality ?? "N/A",
-                    ),
+                    _buildInfoRow("Intended Barangay",
+                        futureResidency?.barangay ?? "N/A"),
+                    _buildInfoRow("Intended Municipality",
+                        futureResidency?.municipality ?? "N/A"),
                   ],
                 ),
 
                 const SizedBox(height: 24),
 
-                // ------------------------------------------------
                 // CARD 3: SURVEY INFO
-                // ------------------------------------------------
                 _buildCard(
                   title: "Survey Info",
                   children: [
@@ -321,19 +309,13 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                     const SizedBox(height: 12),
                     _buildSectionHeader("Registration"),
                     _buildInfoRow(
-                      "Status",
-                      _formatEnum(household.registration_status),
-                    ),
+                        "Status", _formatEnum(household.registration_status)),
                     _buildInfoRow(
-                      "Date",
-                      _formatDate(household.registration_date),
-                    ),
+                        "Date", _formatDate(household.registration_date)),
                   ],
                 ),
 
-                // ------------------------------------------------
                 // ACTION BUTTONS
-                // ------------------------------------------------
                 const SizedBox(height: 40),
                 Row(
                   children: [
@@ -344,28 +326,22 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                             context: context,
                             builder: (ctx) => AlertDialog(
                               title: const Text("Delete Household?"),
-                              content: const Text(
-                                "This action cannot be undone.",
-                              ),
+                              content:
+                                  const Text("This action cannot be undone."),
                               actions: [
                                 TextButton(
-                                  onPressed: () => Navigator.pop(ctx, false),
-                                  child: const Text("Cancel"),
-                                ),
+                                    onPressed: () => Navigator.pop(ctx, false),
+                                    child: const Text("Cancel")),
                                 TextButton(
-                                  onPressed: () => Navigator.pop(ctx, true),
-                                  child: const Text(
-                                    "Delete",
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                ),
+                                    onPressed: () => Navigator.pop(ctx, true),
+                                    child: const Text("Delete",
+                                        style: TextStyle(color: Colors.red))),
                               ],
                             ),
                           );
                           if (confirm == true) {
-                            await householdProvider.deleteHousehold(
-                              widget.householdId,
-                            );
+                            await householdProvider
+                                .deleteHousehold(widget.householdId);
                             if (context.mounted) Navigator.pop(context);
                           }
                         },
@@ -385,12 +361,14 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => EditHouseholdPage(
-                                householdId: widget.householdId,
-                              ),
-                            ),
+                                builder: (context) => EditHouseholdPage(
+                                    householdId: widget.householdId)),
                           ).then((_) {
+                            // Refresh data on return
                             householdProvider.getAllHouseholds();
+                            // Re-fetch local data to update view immediately if you stay on page,
+                            // though usually this pops back to list. If you want live update here:
+                            _loadData();
                           });
                         },
                         style: ElevatedButton.styleFrom(
@@ -427,14 +405,11 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title.toUpperCase(),
-            style: const TextStyle(
-              color: Colors.white70,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.1,
-            ),
-          ),
+          Text(title.toUpperCase(),
+              style: const TextStyle(
+                  color: Colors.white70,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.1)),
           const Divider(color: Colors.white24, height: 24),
           ...children,
         ],
@@ -448,10 +423,9 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
       child: Text(
         title,
         style: const TextStyle(
-          color: Colors.blueAccent,
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
-        ),
+            color: Colors.blueAccent,
+            fontWeight: FontWeight.w600,
+            fontSize: 14),
       ),
     );
   }
@@ -464,19 +438,16 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
         children: [
           SizedBox(
             width: 140,
-            child: Text(
-              "$label:",
-              style: TextStyle(color: Colors.grey[500], fontSize: 14),
-            ),
+            child: Text("$label:",
+                style: TextStyle(color: Colors.grey[500], fontSize: 14)),
           ),
           Expanded(
             child: Text(
               value.isEmpty ? "N/A" : value,
               style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-              ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14),
             ),
           ),
         ],
@@ -485,30 +456,21 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
   }
 
   Widget _buildRowPair(
-    String label1,
-    String? value1,
-    String label2,
-    String? value2,
-  ) {
+      String label1, String? value1, String label2, String? value2) {
     return Row(
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                label1,
-                style: TextStyle(color: Colors.grey[500], fontSize: 12),
-              ),
+              Text(label1,
+                  style: TextStyle(color: Colors.grey[500], fontSize: 12)),
               const SizedBox(height: 2),
-              Text(
-                value1 ?? "N/A",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                ),
-              ),
+              Text(value1 ?? "N/A",
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14)),
             ],
           ),
         ),
@@ -517,19 +479,14 @@ class _ViewHouseholdPageState extends State<ViewHouseholdPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                label2,
-                style: TextStyle(color: Colors.grey[500], fontSize: 12),
-              ),
+              Text(label2,
+                  style: TextStyle(color: Colors.grey[500], fontSize: 12)),
               const SizedBox(height: 2),
-              Text(
-                value2 ?? "N/A",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                ),
-              ),
+              Text(value2 ?? "N/A",
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14)),
             ],
           ),
         ),

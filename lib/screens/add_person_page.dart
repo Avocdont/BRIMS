@@ -272,7 +272,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                     ...Sex.values.map((val) {
                       return RadioListTile<Sex>(
                         title: Text(
-                          val.name,
+                          val.label,
                         ), // displays "male", "female", "other"
                         value: val,
                         groupValue: _selectedSex,
@@ -598,7 +598,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   ...CivilStatus.values.map((g) {
                     return RadioListTile<CivilStatus>(
                       title: Text(
-                        g.name,
+                        g.label,
                       ), // displays "single", "married", "other"
                       value: g,
                       groupValue: _selectedCivilStatus,
@@ -731,7 +731,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                     ...Residency.values.map((val) {
                       return RadioListTile<Residency>(
                         title: Text(
-                          val.name,
+                          val.label,
                         ), // displays "male", "female", "other"
                         value: val,
                         groupValue: _selectedResidency,
@@ -788,7 +788,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                     ...Transient.values.map((g) {
                       return RadioListTile<Transient>(
                         title: Text(
-                          g.name,
+                          g.label,
                         ), // displays "native", "migrant", "transient"
                         value: g,
                         groupValue: _selectedTransient,
@@ -862,7 +862,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                     ...SoloParent.values.map((val) {
                       return RadioListTile<SoloParent>(
                         title: Text(
-                          val.name,
+                          val.label,
                         ), // displays "no", "yes, registered", "yes, not registered"
                         value: val,
                         groupValue: _selectedSoloParent,
@@ -1081,7 +1081,8 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   ],
                 ),
               ),
-              _selectedCurrentlyEnrolled != CurrentlyEnrolled.no
+              _selectedCurrentlyEnrolled != CurrentlyEnrolled.no &&
+                      _selectedCurrentlyEnrolled != null
                   ? Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(

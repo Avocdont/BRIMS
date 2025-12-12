@@ -103,4 +103,9 @@ class ContactInfoProvider extends ChangeNotifier {
     await _contactInfoRepository.deleteGadget(id);
     getAllGadgets();
   }
+
+  Future<void> deleteGadgetsByPersonId(int personId) async {
+    await _contactInfoRepository.deleteGadgetsByPersonId(personId);
+    getAllGadgets();
+  }
 }

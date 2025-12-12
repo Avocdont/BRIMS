@@ -1,10 +1,13 @@
 import 'package:brims/database/app_db.dart';
+import 'package:brims/database/tables/extensions.dart';
 import 'package:brims/provider/household%20providers/household_lookup_provider.dart';
 import 'package:brims/provider/household%20providers/household_provider.dart';
 import 'package:brims/provider/profiling%20providers/person_provider.dart';
+import 'package:brims/provider/lookup%20providers/question_lookup_provider.dart';
 import 'package:drift/drift.dart' as db;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' as scn;
 import '../database/tables/enums.dart';
 
 class AddHouseholdPage extends StatefulWidget {
@@ -24,7 +27,7 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
   List<PersonData> _headSearchResults = [];
   bool _showHeadResults = false;
 
-  final List<Map<String, dynamic>> _addedMembers = [];
+  List<Map<String, dynamic>> _addedMembers = [];
   final TextEditingController _memberSearchController = TextEditingController();
   List<PersonData> _memberSearchResults = [];
   bool _showMemberResults = false;
@@ -37,25 +40,23 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
     "Sibling",
     "Grandparent",
     "Grandchild",
-    "Other",
+    "Other"
   ];
 
   // --- 2. ADDRESS ---
   int? _addressId;
-  List<Map<String, dynamic>> _searchedAddress = [];
-  bool _noResults = false;
-
-  // Controllers
   final _zoneController = TextEditingController();
   final _streetController = TextEditingController();
   final _blockController = TextEditingController();
   final _lotController = TextEditingController();
 
-  // State Variables for Saving
+  // Variables to hold address state if user confirms "Use This Address" from search
   String? _Zone;
   String? _Street;
   String? _Block;
   String? _Lot;
+  List<Map<String, dynamic>> _searchedAddress = [];
+  bool _noResults = false;
 
   // --- 3. HOUSEHOLD INFO ---
   HouseholdTypes? _selectedHouseholdType;
@@ -65,6 +66,7 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
   // --- 4. COMMUNITY: MORTALITY ---
   final _fmAgeController = TextEditingController();
   final _fmCauseController = TextEditingController();
+
   final _cmAgeController = TextEditingController();
   final _cmCauseController = TextEditingController();
   Sex? _cmSex;
@@ -83,8 +85,12 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
   BarangayPositions? _selectedBrgyPosition;
   ClientTypes? _selectedClientType;
   DateTime? _visitDate;
+
   RegistrationStatus? _selectedRegistrationStatus;
   DateTime? _registrationDate;
+
+  // --- 8. UTILITIES (Dynamic Questions) ---
+  final Map<int, int?> _utilityAnswers = {};
 
   @override
   void initState() {
@@ -92,6 +98,10 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HouseholdLookupProvider>().getAllBuildingTypes();
       context.read<PersonProvider>().getAllPersons();
+
+      final qProvider = context.read<QuestionLookupProvider>();
+      qProvider.getAllQuestions();
+      qProvider.getAllQuestionChoices();
     });
   }
 
@@ -160,10 +170,8 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
 
   @override
   Widget build(BuildContext context) {
-    final householdProvider =
-        context.watch<HouseholdProvider>(); // Watch for search results
-    final householdLookupProvider =
-        context.watch<HouseholdLookupProvider>(); // Watch for dropdowns
+    final householdLookupProvider = context.watch<HouseholdLookupProvider>();
+    final questionProvider = context.watch<QuestionLookupProvider>();
     int totalMembers = (_selectedHead != null ? 1 : 0) + _addedMembers.length;
 
     return Scaffold(
@@ -178,11 +186,14 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // --- 1. HEAD & MEMBERS ---
+                  // --------------------------------------------------------
+                  // 1. HEAD & MEMBERS
+                  // --------------------------------------------------------
                   const Text("Head of Household",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                   const SizedBox(height: 12),
+
                   if (_selectedHead == null) ...[
                     TextFormField(
                       controller: _headSearchController,
@@ -230,6 +241,8 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                     Card(
                       elevation: 0,
                       color: Colors.blue.shade50,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
                       child: ListTile(
                         leading: const CircleAvatar(child: Icon(Icons.person)),
                         title: Text(
@@ -238,14 +251,15 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                                 const TextStyle(fontWeight: FontWeight.bold)),
                         subtitle: const Text("Selected as Head"),
                         trailing: IconButton(
-                            icon: const Icon(Icons.close, color: Colors.red),
-                            onPressed: () =>
-                                setState(() => _selectedHead = null)),
+                          icon: const Icon(Icons.close, color: Colors.red),
+                          onPressed: () => setState(() => _selectedHead = null),
+                        ),
                       ),
                     ),
                   ],
 
                   const SizedBox(height: 32),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -256,6 +270,7 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                     ],
                   ),
                   const SizedBox(height: 12),
+
                   TextFormField(
                     controller: _memberSearchController,
                     decoration: InputDecoration(
@@ -301,7 +316,9 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                         },
                       ),
                     ),
+
                   const SizedBox(height: 16),
+
                   if (_addedMembers.isNotEmpty)
                     ListView.separated(
                       shrinkWrap: true,
@@ -314,8 +331,9 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                         return Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey.shade300),
-                              borderRadius: BorderRadius.circular(8)),
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                           child: Row(
                             children: [
                               const Icon(Icons.person,
@@ -340,7 +358,10 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                                   value: memberMap['relationship'],
                                   items: _relationshipTypes
                                       .map((r) => DropdownMenuItem(
-                                          value: r, child: Text(r)))
+                                          value: r,
+                                          child: Text(r,
+                                              style: const TextStyle(
+                                                  fontSize: 14))))
                                       .toList(),
                                   onChanged: (val) => setState(() =>
                                       _addedMembers[index]['relationship'] =
@@ -348,10 +369,11 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                                 ),
                               ),
                               IconButton(
-                                  icon: const Icon(Icons.delete_outline,
-                                      color: Colors.red),
-                                  onPressed: () => setState(
-                                      () => _addedMembers.removeAt(index))),
+                                icon: const Icon(Icons.delete_outline,
+                                    color: Colors.red),
+                                onPressed: () => setState(
+                                    () => _addedMembers.removeAt(index)),
+                              )
                             ],
                           ),
                         );
@@ -360,57 +382,56 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
 
                   const SizedBox(height: 40),
 
-                  // --- 2. ADDRESS INFORMATION ---
+                  // --------------------------------------------------------
+                  // 2. ADDRESS & HOUSEHOLD INFO
+                  // --------------------------------------------------------
                   const Text("Address Information",
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                          child: TextFormField(
-                              controller: _zoneController,
-                              decoration: const InputDecoration(
-                                  labelText: "Zone",
-                                  border: OutlineInputBorder()))),
-                      const SizedBox(width: 5),
-                      Expanded(
-                          child: TextFormField(
-                              controller: _streetController,
-                              decoration: const InputDecoration(
-                                  labelText: "Street",
-                                  border: OutlineInputBorder()))),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Expanded(
-                          child: TextFormField(
-                              controller: _blockController,
-                              decoration: const InputDecoration(
-                                  labelText: "Block",
-                                  border: OutlineInputBorder()))),
-                      const SizedBox(width: 5),
-                      Expanded(
-                          child: TextFormField(
-                              controller: _lotController,
-                              decoration: const InputDecoration(
-                                  labelText: "Lot",
-                                  border: OutlineInputBorder()))),
-                    ],
-                  ),
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  const SizedBox(height: 16),
+
+                  // Address Inputs and Search Logic
+                  Row(children: [
+                    Expanded(
+                        child: TextFormField(
+                            controller: _zoneController,
+                            decoration: const InputDecoration(
+                                labelText: 'Zone',
+                                border: OutlineInputBorder()))),
+                    const SizedBox(width: 16),
+                    Expanded(
+                        child: TextFormField(
+                            controller: _streetController,
+                            decoration: const InputDecoration(
+                                labelText: 'Street',
+                                border: OutlineInputBorder()))),
+                  ]),
+                  const SizedBox(height: 16),
+                  Row(children: [
+                    Expanded(
+                        child: TextFormField(
+                            controller: _blockController,
+                            decoration: const InputDecoration(
+                                labelText: 'Block',
+                                border: OutlineInputBorder()))),
+                    const SizedBox(width: 16),
+                    Expanded(
+                        child: TextFormField(
+                            controller: _lotController,
+                            decoration: const InputDecoration(
+                                labelText: 'Lot',
+                                border: OutlineInputBorder()))),
+                  ]),
                   const SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: () async {
-                      // Reset logic
+                      final provider = context.read<HouseholdProvider>();
                       setState(() {
                         _searchedAddress = [];
                         _noResults = false;
                         _addressId = null;
                       });
-
-                      final results = await householdProvider.searchAddresses(
+                      final results = await provider.searchAddresses(
                         zone: _zoneController.text.isNotEmpty
                             ? _zoneController.text
                             : null,
@@ -424,7 +445,6 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                             ? _lotController.text
                             : null,
                       );
-
                       setState(() {
                         _searchedAddress = results;
                         _noResults = results.isEmpty;
@@ -433,108 +453,85 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                     child: const Text("Search Address"),
                   ),
 
-                  // --- ADDRESS SEARCH RESULTS ---
                   if (_noResults)
                     Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        children: [
+                        margin: const EdgeInsets.only(top: 10),
+                        padding: const EdgeInsets.all(10),
+                        child: Column(children: [
                           const Text(
                               "No address found. Use entered data as new address?"),
                           const SizedBox(height: 10),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _Zone = _zoneController.text;
+                                        _Street = _streetController.text;
+                                        _Block = _blockController.text;
+                                        _Lot = _lotController.text;
+                                        _addressId = null;
+                                        _noResults = false;
+                                      });
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content:
+                                                  Text("New Address Set.")));
+                                    },
+                                    child: const Text("Yes")),
+                                const SizedBox(width: 10),
+                                ElevatedButton(
+                                    onPressed: () =>
+                                        setState(() => _noResults = false),
+                                    child: const Text("No")),
+                              ])
+                        ]))
+                  else if (_searchedAddress.isNotEmpty)
+                    Container(
+                        margin: const EdgeInsets.only(top: 10),
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey)),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              const Text("Address Found:",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(
+                                  "Zone: ${_searchedAddress[0]['address']['zone']}"),
+                              Text(
+                                  "Street: ${_searchedAddress[0]['address']['street']}"),
+                              const SizedBox(height: 10),
                               ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    // Set variable state to what is in controllers
-                                    _Zone = _zoneController.text;
-                                    _Street = _streetController.text;
-                                    _Block = _blockController.text;
-                                    _Lot = _lotController.text;
-                                    _addressId = null;
-                                    _noResults = false;
-
+                                  onPressed: () {
+                                    setState(() {
+                                      _addressId =
+                                          _searchedAddress[0]['address']['id'];
+                                      final addr =
+                                          _searchedAddress[0]['address'];
+                                      _zoneController.text = addr['zone'];
+                                      _streetController.text = addr['street'];
+                                      _blockController.text = addr['block'];
+                                      _lotController.text = addr['lot'];
+                                      _searchedAddress = [];
+                                    });
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
                                             content: Text(
-                                                "New Address Set. You can now save.")));
-                                  });
-                                },
-                                child: const Text("Yes"),
-                              ),
-                              const SizedBox(width: 10),
-                              ElevatedButton(
-                                onPressed: () =>
-                                    setState(() => _noResults = false),
-                                child: const Text("No"),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    )
-                  else if (_searchedAddress.isNotEmpty)
-                    Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      padding: const EdgeInsets.all(10),
-                      decoration:
-                          BoxDecoration(border: Border.all(color: Colors.grey)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text("Address Found:",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          Text(
-                              "Zone: ${_searchedAddress[0]['address']['zone']}"),
-                          Text(
-                              "Street: ${_searchedAddress[0]['address']['street']}"),
-                          Text(
-                              "Block: ${_searchedAddress[0]['address']['block']}"),
-                          Text("Lot: ${_searchedAddress[0]['address']['lot']}"),
-                          const SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                _addressId =
-                                    _searchedAddress[0]['address']['id'];
-                                // Clear "new" variables
-                                _Zone = null;
-                                _Street = null;
-                                _Block = null;
-                                _Lot = null;
-
-                                // Auto-fill fields
-                                final addr = _searchedAddress[0]['address'];
-                                _zoneController.text = addr['zone'];
-                                _streetController.text = addr['street'];
-                                _blockController.text = addr['block'];
-                                _lotController.text = addr['lot'];
-
-                                _searchedAddress = [];
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content:
-                                            Text("Existing Address Selected")));
-                              });
-                            },
-                            child: const Text("Use This Address"),
-                          ),
-                          TextButton(
-                            onPressed: () =>
-                                setState(() => _searchedAddress = []),
-                            child: const Text("Cancel Search",
-                                style: TextStyle(color: Colors.red)),
-                          )
-                        ],
-                      ),
-                    ),
+                                                "Existing Address Selected")));
+                                  },
+                                  child: const Text("Use This Address")),
+                              TextButton(
+                                  onPressed: () =>
+                                      setState(() => _searchedAddress = []),
+                                  child: const Text("Cancel Search",
+                                      style: TextStyle(color: Colors.red)))
+                            ])),
 
                   const SizedBox(height: 40),
 
-                  // --- 3. HOUSEHOLD DETAILS ---
                   const Text("Household Details",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
@@ -579,7 +576,74 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                         setState(() => _selectedOwnershipType = val),
                   ),
 
-                  // --- 4. COMMUNITY CARD ---
+                  // --------------------------------------------------------
+                  // 3. UTILITIES (Dynamic Questions) - MOVED HERE
+                  // --------------------------------------------------------
+                  if (questionProvider.allQuestions.isNotEmpty) ...[
+                    const SizedBox(height: 40),
+                    Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Center(
+                                child: Text("UTILITIES",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                        letterSpacing: 1.2))),
+                            const Divider(height: 32, thickness: 1),
+                            ...questionProvider.allQuestions.map((q) {
+                              final choices = questionProvider
+                                  .getChoicesForQuestion(q.question_id);
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(q.question,
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600)),
+                                    const SizedBox(height: 8),
+                                    DropdownButtonFormField<int>(
+                                      decoration: const InputDecoration(
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 12, vertical: 12),
+                                        border: OutlineInputBorder(),
+                                        isDense: true,
+                                      ),
+                                      value: _utilityAnswers[q.question_id],
+                                      hint: const Text("Select option"),
+                                      items: choices.map((choice) {
+                                        return DropdownMenuItem<int>(
+                                          value: choice.choice_id,
+                                          child: Text(choice.choice),
+                                        );
+                                      }).toList(),
+                                      onChanged: (val) {
+                                        setState(() {
+                                          _utilityAnswers[q.question_id] = val;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+
+                  // --------------------------------------------------------
+                  // 4. COMMUNITY SECTION (CARD)
+                  // --------------------------------------------------------
                   const SizedBox(height: 40),
                   Card(
                     elevation: 2,
@@ -597,80 +661,69 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                                       fontSize: 20,
                                       letterSpacing: 1.2))),
                           const Divider(height: 32, thickness: 1),
-
-                          // Mortality
                           const Text("Female died in the last 6 months",
                               style: TextStyle(
                                   fontWeight: FontWeight.w600, fontSize: 16)),
                           const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: TextFormField(
-                                      controller: _fmAgeController,
-                                      decoration: const InputDecoration(
-                                          labelText: 'Age',
-                                          border: OutlineInputBorder()),
-                                      keyboardType: TextInputType.number)),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                  child: TextFormField(
-                                      controller: _fmCauseController,
-                                      decoration: const InputDecoration(
-                                          labelText: 'Cause',
-                                          border: OutlineInputBorder()))),
-                            ],
-                          ),
+                          Row(children: [
+                            Expanded(
+                                child: TextFormField(
+                                    controller: _fmAgeController,
+                                    decoration: const InputDecoration(
+                                        labelText: 'Age',
+                                        border: OutlineInputBorder()),
+                                    keyboardType: TextInputType.number)),
+                            const SizedBox(width: 16),
+                            Expanded(
+                                child: TextFormField(
+                                    controller: _fmCauseController,
+                                    decoration: const InputDecoration(
+                                        labelText: 'Cause',
+                                        border: OutlineInputBorder()))),
+                          ]),
                           const SizedBox(height: 24),
                           const Text(
                               "5 Years old below died in the last 6 months",
                               style: TextStyle(
                                   fontWeight: FontWeight.w600, fontSize: 16)),
                           const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              Expanded(
+                          Row(children: [
+                            Expanded(
                                 child: TextFormField(
-                                  controller: _cmAgeController,
-                                  decoration: const InputDecoration(
-                                      labelText: 'Age',
-                                      border: OutlineInputBorder()),
-                                  keyboardType: TextInputType.number,
-                                  validator: (value) {
-                                    if (value != null && value.isNotEmpty) {
-                                      final age = int.tryParse(value);
-                                      if (age == null || age > 5)
-                                        return "Age must be 5 or below";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
+                              controller: _cmAgeController,
+                              decoration: const InputDecoration(
+                                  labelText: 'Age',
+                                  border: OutlineInputBorder()),
+                              keyboardType: TextInputType.number,
+                              validator: (value) {
+                                if (value != null && value.isNotEmpty) {
+                                  final age = int.tryParse(value);
+                                  if (age == null || age > 5)
+                                    return "Age must be 5 or below";
+                                }
+                                return null;
+                              },
+                            )),
+                            const SizedBox(width: 16),
+                            Expanded(
                                 child: DropdownButtonFormField<Sex>(
-                                  value: _cmSex,
-                                  decoration: const InputDecoration(
-                                      labelText: 'Sex',
-                                      border: OutlineInputBorder()),
-                                  items: Sex.values
-                                      .map((s) => DropdownMenuItem(
-                                          value: s, child: Text(s.name)))
-                                      .toList(),
-                                  onChanged: (val) =>
-                                      setState(() => _cmSex = val),
-                                ),
-                              ),
-                            ],
-                          ),
+                              value: _cmSex,
+                              decoration: const InputDecoration(
+                                  labelText: 'Sex',
+                                  border: OutlineInputBorder()),
+                              items: Sex.values
+                                  .map((s) => DropdownMenuItem(
+                                      value: s, child: Text(s.name)))
+                                  .toList(),
+                              onChanged: (val) => setState(() => _cmSex = val),
+                            )),
+                          ]),
                           const SizedBox(height: 12),
                           TextFormField(
                               controller: _cmCauseController,
                               decoration: const InputDecoration(
                                   labelText: 'Cause of Death',
                                   border: OutlineInputBorder())),
-
-                          // Primary Needs
                           const SizedBox(height: 32),
                           const Text("Primary needs of barangay",
                               style: TextStyle(
@@ -708,8 +761,6 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16))))),
-
-                          // Residency
                           const SizedBox(height: 32),
                           const Text("Intend to stay five years from now",
                               style: TextStyle(
@@ -731,7 +782,9 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                     ),
                   ),
 
-                  // --- 5. SURVEY INFO CARD ---
+                  // --------------------------------------------------------
+                  // 5. SURVEY INFO SECTION (CARD)
+                  // --------------------------------------------------------
                   const SizedBox(height: 40),
                   Card(
                     elevation: 2,
@@ -749,33 +802,30 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                                       fontSize: 20,
                                       letterSpacing: 1.2))),
                           const Divider(height: 32, thickness: 1),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: TextFormField(
-                                      controller: _visitNumController,
-                                      decoration: const InputDecoration(
-                                          labelText: 'Number of visits',
-                                          border: OutlineInputBorder()),
-                                      keyboardType: TextInputType.number)),
-                              const SizedBox(width: 16),
-                              Expanded(
+                          Row(children: [
+                            Expanded(
+                                child: TextFormField(
+                                    controller: _visitNumController,
+                                    decoration: const InputDecoration(
+                                        labelText: 'Number of visits',
+                                        border: OutlineInputBorder()),
+                                    keyboardType: TextInputType.number)),
+                            const SizedBox(width: 16),
+                            Expanded(
                                 child:
                                     DropdownButtonFormField<BarangayPositions>(
-                                  value: _selectedBrgyPosition,
-                                  decoration: const InputDecoration(
-                                      labelText: 'Barangay Position',
-                                      border: OutlineInputBorder()),
-                                  items: BarangayPositions.values
-                                      .map((pos) => DropdownMenuItem(
-                                          value: pos, child: Text(pos.name)))
-                                      .toList(),
-                                  onChanged: (val) => setState(
-                                      () => _selectedBrgyPosition = val),
-                                ),
-                              ),
-                            ],
-                          ),
+                              value: _selectedBrgyPosition,
+                              decoration: const InputDecoration(
+                                  labelText: 'Barangay Position',
+                                  border: OutlineInputBorder()),
+                              items: BarangayPositions.values
+                                  .map((pos) => DropdownMenuItem(
+                                      value: pos, child: Text(pos.name)))
+                                  .toList(),
+                              onChanged: (val) =>
+                                  setState(() => _selectedBrgyPosition = val),
+                            )),
+                          ]),
                           const SizedBox(height: 16),
                           DropdownButtonFormField<ClientTypes>(
                             value: _selectedClientType,
@@ -867,7 +917,7 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
                                   fontSize: 16, fontWeight: FontWeight.bold)),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
@@ -878,7 +928,6 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
   }
 
   Future<void> _saveHousehold() async {
-    // 1. Validation
     if (_selectedHead == null) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please select a Head of Household")));
@@ -893,45 +942,32 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
     if (_formKey.currentState!.validate()) {
       setState(() => _isSaving = true);
 
-      // Use single provider instance
       final provider = context.read<HouseholdProvider>();
+      final qProvider = context.read<QuestionLookupProvider>();
 
-      // --- ADDRESS LOGIC START ---
-      // Sync text fields to variables if null (in case user just typed and didn't click Yes/Search)
+      // 1. Create Address
       if (_addressId == null) {
-        _Zone ??= _zoneController.text;
-        _Street ??= _streetController.text;
-        _Block ??= _blockController.text;
-        _Lot ??= _lotController.text;
-
         final addressCompanion = AddressesCompanion(
-          zone: _Zone != null && _Zone!.isNotEmpty
-              ? db.Value(_Zone)
-              : const db.Value.absent(),
-          street: _Street != null && _Street!.isNotEmpty
+          zone:
+              _Zone != null ? db.Value(_Zone) : db.Value(_zoneController.text),
+          street: _Street != null
               ? db.Value(_Street)
-              : const db.Value.absent(),
-          block: _Block != null && _Block!.isNotEmpty
+              : db.Value(_streetController.text),
+          block: _Block != null
               ? db.Value(_Block)
-              : const db.Value.absent(),
-          lot: _Lot != null && _Lot!.isNotEmpty
-              ? db.Value(_Lot)
-              : const db.Value.absent(),
+              : db.Value(_blockController.text),
+          lot: _Lot != null ? db.Value(_Lot) : db.Value(_lotController.text),
         );
-
-        final hasAddress = addressCompanion.zone.present ||
+        if (addressCompanion.zone.present ||
             addressCompanion.street.present ||
             addressCompanion.block.present ||
-            addressCompanion.lot.present;
-
-        if (hasAddress) {
+            addressCompanion.lot.present) {
           _addressId = await provider.addAddress(addressCompanion);
         }
       }
-      // --- ADDRESS LOGIC END ---
 
-      // 2. Create Household Header
-      int totalCount = 1 + _addedMembers.length;
+      // 2. Create Household
+      int totalMembers = 1 + _addedMembers.length;
       bool hasFm = _fmAgeController.text.isNotEmpty ||
           _fmCauseController.text.isNotEmpty;
       bool hasCm = _cmAgeController.text.isNotEmpty ||
@@ -950,7 +986,7 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
         ownership_type_id: _selectedOwnershipType != null
             ? db.Value(_selectedOwnershipType!)
             : const db.Value.absent(),
-        household_members_num: db.Value(totalCount),
+        household_members_num: db.Value(totalMembers),
         registration_date: db.Value(_registrationDate),
         registration_status: db.Value(_selectedRegistrationStatus!),
         female_mortality: db.Value(hasFm),
@@ -959,31 +995,20 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
 
       final newHouseholdId = await provider.addHousehold(householdCompanion);
 
-      // 3. Link Members (HouseholdMembers Table)
-      // A. Link Head (Assumption: Head is also a member)
+      // 3. Link Members
       await provider.addHouseholdMember(HouseholdMembersCompanion(
         person_id: db.Value(_selectedHead!.person_id),
         household_id: db.Value(newHouseholdId),
       ));
-
-      // B. Link Other Members
       for (var member in _addedMembers) {
         final person = member['person'] as PersonData;
         await provider.addHouseholdMember(HouseholdMembersCompanion(
           person_id: db.Value(person.person_id),
           household_id: db.Value(newHouseholdId),
         ));
-
-        // Optional: Save Relationship if you have a separate table for that
-        if (member['relationship'] != null) {
-          // You would likely have a table linking member_id or person_id to relationship type
-          // Since your setup is complex, I'm noting this here.
-          // Based on your tables, you have 'HouseholdRelationships' table.
-          // You would iterate and save there if needed.
-        }
       }
 
-      // 4. Save Sub-tables (Services, Needs, etc.) - same as before
+      // 4. Save Sub-tables
       if (_selectedClientType != null || _visitNumController.text.isNotEmpty) {
         await provider.addService(ServicesCompanion(
           household_id: db.Value(newHouseholdId),
@@ -992,27 +1017,21 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
         ));
       }
 
-      if (_need1Controller.text.isNotEmpty) {
+      if (_need1Controller.text.isNotEmpty)
         await provider.addPrimaryNeed(PrimaryNeedsCompanion(
-          household_id: db.Value(newHouseholdId),
-          need: db.Value(_need1Controller.text),
-          priority: const db.Value(1),
-        ));
-      }
-      if (_need2Controller.text.isNotEmpty) {
+            household_id: db.Value(newHouseholdId),
+            need: db.Value(_need1Controller.text),
+            priority: const db.Value(1)));
+      if (_need2Controller.text.isNotEmpty)
         await provider.addPrimaryNeed(PrimaryNeedsCompanion(
-          household_id: db.Value(newHouseholdId),
-          need: db.Value(_need2Controller.text),
-          priority: const db.Value(2),
-        ));
-      }
-      if (_need3Controller.text.isNotEmpty) {
+            household_id: db.Value(newHouseholdId),
+            need: db.Value(_need2Controller.text),
+            priority: const db.Value(2)));
+      if (_need3Controller.text.isNotEmpty)
         await provider.addPrimaryNeed(PrimaryNeedsCompanion(
-          household_id: db.Value(newHouseholdId),
-          need: db.Value(_need3Controller.text),
-          priority: const db.Value(3),
-        ));
-      }
+            household_id: db.Value(newHouseholdId),
+            need: db.Value(_need3Controller.text),
+            priority: const db.Value(3)));
 
       if (hasFm) {
         await provider.addFemaleMortality(FemaleMortalitiesCompanion(
@@ -1047,6 +1066,17 @@ class _AddHouseholdPageState extends State<AddHouseholdPage> {
           brgy_position: db.Value(_selectedBrgyPosition!),
           visit_date: db.Value(_visitDate),
         ));
+      }
+
+      // 5. SAVE UTILITIES (Dynamic)
+      for (var entry in _utilityAnswers.entries) {
+        if (entry.value != null) {
+          await qProvider.addHouseholdResponse(HouseholdResponsesCompanion(
+            household_id: db.Value(newHouseholdId),
+            question_id: db.Value(entry.key),
+            choice_id: db.Value(entry.value!),
+          ));
+        }
       }
 
       setState(() => _isSaving = false);

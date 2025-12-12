@@ -75,13 +75,12 @@ class ProfilesPage extends StatelessWidget {
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder:
-                          (_) => ProfileFilterDialog(
-                            currentFilters: provider.filters,
-                            onApply: (newFilters) {
-                              provider.updateFilters(newFilters);
-                            },
-                          ),
+                      builder: (_) => ProfileFilterDialog(
+                        currentFilters: provider.filters,
+                        onApply: (newFilters) {
+                          provider.updateFilters(newFilters);
+                        },
+                      ),
                     );
                   },
                   icon: const Icon(Icons.filter_list),
@@ -112,17 +111,15 @@ class ProfilesPage extends StatelessWidget {
                     initialFirstRowIndex:
                         provider.currentPageIndex * provider.rowsPerPage,
 
-                    onRowsPerPageChanged:
-                        (val) => provider.onRowsPerPageChanged(val ?? 10),
+                    onRowsPerPageChanged: (val) =>
+                        provider.onRowsPerPageChanged(val ?? 10),
 
-                    onPageChanged:
-                        (firstRowIndex) =>
-                            provider.onPageChanged(firstRowIndex),
+                    onPageChanged: (firstRowIndex) =>
+                        provider.onPageChanged(firstRowIndex),
 
-                    sortColumnIndex:
-                        provider.sortColumn == SortColumn.name
-                            ? 0
-                            : provider.sortColumn == SortColumn.age
+                    sortColumnIndex: provider.sortColumn == SortColumn.name
+                        ? 0
+                        : provider.sortColumn == SortColumn.age
                             ? 1
                             : null,
                     sortAscending: provider.sortDirection == SortDirection.asc,
@@ -138,7 +135,6 @@ class ProfilesPage extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 if (provider.isLoading)
                   Positioned.fill(
                     child: Container(
@@ -201,23 +197,23 @@ class ProfileDataSource extends DataTableSource {
       DataCell(
         row.householdId != null
             ? InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (_) => ViewHouseholdPage(householdId: row.householdId!),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          ViewHouseholdPage(householdId: row.householdId!),
+                    ),
+                  );
+                },
+                child: Text(
+                  row.householdInfo,
+                  style: const TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
                   ),
-                );
-              },
-              child: Text(
-                row.householdInfo,
-                style: const TextStyle(
-                  color: Colors.blue,
-                  decoration: TextDecoration.underline,
                 ),
-              ),
-            )
+              )
             : Text(row.householdInfo),
       ),
       DataCell(Text(row.contactNumber)),
@@ -249,7 +245,13 @@ class ProfileDataSource extends DataTableSource {
             MaterialPageRoute(
               builder: (_) => ViewPersonDetailsPage(personId: row.personId),
             ),
-          );
+          ).then((_) {
+            // FIX: Reload the table when we come back!
+            // This handles both Deletions and Edits (name changes, etc.)
+            if (context.mounted) {
+              context.read<ProfileProvider>().loadProfiles();
+            }
+          });
         }
       },
       cells: cells,

@@ -1,6 +1,7 @@
 import 'package:brims/database/app_db.dart';
 import 'package:brims/repository/lookup repositories/question_lookup_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:drift/drift.dart';
 
 class QuestionLookupProvider extends ChangeNotifier {
   QuestionLookupProvider() {
@@ -12,23 +13,12 @@ class QuestionLookupProvider extends ChangeNotifier {
   List<QuestionData> _allQuestions = [];
   List<QuestionData> get allQuestions => _allQuestions;
 
-  List<QuestionData> _currentQuestions = [];
-  List<QuestionData> get currentQuestions => _currentQuestions;
-
   List<QuestionChoiceData> _allQuestionChoices = [];
   List<QuestionChoiceData> get allQuestionChoices => _allQuestionChoices;
-
-  List<QuestionChoiceData> _currentQuestionChoices = [];
-  List<QuestionChoiceData> get currentQuestionChoices =>
-      _currentQuestionChoices;
 
   List<HouseholdResponseData> _allHouseholdResponses = [];
   List<HouseholdResponseData> get allHouseholdResponses =>
       _allHouseholdResponses;
-
-  List<HouseholdResponseData> _currentHouseholdResponses = [];
-  List<HouseholdResponseData> get currentHouseholdResponses =>
-      _currentHouseholdResponses;
 
   Future<void> loadAllLookups() async {
     await getAllQuestions();
@@ -36,11 +26,9 @@ class QuestionLookupProvider extends ChangeNotifier {
     await getAllHouseholdResponses();
   }
 
-  // ------------ Questions ------------
-
+  // ------------ QUESTIONS ------------
   getAllQuestions() async {
     _allQuestions = await _lookupRepository.allQuestions();
-    _currentQuestions = _allQuestions;
     notifyListeners();
   }
 
@@ -59,12 +47,17 @@ class QuestionLookupProvider extends ChangeNotifier {
     await getAllQuestions();
   }
 
-  // ------------ Question Choices ------------
-
+  // ------------ CHOICES ------------
   getAllQuestionChoices() async {
     _allQuestionChoices = await _lookupRepository.allQuestionChoices();
-    _currentQuestionChoices = _allQuestionChoices;
     notifyListeners();
+  }
+
+  // HELPER: Filter choices for UI Dropdowns
+  List<QuestionChoiceData> getChoicesForQuestion(int questionId) {
+    return _allQuestionChoices
+        .where((c) => c.question_id == questionId)
+        .toList();
   }
 
   addQuestionChoice(QuestionChoicesCompanion qcc) async {
@@ -82,12 +75,16 @@ class QuestionLookupProvider extends ChangeNotifier {
     await getAllQuestionChoices();
   }
 
-  // ------------ Household Responses ------------
-
+  // ------------ RESPONSES ------------
   getAllHouseholdResponses() async {
     _allHouseholdResponses = await _lookupRepository.allHouseholdResponses();
-    _currentHouseholdResponses = _allHouseholdResponses;
     notifyListeners();
+  }
+
+  // HELPER: Fetch answers for Edit Page
+  Future<List<HouseholdResponseData>> getHouseholdResponses(
+      int householdId) async {
+    return await _lookupRepository.getResponsesByHouseholdId(householdId);
   }
 
   addHouseholdResponse(HouseholdResponsesCompanion hrc) async {
